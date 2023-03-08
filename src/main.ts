@@ -1,0 +1,258 @@
+#!/usr/bin/env node
+
+import path from "path";
+import fs from 'fs';
+import { createHash } from "crypto";
+
+import sharp from 'sharp';
+import chalk from 'chalk';
+import { globSync } from 'glob';
+import minimatch from "minimatch";
+
+interface i_cache {
+	fname: string,
+	fhash: string
+};
+
+interface i_cachedb {
+	compare: Array <i_cache>,
+	current: Array <i_cache>
+};
+
+let cacheDB: i_cachedb = {
+	compare: [],
+	current: []
+};
+
+let pathsInput: string = '';
+
+const flags = {
+	verbose: false,
+	nocache: false,
+	fmtAvif: true,
+	fmtWebp: true
+};
+
+process.argv.slice(2).forEach((arg) => {
+	if (/^.+\:.+$/.test(arg)) pathsInput = arg;
+	else if (arg === '-v' || arg === '--verbose') flags.verbose = true;
+	else if (arg === '-n' || arg === '--no-cache') flags.nocache = true;
+	else if (arg === '--no-avif') flags.fmtAvif = false;
+	else if (arg === '--no-webp') flags.fmtWebp = false;
+})
+
+if (!pathsInput.length) {
+	console.error('Run this script like this: node assets.mjs [input dir]:[output dir]')
+	process.exit(1);
+}
+
+if (flags.nocache) console.log(chalk.yellow('Cache is disabled'));
+
+let assetsInput = path.normalize(pathsInput.slice(0, pathsInput.indexOf(':')));
+let assetsOutput = path.normalize(pathsInput.slice(pathsInput.indexOf(':') + 1));
+
+const assetsCacheFolder = path.normalize(assetsInput + '/.cache/');
+if (!fs.existsSync(assetsCacheFolder)) fs.mkdirSync(assetsCacheFolder, {recursive: true});
+const cacheIndex = path.normalize(assetsCacheFolder + '/.cacheindex.json');
+
+if (!flags.nocache) {
+	try {
+		cacheDB.compare = JSON.parse(new TextDecoder().decode(fs.readFileSync(cacheIndex)));
+		if (!Array.isArray(cacheDB.compare)) cacheDB.compare = [];
+		if (!Array.isArray(cacheDB.current)) cacheDB.current = [];
+	} catch (error) {
+		console.log('No cache found');
+	}
+}
+
+const quality = {
+	avif: 80,
+	webp: 85,
+	jpg: 75,
+	png: 85
+};
+
+console.log('Starting media assets processing...');
+
+interface i_asset {
+	source: string,
+	dest: string,
+	destNoExt: string,
+	destDir: string,
+	name: string,
+	cachePath: string
+}
+
+let assetFiles: Array <i_asset> = globSync(path.normalize(assetsInput + '/**/*').replace(/\\/g, '/'), { nodir: true }).map((assetPath) => {
+
+	assetPath = path.normalize(assetPath);
+	const destpath = assetPath.replace(path.normalize(assetsInput + '/'), path.normalize(assetsOutput + '/'));
+
+	const noextension = (path: string) => path.includes('.') ? path.slice(0, path.lastIndexOf('.')) : path;
+	
+	return {
+		source: assetPath,
+		dest: destpath,
+		destNoExt: noextension(destpath),
+		destDir: path.dirname(destpath),
+		name: path.basename(assetPath),
+		cachePath: noextension(assetPath.replace(path.normalize(assetsInput + '/'), path.normalize(assetsInput + '/.cache/')))
+	}
+
+});
+
+if (!assetFiles.length) {
+	console.error(chalk.black.bgRed(' No assets found '), `in "${assetsInput}"`);
+	process.exit(2);
+}
+
+interface i_noassets {
+	globPath: string,
+	directives: string[]
+};
+
+const noassetsDirective: Array <i_noassets> = globSync('./**/.noassets').map((item) => {
+
+	try {
+		
+		const fileContents = fs.readFileSync(item).toString();
+		const lines: string[] = fileContents.replace(/\s/, '\n').split('\n');
+
+		return {
+			globPath: item,
+			directives: lines.filter((item) => item.length > 0)
+		}
+
+	} catch (_error) {
+
+		return {
+			globPath: item,
+			directives: []
+		}
+	}
+
+});
+
+const queue = assetFiles.map(async (asset) => {
+
+	for (const item of noassetsDirective) {
+		const patchMatch = asset.source.startsWith(path.normalize(item.globPath.replace(/[\/\\].noassets$/, '/')));
+		if (!patchMatch) continue;
+
+		if (!item.directives.length || item.directives.find((item) => minimatch(asset.source, item, {
+			matchBase: true,
+			nobrace: true,
+			noext: true,
+			nocase: true
+		}))) {
+			if (flags.verbose) console.log(' Skipped by the ".noassets" :', asset.source);
+			return;
+		}
+	}
+
+	let isCacheValid = false;
+	
+	if (!fs.existsSync(asset.destDir)) fs.mkdirSync(asset.destDir, {recursive: true});
+
+	const contentHash: string | null = flags.nocache ? null : await (async () => new Promise <string | null> (async (hashResolve) => {
+
+		//	using md5 for the speeeeeed!
+		const hash = createHash('md5');
+
+		await (() => new Promise <boolean> ((resolve) => {
+	
+			const readStream = fs.createReadStream(asset.source);
+			
+			readStream.on('error', () => {
+				console.error('Error hashing file:', asset.source);
+				resolve(false);
+			});
+
+			readStream.on('data', (chunk) => hash.update(chunk));
+			readStream.on('end', () => resolve(true));
+
+		}))() ? hashResolve(hash.digest('base64').replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_")) : null;
+
+	}))();
+	
+	const fnameHash: string | null = flags.nocache ? null : (() => {
+		const hash = createHash('sha256');
+			hash.update(asset.source);
+		return hash.digest('base64').replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
+	})();
+
+	if (contentHash) {
+		const compareHash = cacheDB.compare.find((item) => item.fname === fnameHash);
+		if (compareHash) isCacheValid = compareHash?.fhash ? (compareHash.fhash === contentHash) : false;
+		cacheDB.current.push({fname: fnameHash, fhash: contentHash});
+	}
+
+	const getCacheFileName = (file: string) => file.replace(assetsOutput, assetsCacheFolder);
+
+	const cacheGrab = (file: string, cacheFile: string) => {
+		if (!fs.existsSync(cacheFile)) return false;
+		fs.copyFileSync(cacheFile, file);
+		return true;
+	}
+
+	const processAndCache = async (filePathNoExt: string, format: keyof sharp.FormatEnum | sharp.AvailableFormatInfo) => {
+
+		const filePathFull = `${filePathNoExt}.${format}`;
+		
+		if (!fs.existsSync(filePathFull) || !isCacheValid) {
+
+			const cachePath = getCacheFileName(filePathFull);
+			const cacheDir = path.dirname(cachePath);
+
+			if (!isCacheValid || !cacheGrab(filePathFull, cachePath)) {
+				
+				await sharp(asset.source).toFormat(format, {quality: quality.avif}).toFile(filePathFull);
+				console.log(chalk.cyan(' Converted' + (flags.nocache ? '' : ' and cached') + ' :'), filePathFull);
+				
+				if (!fs.existsSync(cacheDir)) fs.mkdirSync(cacheDir, {recursive: true});
+				fs.copyFileSync(filePathFull, cachePath);
+
+			} else console.log(chalk.green(' Cache hit :'), filePathFull);
+
+		} else console.log(chalk.green(' Not changed :'), filePathFull);
+
+		return true;
+	}
+
+	if (/\.(png)|(jpg)$/.test(asset.name)) {
+
+		try {
+		
+			if (flags.fmtAvif) await processAndCache(asset.destNoExt, 'avif');
+			if (flags.fmtWebp) await processAndCache(asset.destNoExt, 'webp');
+	
+			await processAndCache(asset.destNoExt, /\.png$/.test(asset.name) ? 'png' : 'jpg');
+	
+		} catch (error) {
+			console.error(chalk.black.bgRed(' Sharp error on: '), asset.source);
+			console.error(chalk.red('Details:'), error);
+			process.exit(11);
+		}
+
+	} else if (/\.(svg)|(webp)|(webm)|(avif)|(mp4)|(mov)|(mp3)|(ogg)|(ogv)|(gif)$/.test(asset.name)) {
+
+		if (!fs.existsSync(asset.dest) || !isCacheValid) {	
+				
+			if (!fs.existsSync(asset.destDir)) fs.mkdirSync(asset.destDir, {recursive: true});
+			fs.copyFileSync(asset.source, asset.dest);
+
+			console.log(chalk.cyan(' Copied origin: '), asset.dest);
+
+		} else console.log(chalk.green(' Not changed :'), asset.dest);
+	
+	} else if (flags.verbose) {
+		console.log(' Skipped: ', asset.name);
+	}
+
+});
+
+await Promise.all(queue);
+
+if (!flags.nocache) fs.writeFileSync(cacheIndex, JSON.stringify(cacheDB.current));
+
+console.log('Assets processing done!');

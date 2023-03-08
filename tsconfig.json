@@ -1,0 +1,16 @@
+{
+	"compilerOptions": {
+		"lib": ["DOM", "ES6", "ESNext"],
+		"target": "ESNext",
+		"module": "ESNext",
+		"typeRoots": [
+			"node_modules/@types"
+		],
+		"rootDir": "src/",
+		"outDir": "dist/",
+		"moduleResolution": "node",
+		"allowSyntheticDefaultImports": true,
+		"declaration": false,
+		"sourceMap": false
+	}
+}
