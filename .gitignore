@@ -4,4 +4,3 @@ tests/result/*
 *.avif
 *.webp
 **/.cache/**
-package-lock.json

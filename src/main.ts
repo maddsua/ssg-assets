@@ -8,6 +8,7 @@ import sharp from 'sharp';
 import chalk from 'chalk';
 import { globSync } from 'glob';
 import minimatch from "minimatch";
+import { config } from "process";
 
 interface i_cache {
 	fname: string,
@@ -24,13 +25,16 @@ let cacheDB: i_cachedb = {
 	current: []
 };
 
+const cachedObjects = Array<string>(0);
+
 let pathsInput: string = '';
 
 const flags = {
 	verbose: false,
 	nocache: false,
 	fmtAvif: true,
-	fmtWebp: true
+	fmtWebp: true,
+	justCopy: false
 };
 
 process.argv.slice(2).forEach((arg) => {
@@ -39,6 +43,7 @@ process.argv.slice(2).forEach((arg) => {
 	else if (arg === '-n' || arg === '--no-cache') flags.nocache = true;
 	else if (arg === '--no-avif') flags.fmtAvif = false;
 	else if (arg === '--no-webp') flags.fmtWebp = false;
+	else if (arg === '-c' || arg === '--copy') flags.justCopy = true;
 })
 
 if (!pathsInput.length) {
@@ -198,12 +203,13 @@ const queue = assetFiles.map(async (asset) => {
 	const processAndCache = async (filePathNoExt: string, format: keyof sharp.FormatEnum | sharp.AvailableFormatInfo) => {
 
 		const filePathFull = `${filePathNoExt}.${format}`;
+		const cachePath = getCacheFileName(filePathFull);
+		cachedObjects.push(cachePath);
 		
 		if (!fs.existsSync(filePathFull) || !isCacheValid) {
-
-			const cachePath = getCacheFileName(filePathFull);
+			
 			const cacheDir = path.dirname(cachePath);
-
+			
 			if (!isCacheValid || !cacheGrab(filePathFull, cachePath)) {
 				
 				await sharp(asset.source).toFormat(format, {quality: quality.avif}).toFile(filePathFull);
@@ -219,7 +225,7 @@ const queue = assetFiles.map(async (asset) => {
 		return true;
 	}
 
-	if (/\.(png)|(jpg)$/.test(asset.name)) {
+	if (!flags.justCopy && (/\.(png)|(jpg)$/).test(asset.name)) {
 
 		try {
 		
@@ -234,7 +240,7 @@ const queue = assetFiles.map(async (asset) => {
 			process.exit(11);
 		}
 
-	} else if (/\.(svg)|(webp)|(webm)|(avif)|(mp4)|(mov)|(mp3)|(ogg)|(ogv)|(gif)$/.test(asset.name)) {
+	} else {
 
 		if (!fs.existsSync(asset.dest) || !isCacheValid) {	
 				
@@ -245,14 +251,26 @@ const queue = assetFiles.map(async (asset) => {
 
 		} else console.log(chalk.green(' Not changed :'), asset.dest);
 	
-	} else if (flags.verbose) {
-		console.log(' Skipped: ', asset.name);
 	}
-
 });
 
 await Promise.all(queue);
 
-if (!flags.nocache) fs.writeFileSync(cacheIndex, JSON.stringify(cacheDB.current));
+//	cache cleanup and index save
+const cachePostprocess = () => {
+
+	const cacheContents = globSync(path.normalize(assetsCacheFolder + '/**/*').replace(/\\/g, '/'), {nodir: true});
+
+	cacheContents.forEach((file) => {
+		if (!cachedObjects.find((entry) => entry === file)) {
+			fs.rmSync(file);
+			console.log(chalk.yellow(' Removed from cache: '), file);
+		}
+	});
+
+	//	save index
+	fs.writeFileSync(cacheIndex, JSON.stringify(cacheDB.current));
+};
+if (!flags.nocache) cachePostprocess();
 
 console.log('Assets processing done!');

@@ -10,6 +10,7 @@ CLI usage example: `ssga assets/:public/`
 ### Flags:
 - `-n` or `--no-cache` - Don't use caching
 - `-v` or `--verbose` - Report everything!
+- `-c` or `--copy` - Don't convert anything, just copy
 
 ### Skip directories:
 
