@@ -111,21 +111,29 @@ if (!assetFiles.length) {
 	process.exit(2);
 }
 
+interface i_globdirective {
+	globRoot: string,
+	pattern: string
+}
 interface i_noassets {
 	globPath: string,
-	directives: string[]
+	directives: i_globdirective[]
 };
+
 
 const noassetsDirective: Array <i_noassets> = globSync('./**/.noassets').map((item) => {
 
 	try {
 		
 		const fileContents = fs.readFileSync(item).toString();
-		const lines: string[] = fileContents.replace(/\s/, '\n').split('\n');
+		const directives: i_globdirective[] = fileContents.replace(/\s/, '\n').split('\n').filter((line) => line.length > 1).map((item2) => ({
+			globRoot: path.dirname(item).replace(/[\\\/]+/, '/'),
+			pattern: item2.replace(/[\\\/]+/, '/').replace(/^\//, './')
+		}));
 
 		return {
 			globPath: item,
-			directives: lines.filter((item) => item.length > 0)
+			directives
 		}
 
 	} catch (_error) {
@@ -141,15 +149,43 @@ const noassetsDirective: Array <i_noassets> = globSync('./**/.noassets').map((it
 const queue = assetFiles.map(async (asset) => {
 
 	for (const item of noassetsDirective) {
-		const patchMatch = asset.source.startsWith(path.normalize(item.globPath.replace(/[\/\\].noassets$/, '/')));
-		if (!patchMatch) continue;
 
-		if (!item.directives.length || item.directives.find((item) => minimatch(asset.source, item, {
-			matchBase: true,
-			nobrace: true,
-			noext: true,
-			nocase: true
-		}))) {
+		//	check if this .noassets has power over this asset
+		const patchMatch = asset.source.startsWith(path.normalize(item.globPath.replace(/[\/\\].noassets$/, '/')));
+		//	if not, skip it
+		if (!patchMatch) continue;
+		
+		//	figure out if we have to actually skip this asset, depending on .noassets file contents
+		if (!item.directives.length || item.directives.find((item) => {
+
+			//	create path relative to .noassets file, so that globs will work as intended
+			const relativePath = asset.source.substring(item.globRoot.length + 1);
+
+			//	convert a glob like "some_folder/dir" to "some_folder/dir/*"
+			if (!item.pattern.endsWith('*')) {
+				//	create relative path
+				const checkIfDir = path.join(item.globRoot, item.pattern);
+				//	nevernester's hell :)
+				if (fs.existsSync(checkIfDir)) {
+					//	if path exists, check if it's a dir
+					if (fs.statSync(checkIfDir).isDirectory()) {
+						//	it' a dir. ensure glob has a slash before asterisk
+						if (!item.pattern.endsWith('/')) item.pattern += '/';
+						//	any questions?
+						item.pattern += '*';
+					}
+				}
+			}
+
+			//	if glob matches - asset is skipped
+			return minimatch(relativePath, item.pattern, {
+				matchBase: true,
+				nobrace: true,
+				noext: true,
+				nocase: true
+			});
+
+		})) {
 			if (flags.verbose) console.log(' Skipped by the ".noassets" :', asset.source);
 			return;
 		}
