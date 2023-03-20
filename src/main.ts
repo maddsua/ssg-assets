@@ -204,7 +204,7 @@ const queue = assetFiles.map(async (asset) => {
 
 		const filePathFull = `${filePathNoExt}.${format}`;
 		const cachePath = getCacheFileName(filePathFull);
-		cachedObjects.push(cachePath);
+		cachedObjects.push(path.normalize(cachePath));
 		
 		if (!fs.existsSync(filePathFull) || !isCacheValid) {
 			
@@ -259,7 +259,7 @@ await Promise.all(queue);
 //	cache cleanup and index save
 const cachePostprocess = () => {
 
-	const cacheContents = globSync(path.normalize(assetsCacheFolder + '/**/*').replace(/\\/g, '/'), {nodir: true});
+	const cacheContents = globSync(path.normalize(assetsCacheFolder + '/**/*').replace(/\\/g, '/'), {nodir: true}).map((entry) => path.normalize(entry));
 
 	cacheContents.forEach((file) => {
 		if (!cachedObjects.find((entry) => entry === file)) {
