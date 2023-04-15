@@ -8,7 +8,6 @@ import sharp from 'sharp';
 import chalk from 'chalk';
 import { globSync } from 'glob';
 import minimatch from "minimatch";
-import { config } from "process";
 
 interface i_cache {
 	fname: string,
@@ -126,9 +125,12 @@ const noassetsDirective: Array <i_noassets> = globSync('./**/.noassets').map((it
 	try {
 		
 		const fileContents = fs.readFileSync(item).toString();
-		const directives: i_globdirective[] = fileContents.replace(/\s/, '\n').split('\n').filter((line) => line.length > 1).map((item2) => ({
+
+		const cfgFileAllLines = fileContents.replace(/\r/g, '').replace(/\s+/g, ' ').split('\n').filter((line) => line.replace(/[^\w\d]/g, '').length > 1).map((item1) => item1.replace(/^\s+/, '').replace(/\s+$/, ''));
+
+		const directives: i_globdirective[] = cfgFileAllLines.filter((item1) => !item1.startsWith('#')).map((item1) => ({
 			globRoot: path.dirname(item).replace(/[\\\/]+/, '/'),
-			pattern: item2.replace(/[\\\/]+/, '/').replace(/^\//, './')
+			pattern: item1.replace(/[\\\/]+/, '/').replace(/^\//, './')
 		}));
 
 		return {
@@ -144,7 +146,7 @@ const noassetsDirective: Array <i_noassets> = globSync('./**/.noassets').map((it
 		}
 	}
 
-});
+}).filter((item) => item.directives.length);
 
 const queue = assetFiles.map(async (asset) => {
 
@@ -156,29 +158,29 @@ const queue = assetFiles.map(async (asset) => {
 		if (!patchMatch) continue;
 		
 		//	figure out if we have to actually skip this asset, depending on .noassets file contents
-		if (!item.directives.length || item.directives.find((item) => {
+		if (!item.directives.length || item.directives.find((item1) => {
 
 			//	create path relative to .noassets file, so that globs will work as intended
-			const relativePath = asset.source.substring(item.globRoot.length + 1);
+			const relativePath = asset.source.substring(item1.globRoot.length + 1);
 
 			//	convert a glob like "some_folder/dir" to "some_folder/dir/*"
-			if (!item.pattern.endsWith('*')) {
+			if (!item1.pattern.endsWith('*')) {
 				//	create relative path
-				const checkIfDir = path.join(item.globRoot, item.pattern);
+				const checkIfDir = path.join(item1.globRoot, item1.pattern);
 				//	nevernester's hell :)
 				if (fs.existsSync(checkIfDir)) {
 					//	if path exists, check if it's a dir
 					if (fs.statSync(checkIfDir).isDirectory()) {
 						//	it' a dir. ensure glob has a slash before asterisk
-						if (!item.pattern.endsWith('/')) item.pattern += '/';
+						if (!item1.pattern.endsWith('/')) item1.pattern += '/';
 						//	any questions?
-						item.pattern += '*';
+						item1.pattern += '*';
 					}
 				}
 			}
 
 			//	if glob matches - asset is skipped
-			return minimatch(relativePath, item.pattern, {
+			return minimatch(relativePath, item1.pattern, {
 				matchBase: true,
 				nobrace: true,
 				noext: true,
