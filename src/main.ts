@@ -150,34 +150,32 @@ const noassetsDirective: Array <i_noassets> = globSync('./**/.noassets').map((it
 
 const queue = assetFiles.map(async (asset) => {
 
-	for (const item of noassetsDirective) {
+	if (noassetsDirective.some((item) => {
 
 		//	check if this .noassets has power over this asset
 		const patchMatch = asset.source.startsWith(path.normalize(item.globPath.replace(/[\/\\].noassets$/, '/')));
 		//	if not, skip it
-		if (!patchMatch) continue;
-		
-		//	figure out if we have to actually skip this asset, depending on .noassets file contents
-		if (!item.directives.length || item.directives.find((item1) => {
+		if (!patchMatch) return false;
+
+		return item.directives.some((item1) => {
 
 			//	create path relative to .noassets file, so that globs will work as intended
 			const relativePath = asset.source.substring(item1.globRoot.length + 1);
 
-			//	convert a glob like "some_folder/dir" to "some_folder/dir/*"
-			if (!item1.pattern.endsWith('*')) {
+			if (!item1.pattern.endsWith('*')) (() => {
 				//	create relative path
 				const checkIfDir = path.join(item1.globRoot, item1.pattern);
-				//	nevernester's hell :)
-				if (fs.existsSync(checkIfDir)) {
-					//	if path exists, check if it's a dir
-					if (fs.statSync(checkIfDir).isDirectory()) {
-						//	it' a dir. ensure glob has a slash before asterisk
-						if (!item1.pattern.endsWith('/')) item1.pattern += '/';
-						//	any questions?
-						item1.pattern += '*';
-					}
-				}
-			}
+				
+				if (!fs.existsSync(checkIfDir)) return;
+
+				//	if path exists, check if it's a dir
+				if (!fs.statSync(checkIfDir).isDirectory()) return;
+
+				//	it' a dir. ensure glob has a slash before asterisk
+				item1.pattern += item1.pattern.endsWith('/') ? '*' : '/*';
+
+			})();
+
 
 			//	if glob matches - asset is skipped
 			return minimatch(relativePath, item1.pattern, {
@@ -187,10 +185,11 @@ const queue = assetFiles.map(async (asset) => {
 				nocase: true
 			});
 
-		})) {
-			if (flags.verbose) console.log(' Skipped by the ".noassets" :', asset.source);
-			return;
-		}
+		});
+
+	})) {
+		if (flags.verbose) console.log(' Skipped by the ".noassets" :', asset.source);
+		return;
 	}
 
 	let isCacheValid = false;
