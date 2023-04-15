@@ -126,7 +126,7 @@ const noassetsDirective: Array <i_noassets> = globSync('./**/.noassets').map((it
 		
 		const fileContents = fs.readFileSync(item).toString();
 
-		const cfgFileAllLines = fileContents.replace(/\r/g, '').replace(/\s+/g, ' ').split('\n').filter((line) => line.replace(/[^\w\d]/g, '').length > 1).map((item1) => item1.replace(/^\s+/, '').replace(/\s+$/, ''));
+		const cfgFileAllLines = fileContents.split('\n').filter((line) => line.replace(/[^\w\d]/g, '').length > 1).map((item1) => item1.replace(/^[\s\r]+/, '').replace(/[\s\r]+$/, ''));
 
 		const directives: i_globdirective[] = cfgFileAllLines.filter((item1) => !item1.startsWith('#')).map((item1) => ({
 			globRoot: path.dirname(item).replace(/[\\\/]+/, '/'),

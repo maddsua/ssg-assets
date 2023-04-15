@@ -14,4 +14,10 @@ CLI usage example: `ssga assets/:public/`
 
 ### Skip directories:
 
-Add `.noassets` to a directory to skip it's content. Specify glob patterns if wanna.
+Add `.noassets` to a directory to skip it's content. Syntax is like that:
+
+```ini
+# comment
+assets/svgs
+*.mp4
+```
