@@ -13,8 +13,8 @@
 		"url": "git+https://github.com/maddsua/nodebuild.git"
 	},
 	"bin": {
-		"ssgassets": "./dist/main.js",
-		"ssga": "./dist/main.js"
+		"ssgassets": "./dist/cli/main.js",
+		"ssga": "./dist/cli/main.js"
 	},
 	"devDependencies": {
 		"@types/node": "^18.14.6",
@@ -24,6 +24,8 @@
 		"chalk": "^5.2.0",
 		"glob": "^9.3.0",
 		"minimatch": "^7.4.2",
+		"preact": "^10.13.2",
+		"react": "^18.2.0",
 		"sharp": "^0.31.3"
 	},
 	"scripts": {

@@ -10,7 +10,8 @@
 		"outDir": "dist/",
 		"moduleResolution": "node",
 		"allowSyntheticDefaultImports": true,
-		"declaration": false,
-		"sourceMap": false
+		"declaration": true,
+		"sourceMap": false,
+		"jsx": "preserve"
 	}
 }
