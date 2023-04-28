@@ -8,9 +8,16 @@ For now, asset cache is stored on git, which is not ideal. Still thinking about 
 CLI usage example: `ssga assets/:public/`
 
 ### Flags:
+
 - `-n` or `--no-cache` - Don't use caching
+
 - `-v` or `--verbose` - Report everything!
+
 - `-c` or `--copy` - Don't convert anything, just copy
+
+- `--formats=[list]` - Specify image formats to convert to.
+
+	Valid options are: `original`, `webp`, `avif`
 
 ### Skip directories:
 

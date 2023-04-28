@@ -31,19 +31,43 @@ let pathsInput: string = '';
 const flags = {
 	verbose: false,
 	nocache: false,
-	fmtAvif: true,
-	fmtWebp: true,
 	justCopy: false
 };
 
+const formatsArgPrefix = '--formats=';
+const knownFormats = [
+	'original',
+	'webp',
+	'avif'
+];
+let useFormats = knownFormats;
+
+const loadFormats = (input: string) => {
+
+	const options = input.slice(formatsArgPrefix.length).split(',').filter((item) => item.length);
+	if (!options.length) {
+		console.error(chalk.red(' Provided formats list is invalid '));
+		console.warn('Use this syntax:', chalk.green(`  ${formatsArgPrefix}original,webp... `))
+		process.exit(1);
+	}
+
+	options.forEach((item) => knownFormats.some((item1) => item === item1) ? undefined : console.warn(chalk.yellow('Unknown format option:'), item));
+	if (!options.filter((item) => knownFormats.some((item1) => item === item1)).length) {
+		console.error(chalk.red('No supported formats specified. Aborting.'));
+		process.exit(1);
+	}
+
+	useFormats = options;
+}
+
 process.argv.slice(2).forEach((arg) => {
+
 	if (/^.+\:.+$/.test(arg)) pathsInput = arg;
 	else if (arg === '-v' || arg === '--verbose') flags.verbose = true;
 	else if (arg === '-n' || arg === '--no-cache') flags.nocache = true;
-	else if (arg === '--no-avif') flags.fmtAvif = false;
-	else if (arg === '--no-webp') flags.fmtWebp = false;
 	else if (arg === '-c' || arg === '--copy') flags.justCopy = true;
-})
+	else if (arg.startsWith(formatsArgPrefix)) (loadFormats(arg));
+});
 
 if (!pathsInput.length) {
 	console.error('Run this script like this: node assets.mjs [input dir]:[output dir]')
@@ -266,10 +290,14 @@ const queue = assetFiles.map(async (asset) => {
 
 		try {
 		
-			if (flags.fmtAvif) await processAndCache(asset.destNoExt, 'avif');
-			if (flags.fmtWebp) await processAndCache(asset.destNoExt, 'webp');
+			if (useFormats.some((item) => item === 'avif'))
+				await processAndCache(asset.destNoExt, 'avif');
+
+			if (useFormats.some((item) => item === 'webp'))
+				await processAndCache(asset.destNoExt, 'webp');
 	
-			await processAndCache(asset.destNoExt, /\.png$/.test(asset.name) ? 'png' : 'jpg');
+			if (useFormats.some((item) => item === 'original'))
+				await processAndCache(asset.destNoExt, /\.png$/.test(asset.name) ? 'png' : 'jpg');
 	
 		} catch (error) {
 			console.error(chalk.black.bgRed(' Sharp error on: '), asset.source);
