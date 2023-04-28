@@ -6,7 +6,8 @@
 		"build",
 		"assets"
 	],
-	"main": "dist/main.js",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
 	"type": "module",
 	"repository": {
 		"type": "git",
@@ -24,8 +25,6 @@
 		"chalk": "^5.2.0",
 		"glob": "^9.3.0",
 		"minimatch": "^7.4.2",
-		"preact": "^10.13.2",
-		"react": "^18.2.0",
 		"sharp": "^0.31.3"
 	},
 	"scripts": {
