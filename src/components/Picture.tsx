@@ -15,7 +15,7 @@ export default ({src, alt, classlist, lazy, sizes, formats, draggable}: Props) =
 	const size = decideSize(sizes);
 
 	return (
-		<picture class={ classlist }>
+		<picture className={classlist}>
 			{ ((typeof formats === 'string') ? formats.replace('\s','').split(',') : formats)?.map((format: string) => (
 				<source srcset={ (src.replace(/\.[\w\d]+/, '.') + format) } type={ `image/${format}` } />
 			)) }
