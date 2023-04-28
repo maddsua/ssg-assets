@@ -1,6 +1,6 @@
 {
 	"name": "@maddsua/ssg-assets",
-	"version": "1.4.1",
+	"version": "1.4.2",
 	"description": "Converts media assets for your static website",
 	"keywords": [
 		"build",
