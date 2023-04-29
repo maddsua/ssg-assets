@@ -19,12 +19,13 @@ CLI usage example: `ssga assets/:public/`
 
 	Valid options are: `original`, `webp`, `avif`
 
-### Skip directories:
+### Skip over files:
 
-Add `.noassets` to a directory to skip it's content. Syntax is like that:
+Add `.noassets` to a directory to skip some of the content. Syntax is like that:
 
 ```ini
-# comment
+# skip everything inside the "svgs" subdirectory
 assets/svgs
+# and all mp4 files too
 *.mp4
 ```
