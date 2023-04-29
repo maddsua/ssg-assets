@@ -7,7 +7,7 @@ For now, asset cache is stored on git, which is not ideal. Still thinking about 
 
 CLI usage example: `ssga assets/:public/`
 
-### Flags:
+## Flags:
 
 - `-n` or `--no-cache` - Don't use caching
 
@@ -19,7 +19,7 @@ CLI usage example: `ssga assets/:public/`
 
 	Valid options are: `original`, `webp`, `avif`
 
-### Skip over files:
+## Skip over files:
 
 Add `.noassets` to a directory to skip some of the content. Syntax is like that:
 
@@ -29,3 +29,23 @@ assets/svgs
 # and all mp4 files too
 *.mp4
 ```
+
+## React components
+
+They are meant to be used with either Astro or NextJS. You'll need to add these lines to the config:
+
+### Astro:
+```js
+vite: {
+	ssr: {
+		noExternal: '@maddsua/ssg-assets'
+	}
+}
+```
+
+### NextJS:
+```js
+transpilePackages: ['@maddsua/ssg-assets']
+```
+
+Should work okay after that.
