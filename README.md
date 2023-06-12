@@ -37,9 +37,9 @@ They are meant to be used with either Astro or NextJS. You'll need to add these 
 ### Astro:
 ```js
 vite: {
-	ssr: {
-		noExternal: '@maddsua/ssg-assets'
-	}
+    ssr: {
+        noExternal: '@maddsua/ssg-assets'
+    }
 }
 ```
 
