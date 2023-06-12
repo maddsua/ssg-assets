@@ -10,6 +10,9 @@ interface Props {
 	sizes?: number | number[];
 }
 
+/**
+ * Advanced \<picture\> component
+ */
 export default ({src, alt, classlist, lazy, sizes, formats, draggable}: Props) => {
 
 	return (

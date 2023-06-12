@@ -26,6 +26,9 @@ interface Props {
 	draggable?: boolean;
 }
 
+/**
+ * Advanced \<img\> component
+ */
 export default ({src, alt, classlist, lazy, sizes, draggable}: Props) => {
 
 	const size = decideSize(sizes);
