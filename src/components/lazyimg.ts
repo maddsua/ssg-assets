@@ -6,22 +6,24 @@ export const init = (root?: HTMLElement | Element) => {
 
 	const revealAnimationDelay = 500;
 
-	(root || document).querySelectorAll<HTMLImageElement>('img[loading="lazy"]').forEach((lazy) => {
-		if (lazy.complete === false) {
-			lazy.onload = () => {
+	(root || document).querySelectorAll<HTMLImageElement>('img[loading="lazy"]').forEach((image) => {
+
+		if (image.complete) return;
+
+		image.style.transition = `opacity ${revealAnimationDelay}ms ease`;
+		image.style.opacity = '0';
+
+		image.onload = () => {
+			setTimeout(() => {
+				image.style.opacity = '1';
+
 				setTimeout(() => {
-					lazy.style.opacity = '1';
+					image.style.transition = '';
+					image.style.opacity = '';
+				}, 500);
 
-					setTimeout(() => {
-						lazy.style.transition = '';
-						lazy.style.opacity = '';
-					}, 500);
-
-				}, 100);
-			};
-			lazy.style.transition = `opacity ${revealAnimationDelay}ms ease`;
-			lazy.style.opacity = '0';
-		}
+			}, 100);
+		};
 	});
 };
 
