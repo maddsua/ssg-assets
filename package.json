@@ -1,6 +1,6 @@
 {
 	"name": "@maddsua/ssg-assets",
-	"version": "1.4.4",
+	"version": "1.4.5",
 	"description": "Converts media assets for your static website",
 	"keywords": [
 		"build",
@@ -18,18 +18,17 @@
 		"ssga": "./dist/cli/main.js"
 	},
 	"devDependencies": {
-		"@types/node": "^18.14.6",
-		"@types/sharp": "^0.31.1"
+		"@types/node": "^18.16.17"
 	},
 	"dependencies": {
 		"chalk": "^5.2.0",
-		"glob": "^9.3.0",
-		"minimatch": "^7.4.2",
-		"sharp": "^0.31.3"
+		"glob": "^10.2.7",
+		"minimatch": "^9.0.1",
+		"sharp": "^0.32.1"
 	},
 	"scripts": {
 		"build": "tsc",
 		"dev": "tsc --watch",
-		"test": "node dist/main.js tests/assets/:tests/result/"
+		"test": "node dist/cli/main.js tests/assets/:tests/result/"
 	}
 }

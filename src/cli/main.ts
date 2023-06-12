@@ -7,7 +7,7 @@ import { createHash } from "crypto";
 import sharp from 'sharp';
 import chalk from 'chalk';
 import { globSync } from 'glob';
-import minimatch from "minimatch";
+import { minimatch } from 'minimatch';
 
 interface i_cache {
 	fname: string,
