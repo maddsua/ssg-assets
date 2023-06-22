@@ -1,0 +1,50 @@
+---
+export interface Props {
+	src: string;
+	alt: string;
+	classlist?: string;
+	lazy?: boolean;
+	sizes?: number | number[];
+	draggable?: boolean;
+}
+const { src, alt, classlist, lazy, sizes, draggable } = Astro.props;
+
+const size = sizes ? (typeof sizes === 'number' ? ({
+	width: sizes,
+	height: sizes
+}) : ({
+	width: sizes[0],
+	height: sizes?.length >= 2 ? sizes[1] : sizes[0]
+})) : ({
+	width: undefined,
+	height: undefined
+});
+---
+
+<img class={classlist} src={src} alt={alt} width={size.width} height={size.height} draggable={ draggable === true ? 'true' : 'false' } loading={ lazy !== false ? 'lazy' : undefined } data-maddsua-astro-image="" />
+
+<script>
+
+	(() => {
+		document.querySelectorAll<HTMLImageElement>('img[loading="lazy"][data-maddsua-astro-image]').forEach(image => {
+
+			if (image.complete) return;
+
+			image.style.transition = `opacity 500ms ease`;
+			image.style.opacity = '0';
+
+			image.onload = () => {
+				setTimeout(() => {
+					image.style.opacity = '1';
+
+					setTimeout(() => {
+						image.style.transition = '';
+						image.style.opacity = '';
+					}, 500);
+
+				}, 100);
+			};
+		});
+	})()
+
+</script>

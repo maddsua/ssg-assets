@@ -13,5 +13,11 @@
 		"declaration": true,
 		"sourceMap": false,
 		"jsx": "preserve"
-	}
+	},
+	"exclude": [
+		"node_modules",
+		"dist",
+		"components",
+		"astro.d.ts"
+	]
 }

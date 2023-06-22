@@ -1,0 +1,21 @@
+---
+import Img from './Img.astro';
+
+export interface Props {
+	src: string;
+	alt: string;
+	classlist?: string;
+	formats?: string | string[];
+	draggable?: boolean;
+	lazy?: boolean;
+	sizes?: number | number[];
+}
+const { src, alt, classlist, lazy, sizes, formats, draggable } = Astro.props;
+---
+
+<picture class={classlist}>
+	{ ((typeof formats === 'string') ? formats.replace('\s','').split(',') : formats)?.map(format => (
+		<source srcset={ (src.replace(/\.[\w\d]+/, '.') + format) } type={ `image/${format}` } />
+	)) }
+	<Img src={src} alt={alt} draggable={draggable} lazy={lazy} sizes={sizes} />
+</picture>

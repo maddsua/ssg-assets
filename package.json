@@ -1,14 +1,13 @@
 {
+	"private": false,
 	"name": "@maddsua/ssg-assets",
-	"version": "1.4.5",
+	"version": "1.5.0",
 	"description": "Converts media assets for your static website",
 	"keywords": [
 		"build",
-		"assets"
+		"assets",
+		"astro"
 	],
-	"main": "dist/index.js",
-	"types": "dist/index.d.ts",
-	"type": "module",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/maddsua/nodebuild.git"
@@ -17,8 +16,30 @@
 		"ssgassets": "./dist/cli/main.js",
 		"ssga": "./dist/cli/main.js"
 	},
-	"devDependencies": {
-		"@types/node": "^18.16.17"
+	"type": "module",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"default": "./dist/index.js",
+			"types": "./dist/index.d.js"
+		},
+		"./astro": {
+			"default": "./components/astro/index.js",
+			"types": "./components/astro/index.d.ts"
+		}
+	},
+	"files": [
+		"dist",
+		"package.json",
+		"package-lock.json",
+		"components",
+		"astro.d.ts"
+	],
+	"scripts": {
+		"build": "tsc",
+		"dev": "tsc --watch",
+		"test": "node dist/cli/main.js tests/assets/:tests/result/"
 	},
 	"dependencies": {
 		"chalk": "^5.2.0",
@@ -26,9 +47,10 @@
 		"minimatch": "^9.0.1",
 		"sharp": "^0.32.1"
 	},
-	"scripts": {
-		"build": "tsc",
-		"dev": "tsc --watch",
-		"test": "node dist/cli/main.js tests/assets/:tests/result/"
+	"devDependencies": {
+		"@types/node": "^18.16.17",
+		"astro": "^2.7.0",
+		"preact": "^10.15.1",
+		"vue": "^3.3.4"
 	}
 }
