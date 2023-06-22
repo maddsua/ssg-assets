@@ -1,2 +1,7 @@
-export { default as Img } from "./Img.vue";
-export { default as Picture } from "./Picture.vue";
+import Img from "./Img.vue";
+import Picture from "./Picture.vue";
+
+export {
+	Img,
+	Picture
+}

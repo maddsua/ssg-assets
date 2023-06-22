@@ -2,5 +2,10 @@
 //	just ignore it's presense.
 
 //@ts-nocheck
-export { default as Img } from "./components/vue/Img.vue";
-export { default as Picture } from "./components/vue/Picture.vue";
+import Img from "./components/vue/Img.vue";
+import Picture from "./components/vue/Picture.vue";
+
+export {
+	Img,
+	Picture
+}
