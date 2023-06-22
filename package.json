@@ -1,7 +1,7 @@
 {
 	"private": false,
 	"name": "@maddsua/ssg-assets",
-	"version": "1.5.0",
+	"version": "1.5.1",
 	"description": "Converts media assets for your static website",
 	"keywords": [
 		"build",
@@ -10,7 +10,7 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/maddsua/nodebuild.git"
+		"url": "git+https://github.com/maddsua/ssg-assets.git"
 	},
 	"bin": {
 		"ssgassets": "./dist/cli/main.js",
