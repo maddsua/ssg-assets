@@ -1,12 +1,14 @@
 {
 	"private": false,
 	"name": "@maddsua/ssg-assets",
-	"version": "1.5.1",
-	"description": "Converts media assets for your static website",
+	"version": "1.5.2",
+	"description": "Converts media assets for your static website and provides handy components fro React, Astro and Vue",
 	"keywords": [
 		"build",
 		"assets",
-		"astro"
+		"component",
+		"astro",
+		"vue"
 	],
 	"repository": {
 		"type": "git",
@@ -38,7 +40,7 @@
 		"package.json",
 		"package-lock.json",
 		"components",
-		"astro.d.ts"
+		"*.d.ts"
 	],
 	"scripts": {
 		"build": "tsc",
