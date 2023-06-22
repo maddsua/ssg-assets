@@ -27,6 +27,10 @@
 		"./astro": {
 			"default": "./components/astro/index.js",
 			"types": "./components/astro/index.d.ts"
+		},
+		"./vue": {
+			"default": "./components/vue/index.js",
+			"types": "./components/vue/index.d.ts"
 		}
 	},
 	"files": [

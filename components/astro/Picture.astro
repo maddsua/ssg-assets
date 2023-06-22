@@ -1,4 +1,5 @@
 ---
+//@ts-ignore
 import Img from './Img.astro';
 
 export interface Props {
@@ -13,7 +14,7 @@ export interface Props {
 const { src, alt, classlist, lazy, sizes, formats, draggable } = Astro.props;
 ---
 
-<picture class={classlist}>
+<picture class={classlist} data-maddsua-component="astro:ssgassets:picture">
 	{ ((typeof formats === 'string') ? formats.replace('\s','').split(',') : formats)?.map(format => (
 		<source srcset={ (src.replace(/\.[\w\d]+/, '.') + format) } type={ `image/${format}` } />
 	)) }

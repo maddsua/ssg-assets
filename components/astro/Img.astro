@@ -21,12 +21,12 @@ const size = sizes ? (typeof sizes === 'number' ? ({
 });
 ---
 
-<img class={classlist} src={src} alt={alt} width={size.width} height={size.height} draggable={ draggable === true ? 'true' : 'false' } loading={ lazy !== false ? 'lazy' : undefined } data-maddsua-astro-image="" />
+<img class={classlist} src={src} alt={alt} width={size.width} height={size.height} draggable={ draggable === true ? 'true' : 'false' } loading={ lazy !== false ? 'lazy' : undefined } data-maddsua-component="astro:ssgassets:img" />
 
 <script>
 
 	(() => {
-		document.querySelectorAll<HTMLImageElement>('img[loading="lazy"][data-maddsua-astro-image]').forEach(image => {
+		document.querySelectorAll<HTMLImageElement>('img[loading="lazy"][data-maddsua-component]').forEach(image => {
 
 			if (image.complete) return;
 
