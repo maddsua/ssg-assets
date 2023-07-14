@@ -30,11 +30,20 @@ assets/svgs
 *.mp4
 ```
 
-## React components
+# Frontend components
 
-They are meant to be used with either Astro or NextJS. You'll need to add these lines to the config:
+You can import the Img and Picture components for React, Astro and Vue. It's just the same HTML elements, but a bit more smart.
+
+## Import paths:
 
 ### Astro:
+
+```js
+import { Picture } from '@maddsua/ssg-assets/astro';
+```
+
+Add this to your `astro.config`:
+
 ```js
 vite: {
     ssr: {
@@ -43,9 +52,20 @@ vite: {
 }
 ```
 
-### NextJS:
+### React (Next):
+
+```js
+import { Picture } from '@maddsua/ssg-assets/react';
+```
+
+Add this to your next config:
+
 ```js
 transpilePackages: ['@maddsua/ssg-assets']
 ```
 
-Should work okay after that.
+### Vue:
+
+```js
+import { Picture } from '@maddsua/ssg-assets/vue';
+```
