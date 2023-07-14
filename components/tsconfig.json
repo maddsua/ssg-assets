@@ -6,18 +6,10 @@
 		"typeRoots": [
 			"node_modules/@types"
 		],
-		"rootDir": "src/",
-		"outDir": "dist/",
+		"rootDir": "./",
+		"noEmit": true,
 		"moduleResolution": "node",
 		"allowSyntheticDefaultImports": true,
-		"declaration": true,
-		"sourceMap": false,
 		"jsx": "preserve"
-	},
-	"exclude": [
-		"node_modules",
-		"dist",
-		"components",
-		"*.d.ts"
-	]
+	}
 }
