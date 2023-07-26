@@ -6,11 +6,11 @@ import { Props, mapSources } from '../components_shared';
  */
 export default ({ src, alt, classlist, lazy, sizes, formats, draggable, adaptiveModes }: Props) => {
 
-	const useSources = mapSources(src, formats, adaptiveModes);
+	const sources = mapSources(src, formats, adaptiveModes);
 
 	return (
 		<picture className={classlist}>
-			{ useSources.map(item => (
+			{ sources.map(item => (
 				<source srcset={item.source} type={item.type} media={item.media as string | undefined} />
 			)) }
 			<Img src={src} alt={alt} draggable={draggable} lazy={lazy} sizes={sizes} />
