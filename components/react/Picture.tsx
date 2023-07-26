@@ -1,24 +1,17 @@
 import Img from "./Img.jsx";
-
-interface Props {
-	src: string;
-	alt: string;
-	classlist?: string;
-	formats?: string | string[];
-	draggable?: boolean;
-	lazy?: boolean;
-	sizes?: number | number[];
-}
+import { Props, mapSources } from '../components_shared';
 
 /**
  * Advanced \<picture\> component
  */
-export default ({src, alt, classlist, lazy, sizes, formats, draggable}: Props) => {
+export default ({ src, alt, classlist, lazy, sizes, formats, draggable, adaptiveModes }: Props) => {
+
+	const useSources = mapSources(src, formats, adaptiveModes);
 
 	return (
 		<picture className={classlist}>
-			{ ((typeof formats === 'string') ? formats.replace('\s','').split(',') : formats)?.map((format, index) => (
-				<source key={`src_${index}`} srcSet={ (src.replace(/\.[\w\d]+/, '.') + format) } type={ `image/${format}` } />
+			{ useSources.map(item => (
+				<source srcset={item.source} type={item.type} media={item.media as string | undefined} />
 			)) }
 			<Img src={src} alt={alt} draggable={draggable} lazy={lazy} sizes={sizes} />
 		</picture>
