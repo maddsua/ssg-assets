@@ -49,7 +49,8 @@
 	"scripts": {
 		"build": "tsc",
 		"dev": "tsc --watch",
-		"test": "node dist/main.js tests/assets/:tests/result/"
+		"test": "node dist/main.js tests/assets/:tests/result/",
+		"test_components": "cd components && tsc --noemit"
 	},
 	"dependencies": {
 		"chalk": "^5.2.0",
