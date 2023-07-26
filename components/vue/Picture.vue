@@ -1,10 +1,7 @@
 <script setup lang="ts">
 
 import Img from './Img.vue';
-
-/**
- * Supported image formats are: avif, webp, png, jpg
- */
+import { supportedFormats } from '../config';
 
 interface AdaptiveMode {
 	media: string;
@@ -23,7 +20,6 @@ interface Props {
 }
 const { src, alt, classlist, lazy, sizes, formats, draggable, adaptiveModes } = defineProps<Props>();
 
-const supportedFormats = [ 'avif', 'webp', 'png', 'jpg' ];
 const requestedFormats = formats ? (typeof formats === 'string') ? formats.replace('\s','').split(',') : formats : [];
 const imageAltFormats = supportedFormats.filter(format => requestedFormats.some(item => item.toLowerCase() === format));
 
