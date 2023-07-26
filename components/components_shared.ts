@@ -29,12 +29,11 @@ export const mapSources = (src: Props['src'], formats: Props['formats'], adaptiv
 		media: null as string | null
 	}));
 	
-	const adaptiveSources = adaptiveModes?.map(sourceMedia => sources.map(sourceFormats => {
-		const { source } = sourceFormats;
-		sourceFormats.media = `(${sourceMedia.media})`;
-		sourceFormats.source = source.replace(/\..*$/, '') + sourceMedia.modifier + source.match(/\..*$/)?.[0];
-		return sourceFormats;
-	})).flat(2);
+	const adaptiveSources = adaptiveModes?.map(item => sources.map(item1 => ({
+		media: `(${item.media})`,
+		source: item1.source.replace(/\..*$/, '') + item.modifier + item1.source.match(/\..*$/)?.[0],
+		type: item1.type
+	}))).flat(1);
 	
 	return adaptiveSources?.length ? adaptiveSources : sources || [];
 }
