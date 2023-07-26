@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import Img from './Img.vue';
-import { Props, mapSources } from '../config';
+import { Props, mapSources } from '../components_shared';
 
 const { src, alt, classlist, lazy, sizes, formats, draggable, adaptiveModes } = defineProps<Props>();
 const useSources = mapSources(src, formats, adaptiveModes);
