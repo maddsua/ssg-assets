@@ -1,22 +1,14 @@
 ---
-//@ts-ignore
 import Img from './Img.astro';
+import { Props, mapSources } from '../config';
 
-export interface Props {
-	src: string;
-	alt: string;
-	classlist?: string;
-	formats?: string | string[];
-	draggable?: boolean;
-	lazy?: boolean;
-	sizes?: number | number[];
-}
-const { src, alt, classlist, lazy, sizes, formats, draggable } = Astro.props;
+const { src, alt, classlist, lazy, sizes, formats, draggable, adaptiveModes } = Astro.props;
+const useSources = mapSources(src, formats, adaptiveModes);
 ---
 
 <picture class={classlist} data-maddsua-component="astro:ssgassets:picture">
-	{ ((typeof formats === 'string') ? formats.replace('\s','').split(',') : formats)?.map(format => (
-		<source srcset={ (src.replace(/\.[\w\d]+/, '.') + format) } type={ `image/${format}` } />
+	{ useSources?.map(item => (
+		<source srcset={item.source} type={item.type} media={item.media} />
 	)) }
 	<Img src={src} alt={alt} draggable={draggable} lazy={lazy} sizes={sizes} />
 </picture>
