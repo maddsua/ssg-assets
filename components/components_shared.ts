@@ -2,7 +2,7 @@ import { Prop } from "vue";
 
 export interface AdaptiveMode {
 	media: string;
-	modifier: string;
+	modifier: string | null | undefined;
 }
 
 export interface Props {
@@ -29,10 +29,10 @@ export const mapSources = (src: Props['src'], formats: Props['formats'], adaptiv
 		media: null as string | null
 	}));
 	
-	const adaptiveSources = adaptiveModes?.map(item => sources.map(item1 => ({
-		media: `(${item.media})`,
-		source: item1.source.replace(/\..*$/, '') + item.modifier + item1.source.match(/\..*$/)?.[0],
-		type: item1.type
+	const adaptiveSources = adaptiveModes?.map(i_media => sources.map(i_src => ({
+		media: `(${i_media.media})`,
+		source: i_media.modifier ? i_src.source.replace(/\..*$/, '') + i_media.modifier + i_src.source.match(/\..*$/)?.[0] : i_src.source,
+		type: i_src.type
 	}))).flat(1);
 	
 	return adaptiveSources?.length ? adaptiveSources : sources || [];
