@@ -33,5 +33,5 @@ export default ({src, alt, classlist, lazy, sizes, draggable}: Props) => {
 
 	const size = decideSize(sizes);
 
-	return <img className={classlist} src={src} alt={alt} width={size.width} height={size.height} draggable={ draggable === true ? 'true' : 'false' } loading={ lazy !== false ? 'lazy' : undefined } />
+	return <img className={classlist} src={src} alt={alt} width={size.width} height={size.height} draggable={draggable} loading={ lazy !== false ? 'lazy' : undefined } />
 }

@@ -1,4 +1,4 @@
-//@ts-ignore
+// @ts-ignore
 export { default as Img } from "./Img.astro";
-//@ts-ignore
+// @ts-ignore
 export { default as Picture } from "./Picture.astro";

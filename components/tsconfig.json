@@ -8,8 +8,10 @@
 		],
 		"rootDir": "./",
 		"noEmit": true,
+		"strict": true,
 		"moduleResolution": "node",
 		"allowSyntheticDefaultImports": true,
-		"jsx": "preserve"
+		"jsx": "react-jsx",
+		"jsxImportSource": "preact"
 	}
 }
