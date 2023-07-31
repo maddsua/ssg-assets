@@ -26,14 +26,12 @@ import { AssetsCacheIndex } from './content/cache';
 
 	const assets = resolveAssets(config);
 
-	console.log(assets);
-
-	const assetsMap = new Map<string, AssetsListItem>(assets.map(item => [item.input, item]));
+	const assetsMap = new Map<string, AssetsListItem>(assets.map(item => [item.slug, item]));
 	const cacheIndex = new AssetsCacheIndex(config.inputDir, config.verbose, config.silent);
 	const cacheDiff = await cacheIndex.diff(assets);
 
 	//	convert changed assets
-	/*[cacheDiff.added, cacheDiff.changed].flat().forEach(item => {
+	[cacheDiff.added, cacheDiff.changed].flat().forEach(item => {
 
 		const asset = assetsMap.get(item);
 		const destdir = path.dirname(asset.output);
@@ -42,11 +40,11 @@ import { AssetsCacheIndex } from './content/cache';
 			fs.mkdirSync(destdir, { recursive: true });
 
 		//console.log(asset);
-		//fs.copyFileSync(asset.input, asset.output);
+		fs.copyFileSync(asset.input, asset.output);
 	});
 
 	//	copy cache-hit files
-	cacheDiff.hit.forEach(item => {
+	/*cacheDiff.hit.forEach(item => {
 
 		const asset = assetsMap.get(item);
 		const destdir = path.dirname(asset.output);
