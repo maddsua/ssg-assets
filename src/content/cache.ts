@@ -68,6 +68,11 @@ export class AssetsCacheIndex {
 			const cacheFileContent = readFileSync(this.cacheFile).toString();
 			const cacheIndex = JSON.parse(cacheFileContent) as CacheIndex;
 
+			if (cacheIndex.version != indexVersion) {
+				if (this.verbose) console.warn(chalk.yellow(`⚠  Cache index is reset`));
+				return;
+			}
+
 			cacheIndex.entries.forEach(item => this.data.set(item.slugHash, item));
 
 		} catch (error) {
