@@ -24,6 +24,10 @@ interface Argument {
 }
 
 const cliArguments: Record<string, Argument> = {
+	config: {
+		pfx: ['--config'],
+		actions: ['get_value']
+	},
 	verbose: {
 		pfx: ['--verbose'],
 		actions: ['impl_bool']
@@ -52,11 +56,59 @@ const cliArguments: Record<string, Argument> = {
 		pfx: ['--output'],
 		actions: ['get_value']
 	},
+
 };
 
 export const loadConfig = () => {
 
-	//	load project global config
+	//	load options from cli argumets
+	const optionsMap = Object.entries(cliArguments).map(item => item[1].pfx.map(pfx => [pfx, item[0]])).flat();
+	process.argv.slice(2).forEach(arg => {
+
+		const optionId = optionsMap.find(item => arg.startsWith(item[0]));
+		if (!optionId) {
+			console.log(chalk.yellow(`⚠  Unknown option '${arg}'`));
+			return;
+		}
+
+		const configEntry = optionId[1];
+
+		const option = cliArguments[configEntry];
+		if (!option) {
+			console.log(chalk.yellow(`⚠  Unmatched option '${arg}'`));
+			return;
+		}
+
+		let temp: any = undefined;
+		for (let action of option.actions) {
+
+			switch (action) {
+
+				case 'impl_bool': {
+					temp = true;
+				} break;
+
+				case 'get_value': {
+					temp = arg.split('=')?.at(1);
+					if (!temp) {
+						console.log(chalk.yellow(`⚠  Empty option '${arg}'`));
+						return;
+					}
+				} break;
+
+				case 'to_string_array': {
+					temp = temp.split(',');
+				} break;
+			
+				default:
+					break;
+			}
+		}
+
+		configEntries[configEntry] = temp;
+	});
+
+	//	load project config file
 	try {
 		const configFileContents = readFileSync(path.join(cwd(), globalConfigFile));
 		const importedConfig = JSON.parse(configFileContents.toString());
@@ -80,62 +132,6 @@ export const loadConfig = () => {
 		//	oops, no global config file. ok, it's fine
 	}
 	
-	//	load options from cli argumets
-	try {
-
-		const optionsMap = Object.entries(cliArguments).map(item => item[1].pfx.map(pfx => [pfx, item[0]])).flat();
-
-
-		console.log(optionsMap);
-
-		process.argv.slice(2).forEach(arg => {
-
-			const optionId = optionsMap.find(item => arg.startsWith(item[0]));
-			if (!optionId) {
-				console.log(chalk.yellow(`⚠  Unknown option '${arg}'`));
-				return;
-			}
-
-			const configEntry = optionId[1];
-
-			const option = cliArguments[configEntry];
-			if (!option) {
-				console.log(chalk.yellow(`⚠  Unmatched option '${arg}'`));
-				return;
-			}
-
-			let temp: any = undefined;
-			for (let action of option.actions) {
-
-				switch (action) {
-	
-					case 'impl_bool': {
-						temp = true;
-					} break;
-	
-					case 'get_value': {
-						temp = arg.split('=')?.at(1);
-						if (!temp) {
-							console.log(chalk.yellow(`⚠  Empty option '${arg}'`));
-							return;
-						}
-					} break;
-	
-					case 'to_string_array': {
-						temp = temp.split(',');
-					} break;
-				
-					default:
-						break;
-				}
-			}
-
-			configEntries[configEntry] = temp;
-		});
-		
-	} catch (error) {
-		
-	}
 
 	console.log(configEntries);
 
