@@ -11,7 +11,8 @@ export interface CacheIndex {
 
 export type ImageFormats = 'original' | 'avif' | 'webp';
 
-export interface GlobalConfig {
+export interface Config {
+	config: string;
 	verbose: boolean;
 	nocache: boolean;
 	justCopy: boolean;
@@ -19,5 +20,4 @@ export interface GlobalConfig {
 	exclude: string[];
 	inputDir?: string;
 	outputDir?: string;
-	config?: string;
 };
