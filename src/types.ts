@@ -17,6 +17,7 @@ export interface Config {
 	justCopy: boolean;
 	formats: string[];
 	exclude: string[];
+	include: string[];
 	inputDir: string | undefined;
 	outputDir: string | undefined;
 	quality: Record<string, number>
