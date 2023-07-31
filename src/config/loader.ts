@@ -7,7 +7,7 @@ import path from 'path';
 import chalk from 'chalk';
 
 import type { Config } from '../types';
-import { imageFormats, imageQuality } from './defaults';
+import defaults from './defaults';
 
 //	Default config
 export const configEntries: Config = {
@@ -16,11 +16,11 @@ export const configEntries: Config = {
 	verbose: false,
 	nocache: false,
 	justCopy: false,
-	formats: [...imageFormats],
+	formats: [...defaults.imageFormats],
 	exclude: [],
 	outputDir: '',
 	inputDir: '',
-	quality: Object.assign({}, imageQuality)
+	quality: Object.assign({}, defaults.imageQuality)
 };
 
 export const configEntriesMask = {
