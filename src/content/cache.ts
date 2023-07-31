@@ -1,8 +1,10 @@
-import type { CacheIndex, AssetsListItem, CacheDiff } from '../types';
+import type { CacheItem, CacheIndex, OutputFormat, AssetsListItem, CacheDiff, Config } from '../types';
 import { existsSync, readFileSync, createReadStream, writeFileSync, mkdirSync } from 'fs';
 
 import { createHash } from 'crypto';
 import chalk from 'chalk';
+
+export const indexVersion = 21;
 
 const hashFileContent = async (filepath: string, verbose?: boolean): Promise<string | null> => new Promise(async (resolve) => {
 
@@ -39,16 +41,20 @@ export class AssetsCacheIndex {
 	cacheDir: string;
 	cacheItemsDir: string;
 	assetsDir: string;
-	data: Map<string, string>;
+	data: Map<string, CacheItem>;
 	verbose = false;
+	formats: OutputFormat[];
 
-	constructor(assetsDir: string, verbose?: boolean) {
+	constructor(config: Config) {
 
-		this.assetsDir = assetsDir;
-		this.verbose = verbose;
+		this.assetsDir = config.inputDir;
+		this.verbose = config.verbose;
+		this.formats = config.formats.filter(item => item != 'original') as OutputFormat[];
+
 		this.cacheDir = this.assetsDir + '/.cache';
 		this.cacheItemsDir = this.cacheDir + '/items';
 		this.cacheFile = this.cacheDir + '/index.json';
+
 		this.data = new Map();
 
 		try {
@@ -62,7 +68,7 @@ export class AssetsCacheIndex {
 			const cacheFileContent = readFileSync(this.cacheFile).toString();
 			const cacheIndex = JSON.parse(cacheFileContent) as CacheIndex;
 
-			cacheIndex.entries.forEach(item => this.data.set(item[0], item[1]));
+			cacheIndex.entries.forEach(item => this.data.set(item.name, item));
 
 		} catch (error) {
 			console.error(chalk.red(`⚠  Failed to load cache index:`), error);
@@ -88,9 +94,13 @@ export class AssetsCacheIndex {
 
 				activeEntries.add(asset.slugHash);
 
-				if (this.data.get(asset.slugHash) !== hash) {
+				if (this.data.get(asset.slugHash).content !== hash) {
 
-					this.data.set(asset.slugHash, hash);
+					this.data.set(asset.slugHash, {
+						name: asset.slugHash,
+						content: hash,
+						formats: this.formats
+					});
 					diffResult.changed.push(asset.slugHash);
 
 				} else  {
@@ -100,7 +110,11 @@ export class AssetsCacheIndex {
 			} else {
 
 				activeEntries.add(asset.slugHash);
-				this.data.set(asset.slugHash, hash);
+				this.data.set(asset.slugHash, {
+					name: asset.slugHash,
+					content: hash,
+					formats: this.formats
+				});
 				diffResult.added.push(asset.slugHash);
 			}
 
@@ -123,8 +137,8 @@ export class AssetsCacheIndex {
 
 			const indexSnapshot: CacheIndex = {
 				date: new Date().getTime(),
-				version: 2,
-				entries: Array.from(this.data.entries())
+				version: indexVersion,
+				entries: Array.from(this.data.entries()).map(item => item[1])
 			};
 
 			if (!existsSync(this.cacheDir))
