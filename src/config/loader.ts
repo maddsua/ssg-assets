@@ -125,8 +125,8 @@ export const loadConfig = () => {
 	
 	//	load config from asset source directory
 	try {
-		configEntries.assetDirConfig = path.join(process.cwd(), path.join(configEntries.inputDir, 'ssgassets.config.json'));
-		const configFileContents = readFileSync(configEntries.assetDirConfig);
+		configEntries.assetDirConfig = path.join(configEntries.inputDir, 'ssgassets.config.json');
+		const configFileContents = readFileSync(path.join(process.cwd(), configEntries.assetDirConfig));
 		const importedConfig = JSON.parse(configFileContents.toString());
 
 		for (let key in importedConfig) {
