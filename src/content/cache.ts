@@ -1,5 +1,5 @@
 import type { CacheItem, CacheIndex, OutputFormat, AssetsListItem, CacheDiff, Config } from '../types';
-import { existsSync, readFileSync, createReadStream, writeFileSync, mkdirSync } from 'fs';
+import fs from 'fs';
 
 import { createHash } from 'crypto';
 import chalk from 'chalk';
@@ -10,12 +10,12 @@ const hashFileContent = async (filepath: string, verbose?: boolean): Promise<str
 
 	try {
 
-		if (!existsSync(filepath)) {
+		if (!fs.existsSync(filepath)) {
 			resolve(null);
 			return;
 		}
 
-		const readStream = createReadStream(filepath);
+		const readStream = fs.createReadStream(filepath);
 
 		//	using md5 for the speeeeeed!
 		const hashCtx = createHash('md5');
@@ -60,12 +60,12 @@ export class AssetsCacheIndex {
 		try {
 
 			//	create cache directory
-			if (!existsSync(this.cacheItemsDir))
-				mkdirSync(this.cacheItemsDir, { recursive: true });
+			if (!fs.existsSync(this.cacheItemsDir))
+				fs.mkdirSync(this.cacheItemsDir, { recursive: true });
 
-			if (!existsSync(this.cacheFile)) return;
+			if (!fs.existsSync(this.cacheFile)) return;
 			
-			const cacheFileContent = readFileSync(this.cacheFile).toString();
+			const cacheFileContent = fs.readFileSync(this.cacheFile).toString();
 			const cacheIndex = JSON.parse(cacheFileContent) as CacheIndex;
 
 			if (cacheIndex.version != indexVersion) {
@@ -147,10 +147,10 @@ export class AssetsCacheIndex {
 				entries: Array.from(this.data.entries()).map(item => item[1])
 			};
 
-			if (!existsSync(this.cacheDir))
-				mkdirSync(this.cacheDir, { recursive: true });
+			if (!fs.existsSync(this.cacheDir))
+			fs.mkdirSync(this.cacheDir, { recursive: true });
 
-			writeFileSync(this.cacheFile, JSON.stringify(indexSnapshot));
+			fs.writeFileSync(this.cacheFile, JSON.stringify(indexSnapshot));
 			
 		} catch (error) {
 			console.error(chalk.red(`⚠  Failed to save cache index:`), error);
