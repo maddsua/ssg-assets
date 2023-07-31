@@ -15,6 +15,7 @@ export const configEntries: Config = {
 	projectConfig: 'ssgassets.config.json',
 	assetDirConfig: '',
 	verbose: false,
+	silent: false,
 	nocache: false,
 	formats: [...defaults.imageFormats],
 	exclude: [],
@@ -170,6 +171,12 @@ export const loadConfig = () => {
 	//	fix  glob patterns
 	configEntries.exclude = configEntries.exclude.map(item => fix_relative_glob(item));
 	configEntries.include = configEntries.include.map(item => fix_relative_glob(item));
+
+	//	double-check flags
+	if (configEntries.silent && configEntries.verbose) {
+		configEntries.verbose = false;
+		console.warn(chalk.yellow(`⚠  Both 'silent' and 'verbose' flags are specified, 'verbose' will be suppressed.`));
+	}
 	
 	//console.log(configEntries);
 
