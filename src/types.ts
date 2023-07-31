@@ -1,5 +1,7 @@
 export type CacheItem = [string, string];
 
+export type OutputFormat = 'original' | 'png' | 'jpg' | 'webp' | 'avif';
+
 export interface CacheIndex {
 	version: number;
 	date: number;
@@ -14,10 +16,12 @@ export interface CacheDiff {
 };
 
 export interface AssetsListItem {
-	input: string;
-	output: string;
+	source: string;
+	dest: string;
 	cache: string;
 	slug: string;
+	slugHash: string;
+	action: 'convert' | 'copy'
 };
 
 export interface Config {
@@ -26,7 +30,7 @@ export interface Config {
 	verbose: boolean;
 	silent: boolean;
 	nocache: boolean;
-	formats: string[];
+	formats: OutputFormat[];
 	exclude: string[];
 	include: string[];
 	inputDir: string | undefined;

@@ -1,7 +1,8 @@
 node_modules
+bin
 dist
-tests/result
 temp
+tests/result
 *.avif
 *.webp
 **/.cache

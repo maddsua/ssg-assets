@@ -1,8 +1,12 @@
-export const inputFormats = [ 'png', 'jpeg', 'jpg', 'avif', 'webp', 'gif', 'svg' ];
+import { OutputFormat } from "../types";
 
-export const imageFormats = [ 'copy', 'webp', 'avif', 'png', 'jpg' ];
+export const inputFormats = [ 'png', 'jpeg', 'jpg', 'avif', 'webp', 'gif' ];
 
-export const imageQuality = {
+export const canConvert = [ 'png', 'jpeg', 'jpg', 'avif', 'webp', 'gif' ];
+
+export const outputFormats: OutputFormat[] = [ 'original', 'webp', 'avif', 'png', 'jpg' ];
+
+export const outputQuality = {
 	avif: 80,
 	webp: 85,
 	jpg: 75,

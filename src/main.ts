@@ -2,7 +2,6 @@
 
 import path from 'path';
 import fs from 'fs';
-import { createHash } from 'crypto';
 
 import { AssetsListItem } from './types';
 
@@ -22,41 +21,100 @@ import { AssetsCacheIndex } from './content/cache';
 		console.log('Current config:', config);
 	}
 	
-	console.log(chalk.bgGreen.black(' Hashing assets... '));
+	console.log('\n', chalk.bgGreen.black(' Hashing assets... '));
 
 	const assets = resolveAssets(config);
 
-	const assetsMap = new Map<string, AssetsListItem>(assets.map(item => [item.slug, item]));
-	const cacheIndex = new AssetsCacheIndex(config.inputDir, config.verbose, config.silent);
+	const assetsMap = new Map<string, AssetsListItem>(assets.map(item => [item.slugHash, item]));
+	const cacheIndex = new AssetsCacheIndex(config.inputDir, config.verbose);
 	const cacheDiff = await cacheIndex.diff(assets);
-
+	
 	//	convert changed assets
-	[cacheDiff.added, cacheDiff.changed].flat().forEach(item => {
+	const convertAsset = async (asset: AssetsListItem, format: keyof sharp.FormatEnum) => {
+		const dest = asset.dest.replace(/\.[\d\w]+$/, `.${format}`);
+		await sharp(asset.source).toFormat(format, { quality: config.quality[format] || 90 }).toFile(dest);
+		fs.copyFileSync(dest, asset.cache + `.${format}`);
+	}
+	
+	const converJob = [cacheDiff.added, cacheDiff.changed].flat();
+
+	await Promise.all(converJob.map( async (item) => {
 
 		const asset = assetsMap.get(item);
-		const destdir = path.dirname(asset.output);
+		const destdir = path.dirname(asset.dest);
 
 		if (!fs.existsSync(destdir))
 			fs.mkdirSync(destdir, { recursive: true });
 
-		//console.log(asset);
-		fs.copyFileSync(asset.input, asset.output);
-	});
+		if (asset.action === 'copy') {
+
+			fs.copyFileSync(asset.source, asset.dest);
+			if (!config.silent) console.log(chalk.green(`Cloned origin: `), asset.source);
+
+		} else if (asset.action === 'convert') {
+
+			await Promise.all(config.formats.map(async (format) => {
+
+				if (format === 'original') {
+					fs.copyFileSync(asset.source, asset.dest);
+				} else {
+					await convertAsset(asset, format);
+				}
+
+			}));
+
+			if (!config.silent) console.log(chalk.green(`Converted and cached: `), asset.source);
+		}
+	}));
 
 	//	copy cache-hit files
-	/*cacheDiff.hit.forEach(item => {
+	cacheDiff.hit.forEach(item => {
 
 		const asset = assetsMap.get(item);
-		const destdir = path.dirname(asset.output);
+		const destdir = path.dirname(asset.dest);
 
 		if (!fs.existsSync(destdir))
 			fs.mkdirSync(destdir, { recursive: true });
 
-		fs.copyFileSync(asset.output, cacheIndex.resolve(asset.input));
-	});*/
+		config.formats.forEach(async (format) => {
 
-	//if (config.verbose)
-	//	console.log('Cache diff:', cacheDiff);
+			const destFile = asset.dest.replace(/\.[\d\w]+$/, `.${format}`);
+			const cacheFile = asset.cache + `.${format}`;
+
+			if (fs.existsSync(cacheFile)) {
+				fs.copyFileSync(cacheFile, destFile);
+			} else {
+				
+				if (format === 'original') {
+					fs.copyFileSync(asset.source, asset.dest);
+				} else {
+					await convertAsset(asset, format);
+				}
+			}
+		});
+
+		if (!config.silent) console.log(chalk.green('Cache hit:'), asset.source);
+	});
+
+	//	delete old files
+	cacheDiff.removed.forEach(item => {
+
+		const asset = assetsMap.get(item);
+
+		try {
+			fs.rmSync(asset.cache);
+		} catch (error) {
+			if (config.verbose) console.warn(chalk.yellow(`'${asset.source}' already removed`));
+		}
+
+		/*try {
+			fs.rmSync(asset.dest);
+		} catch (error) {
+			if (config.verbose) console.log(chalk.yellow(`'${asset.source}' not present in '${config.outputDir}'`));
+		}*/
+
+		if (!config.silent) console.log(chalk.yellow(`Removed: '${asset.source}'`));
+	});
 
 	cacheIndex.save();
 

@@ -17,7 +17,7 @@ const hashFileContent = async (filepath: string, verbose?: boolean): Promise<str
 
 		//	using md5 for the speeeeeed!
 		const hashCtx = createHash('md5');
-		const takeOutput = () => hashCtx.digest('base64').replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+		const takeOutput = () => hashCtx.digest('hex');
 
 		readStream.on('error', () => {
 			if (verbose) console.error(chalk.red(`⚠  Error hashing file: ${filepath}`));
@@ -37,24 +37,25 @@ export class AssetsCacheIndex {
 
 	cacheFile: string;
 	cacheDir: string;
+	cacheItemsDir: string;
 	assetsDir: string;
 	data: Map<string, string>;
 	verbose = false;
-	silent = false;
 
-	constructor(assetsDir: string, verbose?: boolean, silent?: boolean) {
+	constructor(assetsDir: string, verbose?: boolean) {
 
 		this.assetsDir = assetsDir;
 		this.verbose = verbose;
-		this.silent = silent;
 		this.cacheDir = this.assetsDir + '/.cache';
+		this.cacheItemsDir = this.cacheDir + '/items';
 		this.cacheFile = this.cacheDir + '/index.json';
 		this.data = new Map();
 
 		try {
 
-			if (!existsSync(this.cacheDir))
-				mkdirSync(this.cacheDir, { recursive: true });
+			//	create cache directory
+			if (!existsSync(this.cacheItemsDir))
+				mkdirSync(this.cacheItemsDir, { recursive: true });
 
 			if (!existsSync(this.cacheFile)) return;
 			
@@ -79,34 +80,28 @@ export class AssetsCacheIndex {
 
 		await Promise.all(assets.map(asset => new Promise<void>(async (resolve) => {
 
-			const filepath = asset.input;
-			const relativeFilePath = filepath.replace(new RegExp('^' + this.assetsDir + '/'), '');
-			const hash = await hashFileContent(filepath, this.verbose);
+			const hash = await hashFileContent(asset.source, this.verbose);
 
 			if (!hash) {
 
-				diffResult.removed.push(relativeFilePath);
-				this.data.delete(relativeFilePath);
-				if (!this.silent) console.log(chalk.yellow(`Removed: '${filepath}'`));
+				diffResult.removed.push(asset.slugHash);
+				this.data.delete(asset.slugHash);
 
-			} else if (this.data.has(relativeFilePath)) {
+			} else if (this.data.has(asset.slugHash)) {
 
-				if (this.data.get(relativeFilePath) !== hash) {
+				if (this.data.get(asset.slugHash) !== hash) {
 
-					this.data.set(relativeFilePath, hash);
-					diffResult.changed.push(relativeFilePath);
-					if (!this.silent) console.log(chalk.green(`Updated: `), filepath);
+					this.data.set(asset.slugHash, hash);
+					diffResult.changed.push(asset.slugHash);
 
 				} else  {
-					if (!this.silent) console.log(chalk.green('Not changed:'), filepath);
-					diffResult.hit.push(relativeFilePath);
+					diffResult.hit.push(asset.slugHash);
 				}
 
 			} else {
 
-				this.data.set(relativeFilePath, hash);
-				diffResult.added.push(relativeFilePath);
-				if (!this.silent) console.log(chalk.green('Added:'), filepath);
+				this.data.set(asset.slugHash, hash);
+				diffResult.added.push(asset.slugHash);
 			}
 
 			resolve();
@@ -134,8 +129,4 @@ export class AssetsCacheIndex {
 			console.error(chalk.red(`⚠  Failed to save cache index:`), error);
 		}
 	};
-
-	resolve(filepath: string) {
-		return (this.cacheDir + '/' + filepath).replace(/\/+/g, '/');
-	}
 };

@@ -17,12 +17,12 @@ export const configEntries: Config = {
 	verbose: false,
 	silent: false,
 	nocache: false,
-	formats: [...defaults.imageFormats],
+	formats: ['original', 'webp', 'avif'],
 	exclude: [],
 	include: [],
 	outputDir: '',
 	inputDir: '',
-	quality: Object.assign({}, defaults.imageQuality)
+	quality: Object.assign({}, defaults.outputQuality)
 };
 
 export const configEntriesMask = {
@@ -177,6 +177,13 @@ export const loadConfig = () => {
 		configEntries.verbose = false;
 		console.warn(chalk.yellow(`⚠  Both 'silent' and 'verbose' flags are specified, 'verbose' will be suppressed.`));
 	}
+
+	//	check for unknown output formats
+	configEntries.formats.forEach(item => {
+		if (!defaults.outputFormats.some(item1 => item === item1)) {
+			console.warn(chalk.yellow(`⚠  Unknown output format '${item}'`));
+		}
+	})
 	
 	//console.log(configEntries);
 
