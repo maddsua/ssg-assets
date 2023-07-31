@@ -1,7 +1,4 @@
-export interface CacheItem {
-	fileName: string;
-	contentHash: string;
-};
+export type CacheItem = [string, string];
 
 export interface CacheIndex {
 	version: number;
