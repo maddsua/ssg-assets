@@ -1,4 +1,4 @@
-import type { CacheItem, CacheIndex, AssetsListItem, CacheDiff } from '../types';
+import type { CacheIndex, AssetsListItem, CacheDiff } from '../types';
 import { existsSync, readFileSync, createReadStream, writeFileSync, mkdirSync } from 'fs';
 
 import { createHash } from 'crypto';
@@ -126,5 +126,4 @@ export class AssetsCacheIndex {
 			console.error(chalk.red(`⚠  Failed to save cache index:`), error);
 		}
 	}
-
 };
