@@ -40,7 +40,7 @@
 	"scripts": {
 		"lint": "tsc",
 		"bundle": "esbuild src/main.ts --outfile=bin/main.js --bundle --platform=node --format=esm --external:sharp --external:chalk --external:minimatch",
-		"build": "run-p lint bundle",
+		"build": "run-s lint bundle",
 		"dev": "tsc --watch",
 		"test": "node dist/main.js tests/assets/:tests/result/",
 		"test_components": "cd components && tsc --noemit"
