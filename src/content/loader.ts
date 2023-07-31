@@ -6,7 +6,8 @@ import { minimatch } from 'minimatch';
 import fs from 'fs';
 import type { Config, AssetsListItem } from '../types';
 
-export const resolveCachePath = (assetsDir: string, slugHash: string) => assetsDir + '/.cache/items/' + slugHash;
+export const resolveCachePath = (assetsDir: string, slugHash: string) => (assetsDir + '/.cache/items/' + slugHash).replace(/[\\\/]+/, '/');
+export const resolveDestPath = (assetsDir: string, slug: string) => (assetsDir + '/' + slug).replace(/[\\\/]+/, '/');
 
 const loadAllSupportedFiles = (assetDir: string): string[] => {
 	
@@ -50,7 +51,7 @@ export const resolveAssets = (config: Config): AssetsListItem[] => {
 			slug,
 			slugHash,
 			source: item,
-			dest: config.outputDir + '/' + slug,
+			dest: resolveDestPath(config.outputDir, slug),
 			cache: resolveCachePath(config.inputDir, slugHash),
 			action: canConvert.some(item => slug.endsWith(item)) ? 'convert' : 'copy'
 		}
