@@ -24,7 +24,7 @@ export const configEntries: Config = {
 };
 
 export const configEntriesMask = {
-	cli: [],
+	cli: ['quality'],
 	globalFile: ['config', 'foundLocalConfig'],
 	localFile: ['config', 'foundLocalConfig', 'inputDir', 'outputDir']
 };
@@ -32,12 +32,14 @@ export const configEntriesMask = {
 export const loadConfig = () => {
 
 	//	load options from cli argumets
-	const optionsMap = Object.entries(cliArguments).map(item => item[1].pfx.map(pfx => [pfx, item[0]])).flat();
+	const optionsMap = Object.entries(cliArguments).map(item => item[1].argName.map(pfx => [pfx, item[0]])).flat();
 	process.argv.slice(2).forEach(arg => {
 
-		const optionId = optionsMap.find(item => arg.startsWith(item[0]));
+		const argName = arg.split('=')[0];
+
+		const optionId = optionsMap.find(item => item[0] === argName);
 		if (!optionId) {
-			console.log(chalk.yellow(`⚠  Unknown option '${arg}'`));
+			console.log(chalk.yellow(`⚠  Unknown option '${argName}'`), '(cli)');
 			return;
 		}
 
@@ -47,7 +49,7 @@ export const loadConfig = () => {
 
 		const option = cliArguments[configEntry];
 		if (!option) {
-			console.log(chalk.yellow(`⚠  Unmatched option '${arg}'`));
+			console.log(chalk.yellow(`⚠  Unmatched option '${arg}'`), '(cli)');
 			return;
 		}
 
@@ -152,7 +154,5 @@ export const loadConfig = () => {
 
 	return configEntries;
 };
-
-loadConfig();
 
 export default loadConfig;
