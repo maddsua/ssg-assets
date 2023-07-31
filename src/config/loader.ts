@@ -18,6 +18,7 @@ export const configEntries: Config = {
 	justCopy: false,
 	formats: [...defaults.imageFormats],
 	exclude: [],
+	include: [],
 	outputDir: '',
 	inputDir: '',
 	quality: Object.assign({}, defaults.imageQuality)
