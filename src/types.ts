@@ -16,12 +16,15 @@ export interface CacheDiff {
 export interface AssetsListItem {
 	input: string;
 	output: string;
+	cache: string;
+	slug: string;
 };
 
 export interface Config {
 	projectConfig: string;
 	assetDirConfig?: string;
 	verbose: boolean;
+	silent: boolean;
 	nocache: boolean;
 	formats: string[];
 	exclude: string[];
