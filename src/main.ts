@@ -21,7 +21,7 @@ import { AssetsCacheIndex } from './content/cache';
 		console.log('Current config:', config);
 	}
 	
-	console.log('\n', chalk.bgGreen.black(' Hashing assets... '));
+	console.log(chalk.bgGreen.black(' Hashing assets... '));
 
 	const assets = resolveAssets(config);
 
