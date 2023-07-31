@@ -1,5 +1,5 @@
 import type { CacheItem, CacheIndex, AssetsListItem, CacheDiff } from '../types';
-import { existsSync, readFileSync, createReadStream, writeFileSync } from 'fs';
+import { existsSync, readFileSync, createReadStream, writeFileSync, mkdirSync } from 'fs';
 
 import { createHash } from 'crypto';
 import chalk from 'chalk';
@@ -36,16 +36,21 @@ const createFileHash = async (filepath: string, verbose?: boolean): Promise<stri
 export class AssetsCacheIndex {
 
 	cacheFile: string;
+	cacheDir: string;
 	data: Map<string, string>;
 	verbose = false;
 
 	constructor(assetsDir: string, verbose?: boolean) {
 
 		this.verbose = verbose;
-		this.cacheFile = assetsDir + '/.cache.json';
+		this.cacheDir = assetsDir + '/.cache';
+		this.cacheFile = this.cacheDir + '/index.json';
 		this.data = new Map();
 
 		try {
+
+			if (!existsSync(this.cacheDir))
+				mkdirSync(this.cacheDir, { recursive: true });
 
 			if (!existsSync(this.cacheFile)) return;
 			
@@ -111,6 +116,9 @@ export class AssetsCacheIndex {
 				version: 2,
 				entries: Array.from(this.data.entries())
 			};
+
+			if (!existsSync(this.cacheDir))
+				mkdirSync(this.cacheDir, { recursive: true });
 
 			writeFileSync(this.cacheFile, JSON.stringify(indexSnapshot));
 			
