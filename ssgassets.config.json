@@ -1,4 +1,5 @@
 {
+	"verbose": false,
 	"inputDir": "tests/assets",
 	"outputDir": "tests/dist"
 }
