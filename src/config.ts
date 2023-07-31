@@ -4,18 +4,23 @@ import path from 'path';
 
 import chalk from 'chalk';
 
-import type { ImageFormats, GlobalConfig } from './types';
+import type { ImageFormats, Config } from './types';
 
 const supportedImageFormats: ImageFormats[] = [ 'original', 'webp', 'avif' ];
 
-const globalConfigFile = 'ssgassets.config.json';
-
-const configEntries: GlobalConfig = {
+//	Default config
+const configEntries: Config = {
+	config: 'ssgassets.config.json',
 	verbose: false,
 	nocache: false,
 	justCopy: false,
 	formats: supportedImageFormats,
 	exclude: []
+};
+
+const configEntriesMask = {
+	globalFile: ['config'],
+	local: ['config', 'inputDir', 'outputDir']
 };
 
 interface Argument {
@@ -100,8 +105,7 @@ export const loadConfig = () => {
 					temp = temp.split(',');
 				} break;
 			
-				default:
-					break;
+				default: break;
 			}
 		}
 
@@ -110,18 +114,20 @@ export const loadConfig = () => {
 
 	//	load project config file
 	try {
-		const configFileContents = readFileSync(path.join(cwd(), globalConfigFile));
+		const configFileContents = readFileSync(path.join(cwd(), configEntries.config));
 		const importedConfig = JSON.parse(configFileContents.toString());
 
 		for (let key in importedConfig) {
 
+			if (configEntriesMask.globalFile.find(item => item === key)) continue;
+
 			if (!(key in configEntries)) {
-				console.log(chalk.yellow(`⚠  Key '${key}' is not supported`), `(${globalConfigFile})`);
+				console.log(chalk.yellow(`⚠  Unknown key '${key}'`), `(${configEntries.config})`);
 				continue;
 			}
 
 			if (typeof configEntries[key] !== typeof importedConfig[key]) {
-				console.log(chalk.yellow(`⚠  Key '${key}' type invalid`), `(${globalConfigFile})`);
+				console.log(chalk.yellow(`⚠  Key '${key}' type invalid`), `(${configEntries.config})`);
 				continue;
 			}
 
