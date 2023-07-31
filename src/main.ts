@@ -26,7 +26,7 @@ import { AssetsCacheIndex } from './content/cache';
 	const assets = resolveAssets(config);
 
 	const assetsMap = new Map<string, AssetsListItem>(assets.map(item => [item.slugHash, item]));
-	const cacheIndex = new AssetsCacheIndex(config.inputDir, config.verbose);
+	const cacheIndex = new AssetsCacheIndex(config);
 	const cacheDiff = await cacheIndex.diff(assets);
 	
 	//	convert changed assets
