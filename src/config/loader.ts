@@ -1,7 +1,7 @@
 import { cliArguments } from './cli';
 import { normalizePath } from '../paths';
 
-import { readFileSync } from 'fs';
+import { readFileSync, existsSync, statSync } from 'fs';
 import process from 'process';
 import path from 'path';
 
@@ -160,6 +160,24 @@ export const loadConfig = () => {
 		//	oops, no config file hire. ok, it's fine too
 		configEntries.assetDirConfig = undefined;
 	}
+
+	//	fix directory patterns
+	const fix_directory_pattern = (pattern: string) => {
+
+		if (/[\\\/]\*$/.test(pattern)) return pattern;
+
+		try {
+			if (!existsSync(pattern)) return pattern;
+			if (!statSync(pattern).isDirectory()) return pattern;
+		} catch (_error) {
+			return pattern;
+		}
+
+		return pattern + '/*';
+	};
+	
+	configEntries.exclude = configEntries.exclude.map(item => fix_directory_pattern(item));
+	configEntries.include = configEntries.include.map(item => fix_directory_pattern(item));
 
 	//	normalize paths to forward slash
 	configEntries.inputDir = normalizePath(configEntries.inputDir);
