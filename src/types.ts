@@ -9,15 +9,13 @@ export interface CacheIndex {
 	entries: CacheItem[];
 };
 
-export type ImageFormats = 'original' | 'avif' | 'webp';
-
 export interface Config {
 	config: string;
 	hasLocalConfig: boolean;
 	verbose: boolean;
 	nocache: boolean;
 	justCopy: boolean;
-	formats: ImageFormats[];
+	formats: string[];
 	exclude: string[];
 	inputDir: string | undefined;
 	outputDir: string | undefined;
