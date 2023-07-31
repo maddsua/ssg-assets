@@ -13,6 +13,7 @@ export type ImageFormats = 'original' | 'avif' | 'webp';
 
 export interface Config {
 	config: string;
+	hasLocalConfig: boolean;
 	verbose: boolean;
 	nocache: boolean;
 	justCopy: boolean;
