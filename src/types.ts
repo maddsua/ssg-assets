@@ -10,6 +10,7 @@ export interface CacheDiff {
 	added: string[];
 	removed: string[];
 	changed: string[];
+	hit: string[];
 };
 
 export interface AssetsListItem {
