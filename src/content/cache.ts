@@ -104,18 +104,16 @@ export class AssetsCacheIndex {
 				diffResult.added.push(asset.slugHash);
 			}
 
-			this.data.forEach((item) => {
-				if (activeEntries.has(item)) return
-
-				this.data.delete(asset.slugHash);
-				diffResult.removed.push(item);
-			});
-
 			resolve();
 
 		})));
 
-		console.log(activeEntries)
+		this.data.forEach((_, item) => {
+			if (activeEntries.has(item)) return;
+
+			this.data.delete(item);
+			diffResult.removed.push(item);
+		});
 
 		return diffResult;
 	};

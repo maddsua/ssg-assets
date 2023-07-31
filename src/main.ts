@@ -85,7 +85,6 @@ import { AssetsCacheIndex } from './content/cache';
 				await convertAsset(asset, format);
 			}
 		});
-
 	});
 
 	//	delete old files
