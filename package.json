@@ -3,17 +3,8 @@
 	"name": "@maddsua/ssg-assets",
 	"version": "1.6.2",
 	"type": "module",
-	"description": "Converts media assets for your static website and provides handy components fro React, Astro and Vue",
-	"keywords": [
-		"build",
-		"assets",
-		"component",
-		"astro",
-		"vue"
-	],
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/maddsua/ssg-assets.git"
+	"engines" : { 
+		"node" : ">=16.4.0"
 	},
 	"bin": {
 		"ssgassets": "./dist/main.js",
@@ -64,5 +55,17 @@
 		"astro": "^2.7.0",
 		"preact": "^10.15.1",
 		"vue": "^3.3.4"
+	},
+	"description": "Converts media assets for your static website and provides handy components fro React, Astro and Vue",
+	"keywords": [
+		"build",
+		"assets",
+		"component",
+		"astro",
+		"vue"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/maddsua/ssg-assets.git"
 	}
 }
