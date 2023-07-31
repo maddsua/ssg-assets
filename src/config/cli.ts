@@ -4,7 +4,7 @@ export interface Argument {
 }
 
 export const cliArguments: Record<string, Argument> = {
-	config: {
+	projectConfig: {
 		argName: ['--config'],
 		actions: ['get_value']
 	},
