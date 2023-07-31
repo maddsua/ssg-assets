@@ -9,6 +9,11 @@ export interface CacheIndex {
 	entries: CacheItem[];
 };
 
+export interface CacheDiff {
+	added: string[];
+	removed: string[];
+};
+
 export interface Config {
 	projectConfig: string;
 	assetDirConfig?: string;
