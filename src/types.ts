@@ -3,6 +3,7 @@ export type OutputOption = 'original' | OutputFormat;
 
 export type CacheItem = {
 	slugHash: string;
+	slug: string;
 	content: string;
 	formats: OutputFormat[];
 };
