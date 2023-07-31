@@ -1,8 +1,11 @@
-export type CacheItem = [string, string];
-
 export type OutputFormat = 'png' | 'jpg' | 'webp' | 'avif';
-
 export type OutputOption = 'original' | OutputFormat;
+
+export type CacheItem = {
+	name: string;
+	content: string;
+	formats: OutputFormat[];
+};
 
 export interface CacheIndex {
 	version: number;
