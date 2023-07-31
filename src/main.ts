@@ -8,7 +8,8 @@ import sharp from 'sharp';
 import chalk from 'chalk';
 
 import { loadConfig } from './config/loader';
-import resolveSources from './content/loader';
+import { resolveAssets } from './content/loader';
+import { AssetsCacheIndex } from './content/cache';
 
 const config = loadConfig();
 
@@ -17,6 +18,8 @@ if (config.verbose) {
 	console.log('Current config:', config);
 }
 
-const sources = resolveSources(config.inputDir, config.include, config.exclude);
+const assets = resolveAssets(config);
 
-console.log(sources);
+const cache = new AssetsCacheIndex(config.inputDir);
+
+console.log(assets);
