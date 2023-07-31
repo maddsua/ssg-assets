@@ -19,4 +19,5 @@ export interface GlobalConfig {
 	exclude: string[];
 	inputDir?: string;
 	outputDir?: string;
+	config?: string;
 };
