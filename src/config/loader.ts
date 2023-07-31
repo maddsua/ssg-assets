@@ -15,7 +15,6 @@ export const configEntries: Config = {
 	assetDirConfig: '',
 	verbose: false,
 	nocache: false,
-	justCopy: false,
 	formats: [...defaults.imageFormats],
 	exclude: [],
 	include: [],
