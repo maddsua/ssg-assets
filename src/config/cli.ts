@@ -36,5 +36,4 @@ export const cliArguments: Record<string, Argument> = {
 		pfx: ['--output'],
 		actions: ['get_value']
 	},
-
 };
