@@ -68,7 +68,7 @@ export class AssetsCacheIndex {
 			const cacheFileContent = readFileSync(this.cacheFile).toString();
 			const cacheIndex = JSON.parse(cacheFileContent) as CacheIndex;
 
-			cacheIndex.entries.forEach(item => this.data.set(item.name, item));
+			cacheIndex.entries.forEach(item => this.data.set(item.slugHash, item));
 
 		} catch (error) {
 			console.error(chalk.red(`⚠  Failed to load cache index:`), error);
@@ -97,7 +97,7 @@ export class AssetsCacheIndex {
 				if (this.data.get(asset.slugHash).content !== hash) {
 
 					this.data.set(asset.slugHash, {
-						name: asset.slugHash,
+						slugHash: asset.slugHash,
 						content: hash,
 						formats: this.formats
 					});
@@ -111,7 +111,7 @@ export class AssetsCacheIndex {
 
 				activeEntries.add(asset.slugHash);
 				this.data.set(asset.slugHash, {
-					name: asset.slugHash,
+					slugHash: asset.slugHash,
 					content: hash,
 					formats: this.formats
 				});
