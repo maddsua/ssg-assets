@@ -1,4 +1,5 @@
 import { cliArguments } from './cli';
+import { normalizePath } from '../paths';
 
 import { readFileSync } from 'fs';
 import process from 'process';
@@ -146,13 +147,25 @@ export const loadConfig = () => {
 				continue;
 			}
 
-			configEntries[key] = importedConfig[key];
+			let value = importedConfig[key];
+
+			if (key === 'exclude' || key === 'include') {
+				value = (value as string[]).map(item => path.join(configEntries.inputDir, item));
+			}
+
+			configEntries[key] = value;
 		}
 
 	} catch (error) {
 		//	oops, no config file hire. ok, it's fine too
 		configEntries.assetDirConfig = undefined;
 	}
+
+	//	normalize paths to forward slash
+	configEntries.inputDir = normalizePath(configEntries.inputDir);
+	configEntries.outputDir = normalizePath(configEntries.outputDir);
+	configEntries.exclude = configEntries.exclude.map(item => normalizePath(item));
+	configEntries.include = configEntries.include.map(item => normalizePath(item));
 
 	//console.log(configEntries);
 
