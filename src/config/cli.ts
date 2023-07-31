@@ -1,39 +1,39 @@
 export interface Argument {
-	pfx: string[];
+	argName: string[];
 	actions: Array< 'get_value' | 'impl_bool' | 'to_string_array' >;
 }
 
 export const cliArguments: Record<string, Argument> = {
 	config: {
-		pfx: ['--config'],
+		argName: ['--config'],
 		actions: ['get_value']
 	},
 	verbose: {
-		pfx: ['--verbose'],
+		argName: ['--verbose'],
 		actions: ['impl_bool']
 	},
 	nocache: {
-		pfx: ['--nocache'],
+		argName: ['--nocache'],
 		actions: ['impl_bool']
 	},
 	justCopy: {
-		pfx: ['--copy'],
+		argName: ['--copy'],
 		actions: ['impl_bool']
 	},
 	formats: {
-		pfx: ['--formats'],
+		argName: ['--formats'],
 		actions: ['get_value', 'to_string_array']
 	},
 	exclude: {
-		pfx: ['--exclude'],
+		argName: ['--exclude'],
 		actions: ['get_value', 'to_string_array']
 	},
 	inputDir: {
-		pfx: ['--input'],
+		argName: ['--input'],
 		actions: ['get_value']
 	},
 	outputDir: {
-		pfx: ['--output'],
+		argName: ['--output'],
 		actions: ['get_value']
 	},
 };
