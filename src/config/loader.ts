@@ -11,8 +11,8 @@ import * as defaults from './defaults';
 
 //	Default config
 export const configEntries: Config = {
-	config: 'ssgassets.config.json',
-	hasLocalConfig: false,
+	projectConfig: 'ssgassets.config.json',
+	assetDirConfig: '',
 	verbose: false,
 	nocache: false,
 	justCopy: false,
@@ -24,9 +24,8 @@ export const configEntries: Config = {
 };
 
 export const configEntriesMask = {
-	cli: ['quality'],
-	globalFile: ['config', 'foundLocalConfig'],
-	localFile: ['config', 'foundLocalConfig', 'inputDir', 'outputDir']
+	globalFile: ['projectConfig', 'assetDirConfig'],
+	localFile: ['projectConfig', 'assetDirConfig', 'inputDir', 'outputDir']
 };
 
 export const loadConfig = () => {
@@ -44,8 +43,6 @@ export const loadConfig = () => {
 		}
 
 		const configEntry = optionId[1];
-
-		if (configEntriesMask.cli.find(item => item === configEntry)) return;
 
 		const option = cliArguments[configEntry];
 		if (!option) {
@@ -83,20 +80,23 @@ export const loadConfig = () => {
 
 	//	load project config file
 	try {
-		const configFileContents = readFileSync(path.join(process.cwd(), configEntries.config));
+		const configFileContents = readFileSync(path.join(process.cwd(), configEntries.projectConfig));
 		const importedConfig = JSON.parse(configFileContents.toString());
 
 		for (let key in importedConfig) {
 
-			if (configEntriesMask.globalFile.some(item => item === key)) continue;
+			if (configEntriesMask.globalFile.some(item => item === key)) {
+				console.log(chalk.yellow(`⚠  Option '${key}' cannot be set from ${configEntries.projectConfig}`));
+				continue;
+			}
 
 			if (!(key in configEntries)) {
-				console.log(chalk.yellow(`⚠  Unknown key '${key}'`), `(${configEntries.config})`);
+				console.log(chalk.yellow(`⚠  Unknown key '${key}'`), `(${configEntries.projectConfig})`);
 				continue;
 			}
 
 			if (typeof configEntries[key] !== typeof importedConfig[key]) {
-				console.log(chalk.yellow(`⚠  Key '${key}' type invalid`), `(${configEntries.config})`);
+				console.log(chalk.yellow(`⚠  Key '${key}' type invalid`), `(${configEntries.projectConfig})`);
 				continue;
 			}
 
@@ -125,21 +125,24 @@ export const loadConfig = () => {
 	
 	//	load config from asset source directory
 	try {
-		const configFileContents = readFileSync(path.join(process.cwd(), path.join(configEntries.inputDir, 'ssgassets.config.json')));
+		configEntries.assetDirConfig = path.join(process.cwd(), path.join(configEntries.inputDir, 'ssgassets.config.json'));
+		const configFileContents = readFileSync(configEntries.assetDirConfig);
 		const importedConfig = JSON.parse(configFileContents.toString());
-		configEntries.hasLocalConfig = true;
 
 		for (let key in importedConfig) {
 
-			if (configEntriesMask.localFile.some(item => item === key)) continue;
+			if (configEntriesMask.localFile.some(item => item === key)) {
+				console.log(chalk.yellow(`⚠  Option '${key}' cannot be set from ${configEntries.assetDirConfig}`));
+				continue;
+			}
 
 			if (!(key in configEntries)) {
-				console.log(chalk.yellow(`⚠  Unknown key '${key}'`), `(${configEntries.config})`);
+				console.log(chalk.yellow(`⚠  Unknown key '${key}'`), `(${configEntries.assetDirConfig})`);
 				continue;
 			}
 
 			if (typeof configEntries[key] !== typeof importedConfig[key]) {
-				console.log(chalk.yellow(`⚠  Key '${key}' type invalid`), `(${configEntries.config})`);
+				console.log(chalk.yellow(`⚠  Key '${key}' type invalid`), `(${configEntries.assetDirConfig})`);
 				continue;
 			}
 
@@ -148,6 +151,7 @@ export const loadConfig = () => {
 
 	} catch (error) {
 		//	oops, no config file hire. ok, it's fine too
+		configEntries.assetDirConfig = undefined;
 	}
 
 	//console.log(configEntries);
