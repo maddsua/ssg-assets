@@ -14,11 +14,15 @@ export interface Config {
 	assetDirConfig?: string;
 	verbose: boolean;
 	nocache: boolean;
-	justCopy: boolean;
 	formats: string[];
 	exclude: string[];
 	include: string[];
 	inputDir: string | undefined;
 	outputDir: string | undefined;
 	quality: Record<string, number>
+};
+
+export interface Sources {
+	input: string;
+	action: 'convert' | 'copy';
 };
