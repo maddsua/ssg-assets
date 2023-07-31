@@ -1,4 +1,6 @@
-export const imageFormats = [ 'original', 'webp', 'avif' ];
+export const inputFormats = ['png', 'jpeg', 'jpg', 'avif', 'webp', 'gif', 'svg'];
+
+export const imageFormats = [ 'copy', 'webp', 'avif', 'png', 'jpg' ];
 
 export const imageQuality = {
 	avif: 80,
