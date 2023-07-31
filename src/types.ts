@@ -19,4 +19,5 @@ export interface Config {
 	exclude: string[];
 	inputDir: string | undefined;
 	outputDir: string | undefined;
+	quality: Record<string, number>
 };
