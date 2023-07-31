@@ -77,8 +77,10 @@ import chalk from 'chalk';
 			const destFile = asset.dest.replace(/\.[\d\w]+$/, `.${format}`);
 			const cacheFile = asset.cache + `.${format}`;
 
-			if (fs.existsSync(cacheFile)) {
-				fs.copyFileSync(cacheFile, destFile);
+			const copyOrigin = format === 'original';
+
+			if (fs.existsSync(cacheFile) || copyOrigin) {
+				fs.copyFileSync(copyOrigin ? asset.source : cacheFile, destFile);
 				if (!config.silent) console.log(chalk.green('Cache hit:'), destFile);
 			} else {
 				await convertAsset(asset, format);
