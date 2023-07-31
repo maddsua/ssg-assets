@@ -9,7 +9,7 @@ import sharp from 'sharp';
 import chalk from 'chalk';
 
 import { loadConfig } from './config/loader';
-import { resolveAssets } from './content/loader';
+import { resolveAssets, resolveCachePath } from './content/loader';
 import { AssetsCacheIndex } from './content/cache';
 
 ( async () => {
@@ -91,12 +91,12 @@ import { AssetsCacheIndex } from './content/cache';
 	//	delete old files
 	cacheDiff.removed.forEach(item => {
 
-		const asset = assetsMap.get(item);
+		const cachePath = resolveCachePath(config.inputDir, item);
 
 		try {
-			fs.rmSync(asset.cache);
+			fs.rmSync(cachePath);
 		} catch (error) {
-			if (config.verbose) console.warn(chalk.yellow(`'${asset.source}' already removed`));
+			if (config.verbose) console.warn(chalk.yellow(`'${cachePath}' already removed`));
 		}
 
 		/*try {
@@ -105,7 +105,7 @@ import { AssetsCacheIndex } from './content/cache';
 			if (config.verbose) console.log(chalk.yellow(`'${asset.source}' not present in '${config.outputDir}'`));
 		}*/
 
-		if (!config.silent) console.log(chalk.yellow(`Removed: '${asset.source}'`));
+		if (!config.silent) console.log(chalk.yellow(`Removed: '${cachePath}'`));
 	});
 
 	cacheIndex.save();
