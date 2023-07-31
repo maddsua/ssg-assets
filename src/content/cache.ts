@@ -1,5 +1,5 @@
 import type { CacheItem, CacheIndex, AssetsListItem, CacheDiff } from '../types';
-import { existsSync, readFileSync, createReadStream } from 'fs';
+import { existsSync, readFileSync, createReadStream, writeFileSync } from 'fs';
 
 import { createHash } from 'crypto';
 import chalk from 'chalk';
@@ -51,7 +51,7 @@ export class AssetsCacheIndex {
 			
 			const cacheFileContent = readFileSync(this.cacheFile).toString();
 			const cacheIndex = JSON.parse(cacheFileContent) as CacheIndex;
-			cacheIndex.entries.forEach(item => this.data.set(item.fileName, item.contentHash));
+			cacheIndex.entries.forEach(item => this.data.set(item[0], item[1]));
 
 		} catch (error) {
 			console.error(chalk.red(`⚠  Failed to load cache index:`), error);
@@ -104,6 +104,14 @@ export class AssetsCacheIndex {
 
 	save() {
 		try {
+
+			const indexSnapshot: CacheIndex = {
+				date: new Date().getTime(),
+				version: 2,
+				entries: Array.from(this.data.entries())
+			};
+
+			writeFileSync(this.cacheFile, JSON.stringify(indexSnapshot));
 			
 		} catch (error) {
 			console.error(chalk.red(`⚠  Failed to save cache index:`), error);
