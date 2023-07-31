@@ -41,8 +41,8 @@
 		"lint": "tsc",
 		"bundle": "esbuild src/main.ts --outfile=bin/main.js --bundle --platform=node --format=esm --external:sharp --external:chalk --external:minimatch",
 		"build": "run-s lint bundle",
-		"dev": "tsc --watch",
-		"test": "node dist/main.js tests/assets/:tests/result/",
+		"dev": "esbuild src/main.ts --outfile=bin/main.js --bundle --platform=node --format=esm --external:sharp --external:chalk --external:minimatch --watch",
+		"test": "node bin/main.js",
 		"test_components": "cd components && tsc --noemit"
 	},
 	"dependencies": {
