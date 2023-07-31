@@ -10,8 +10,8 @@ export interface CacheIndex {
 };
 
 export interface Config {
-	config: string;
-	hasLocalConfig: boolean;
+	projectConfig: string;
+	assetDirConfig?: string;
 	verbose: boolean;
 	nocache: boolean;
 	justCopy: boolean;
