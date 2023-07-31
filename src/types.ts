@@ -12,6 +12,12 @@ export interface CacheIndex {
 export interface CacheDiff {
 	added: string[];
 	removed: string[];
+	changed: string[];
+};
+
+export interface AssetsListItem {
+	input: string;
+	output: string;
 };
 
 export interface Config {
