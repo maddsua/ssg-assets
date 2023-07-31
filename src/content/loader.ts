@@ -1,6 +1,5 @@
 import { inputFormats } from '../config/defaults';
 
-import { globSync } from 'glob';
 import { minimatch } from 'minimatch';
 import path from 'path';
 import fs from 'fs';
@@ -17,8 +16,26 @@ const loadAllSupportedFiles = (directory: string) => {
 };
 
 export const resolveSources = (srcDir: string, includes: string[], excludes: string[]) => {
-	const entries = loadAllSupportedFiles(srcDir);
-	console.log(entries);
+
+	let entries = loadAllSupportedFiles(srcDir);
+
+	includes.forEach(item => entries = entries.filter(entry => minimatch(entry, item, {
+		matchBase: true,
+		nobrace: true,
+		noext: true,
+		nocase: true
+	})));
+
+	excludes.forEach(item => entries = entries.filter(entry => !minimatch(entry, item, {
+		matchBase: true,
+		nobrace: true,
+		noext: true,
+		nocase: true
+	})));
+
+	//console.log(entries);
+
+	return entries;
 };
 
 export default resolveSources;
