@@ -2,6 +2,7 @@
 	"private": false,
 	"name": "@maddsua/ssg-assets",
 	"version": "1.6.2",
+	"type": "module",
 	"description": "Converts media assets for your static website and provides handy components fro React, Astro and Vue",
 	"keywords": [
 		"build",
@@ -18,7 +19,6 @@
 		"ssgassets": "./dist/main.js",
 		"ssga": "./dist/main.js"
 	},
-	"type": "module",
 	"main": "./dist/dummy.js",
 	"types": "./dist/dummy.d.ts",
 	"exports": {
@@ -48,6 +48,7 @@
 	],
 	"scripts": {
 		"build": "tsc",
+		"bundle": "esbuild src/main.ts --outfile=bin/main.js --bundle --platform=node --format=esm",
 		"dev": "tsc --watch",
 		"test": "node dist/main.js tests/assets/:tests/result/",
 		"test_components": "cd components && tsc --noemit"
