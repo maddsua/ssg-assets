@@ -4,7 +4,7 @@ import { existsSync, readFileSync, createReadStream, writeFileSync, mkdirSync } 
 import { createHash } from 'crypto';
 import chalk from 'chalk';
 
-const createFileHash = async (filepath: string, verbose?: boolean): Promise<string | null> => new Promise(async (resolve) => {
+const hashFileContent = async (filepath: string, verbose?: boolean): Promise<string | null> => new Promise(async (resolve) => {
 
 	try {
 
@@ -16,15 +16,15 @@ const createFileHash = async (filepath: string, verbose?: boolean): Promise<stri
 		const readStream = createReadStream(filepath);
 
 		//	using md5 for the speeeeeed!
-		const hash = createHash('md5');
-		const takeOutput = () => hash.digest('base64').replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+		const hashCtx = createHash('md5');
+		const takeOutput = () => hashCtx.digest('base64').replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
 
 		readStream.on('error', () => {
 			if (verbose) console.error(chalk.red(`⚠  Error hashing file: ${filepath}`));
 			resolve(null);
 		});
 
-		readStream.on('data', (chunk) => hash.update(chunk));
+		readStream.on('data', (chunk) => hashCtx.update(chunk));
 		readStream.on('end', () => resolve(takeOutput()));
 
 	} catch (error) {
@@ -32,6 +32,12 @@ const createFileHash = async (filepath: string, verbose?: boolean): Promise<stri
 		if (verbose) console.error(chalk.red(`⚠  Error hashing file: ${filepath}`));
 	}
 });
+
+const hashFileName = (filename: string) => {
+	const hashCtx = createHash('sha256');
+	hashCtx.update(filename);
+	return hashCtx.digest('base64').replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+};
 
 export class AssetsCacheIndex {
 
@@ -75,7 +81,7 @@ export class AssetsCacheIndex {
 		await Promise.all(assets.map(asset => new Promise<void>(async (resolve) => {
 
 			const filename = asset.input;
-			const hash = await createFileHash(filename, this.verbose);
+			const hash = await hashFileContent(filename, this.verbose);
 
 			if (!hash) {
 
