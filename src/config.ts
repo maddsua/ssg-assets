@@ -1,21 +1,57 @@
 import { readFileSync } from 'fs';
-import { cwd } from 'process';
+import { cwd, argv } from 'process';
 import path from 'path';
 
 import chalk from 'chalk';
 
-import type { ImageFormats, Config } from './types';
+import type { ImageFormats, GlobalConfig } from './types';
 
 const supportedImageFormats: ImageFormats[] = [ 'original', 'webp', 'avif' ];
 
 const globalConfigFile = 'ssgassets.config.json';
 
-const configEntries: Config = {
+const configEntries: GlobalConfig = {
 	verbose: false,
 	nocache: false,
 	justCopy: false,
 	formats: supportedImageFormats,
 	exclude: []
+};
+
+interface Argument {
+	pfx: string[];
+	actions: Array< 'get_value' | 'impl_bool' | 'to_string_array' >;
+}
+
+const cliArguments: Record<string, Argument> = {
+	verbose: {
+		pfx: ['--verbose'],
+		actions: ['impl_bool']
+	},
+	nocache: {
+		pfx: ['--nocache'],
+		actions: ['impl_bool']
+	},
+	justCopy: {
+		pfx: ['--copy'],
+		actions: ['impl_bool']
+	},
+	formats: {
+		pfx: ['--formats'],
+		actions: ['get_value', 'to_string_array']
+	},
+	exclude: {
+		pfx: ['--exclude'],
+		actions: ['get_value', 'to_string_array']
+	},
+	inputDir: {
+		pfx: ['--input'],
+		actions: ['get_value']
+	},
+	outputDir: {
+		pfx: ['--output'],
+		actions: ['get_value']
+	},
 };
 
 export const loadConfig = () => {
@@ -40,11 +76,66 @@ export const loadConfig = () => {
 			configEntries[key] = importedConfig[key];
 		}
 
-		console.log(importedConfig);
 	} catch (_error) {
 		//	oops, no global config file. ok, it's fine
 	}
+	
+	//	load options from cli argumets
+	try {
 
+		const optionsMap = Object.entries(cliArguments).map(item => item[1].pfx.map(pfx => [pfx, item[0]])).flat();
+
+
+		console.log(optionsMap);
+
+		process.argv.slice(2).forEach(arg => {
+
+			const optionId = optionsMap.find(item => arg.startsWith(item[0]));
+			if (!optionId) {
+				console.log(chalk.yellow(`⚠  Unknown option '${arg}'`));
+				return;
+			}
+
+			const configEntry = optionId[1];
+
+			const option = cliArguments[configEntry];
+			if (!option) {
+				console.log(chalk.yellow(`⚠  Unmatched option '${arg}'`));
+				return;
+			}
+
+			let temp: any = undefined;
+			for (let action of option.actions) {
+
+				switch (action) {
+	
+					case 'impl_bool': {
+						temp = true;
+					} break;
+	
+					case 'get_value': {
+						temp = arg.split('=')?.at(1);
+						if (!temp) {
+							console.log(chalk.yellow(`⚠  Empty option '${arg}'`));
+							return;
+						}
+					} break;
+	
+					case 'to_string_array': {
+						temp = temp.split(',');
+					} break;
+				
+					default:
+						break;
+				}
+			}
+
+			configEntries[configEntry] = temp;
+		});
+		
+	} catch (error) {
+		
+	}
 
 	console.log(configEntries);
 
