@@ -25,12 +25,15 @@ import { AssetsCacheIndex } from './content/cache';
 	console.log(chalk.bgGreen.black(' Hashing assets... '));
 
 	const assets = resolveAssets(config);
+
+	console.log(assets);
+
 	const assetsMap = new Map<string, AssetsListItem>(assets.map(item => [item.input, item]));
-	const cacheIndex = new AssetsCacheIndex(config.inputDir, config.verbose);
+	const cacheIndex = new AssetsCacheIndex(config.inputDir, config.verbose, config.silent);
 	const cacheDiff = await cacheIndex.diff(assets);
 
 	//	convert changed assets
-	[cacheDiff.added, cacheDiff.changed].flat().forEach(item => {
+	/*[cacheDiff.added, cacheDiff.changed].flat().forEach(item => {
 
 		const asset = assetsMap.get(item);
 		const destdir = path.dirname(asset.output);
@@ -52,7 +55,7 @@ import { AssetsCacheIndex } from './content/cache';
 			fs.mkdirSync(destdir, { recursive: true });
 
 		fs.copyFileSync(asset.output, cacheIndex.resolve(asset.input));
-	});
+	});*/
 
 	//if (config.verbose)
 	//	console.log('Cache diff:', cacheDiff);
