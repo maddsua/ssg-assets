@@ -68,7 +68,8 @@ export class AssetsCacheIndex {
 		const diffResult: CacheDiff = {
 			added: [],
 			removed: [],
-			changed: []
+			changed: [],
+			hit: []
 		};
 
 		await Promise.all(assets.map(asset => new Promise<void>(async (resolve) => {
@@ -90,8 +91,9 @@ export class AssetsCacheIndex {
 					diffResult.changed.push(filename);
 					/*if (this.verbose)*/ console.log(chalk.green(`Updated: `), filename);
 
-				} else if (this.verbose)  {
-					console.log(chalk.green('Not changed:'), filename);
+				} else  {
+					/*if (this.verbose)*/ console.log(chalk.green('Not changed:'), filename);
+					diffResult.hit.push(filename);
 				}
 
 			} else {
@@ -125,5 +127,9 @@ export class AssetsCacheIndex {
 		} catch (error) {
 			console.error(chalk.red(`⚠  Failed to save cache index:`), error);
 		}
+	};
+
+	resolve(filepath: string) {
+		return (this.cacheDir + filepath).replace(/\/+/g, '/');
 	}
 };
