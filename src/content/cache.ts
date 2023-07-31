@@ -43,13 +43,15 @@ export class AssetsCacheIndex {
 
 	cacheFile: string;
 	cacheDir: string;
+	assetsDir: string;
 	data: Map<string, string>;
 	verbose = false;
 
 	constructor(assetsDir: string, verbose?: boolean) {
 
+		this.assetsDir = assetsDir;
 		this.verbose = verbose;
-		this.cacheDir = assetsDir + '/.cache';
+		this.cacheDir = this.assetsDir + '/.cache';
 		this.cacheFile = this.cacheDir + '/index.json';
 		this.data = new Map();
 
@@ -80,33 +82,34 @@ export class AssetsCacheIndex {
 
 		await Promise.all(assets.map(asset => new Promise<void>(async (resolve) => {
 
-			const filename = asset.input;
-			const hash = await hashFileContent(filename, this.verbose);
+			const filepath = asset.input;
+			const relativeFilePath = filepath.replace(new RegExp('^' + this.assetsDir + '/'), '');
+			const hash = await hashFileContent(filepath, this.verbose);
 
 			if (!hash) {
 
-				diffResult.removed.push(filename);
-				this.data.delete(filename);
-				/*if (this.verbose)*/ console.log(chalk.yellow(`Removed: '${filename}'`));
+				diffResult.removed.push(relativeFilePath);
+				this.data.delete(relativeFilePath);
+				/*if (this.verbose)*/ console.log(chalk.yellow(`Removed: '${filepath}'`));
 
-			} else if (this.data.has(filename)) {
+			} else if (this.data.has(relativeFilePath)) {
 
-				if (this.data.get(filename) !== hash) {
+				if (this.data.get(relativeFilePath) !== hash) {
 
-					this.data.set(filename, hash);
-					diffResult.changed.push(filename);
-					/*if (this.verbose)*/ console.log(chalk.green(`Updated: `), filename);
+					this.data.set(relativeFilePath, hash);
+					diffResult.changed.push(relativeFilePath);
+					/*if (this.verbose)*/ console.log(chalk.green(`Updated: `), filepath);
 
 				} else  {
-					/*if (this.verbose)*/ console.log(chalk.green('Not changed:'), filename);
-					diffResult.hit.push(filename);
+					/*if (this.verbose)*/ console.log(chalk.green('Not changed:'), filepath);
+					diffResult.hit.push(relativeFilePath);
 				}
 
 			} else {
 
-				this.data.set(filename, hash);
-				diffResult.added.push(filename);
-				/*if (this.verbose)*/ console.log(chalk.green('Added:'), filename);
+				this.data.set(relativeFilePath, hash);
+				diffResult.added.push(relativeFilePath);
+				/*if (this.verbose)*/ console.log(chalk.green('Added:'), filepath);
 			}
 
 			resolve();
