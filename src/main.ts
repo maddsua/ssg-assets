@@ -22,13 +22,13 @@ import { AssetsCacheIndex } from './content/cache';
 	
 	const assets = resolveAssets(config);
 	
-	const cache = new AssetsCacheIndex(config.inputDir, config.verbose);
-	
-	console.log(assets);
-	
-	console.log(await cache.diff(assets));
+	const cacheIndex = new AssetsCacheIndex(config.inputDir, config.verbose);
 
+	const cacheDiff = await cacheIndex.diff(assets);
 
-	cache.save();
+	//if (config.verbose)
+	//	console.log('Cache diff:', cacheDiff);
+
+	cacheIndex.save();
 
 })();
