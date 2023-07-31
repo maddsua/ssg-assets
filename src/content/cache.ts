@@ -130,6 +130,6 @@ export class AssetsCacheIndex {
 	};
 
 	resolve(filepath: string) {
-		return (this.cacheDir + filepath).replace(/\/+/g, '/');
+		return (this.cacheDir + '/' + filepath).replace(/\/+/g, '/');
 	}
 };
