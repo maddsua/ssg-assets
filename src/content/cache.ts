@@ -33,12 +33,6 @@ const hashFileContent = async (filepath: string, verbose?: boolean): Promise<str
 	}
 });
 
-const hashFileName = (filename: string) => {
-	const hashCtx = createHash('sha256');
-	hashCtx.update(filename);
-	return hashCtx.digest('base64').replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
-};
-
 export class AssetsCacheIndex {
 
 	cacheFile: string;
@@ -46,11 +40,13 @@ export class AssetsCacheIndex {
 	assetsDir: string;
 	data: Map<string, string>;
 	verbose = false;
+	silent = false;
 
-	constructor(assetsDir: string, verbose?: boolean) {
+	constructor(assetsDir: string, verbose?: boolean, silent?: boolean) {
 
 		this.assetsDir = assetsDir;
 		this.verbose = verbose;
+		this.silent = silent;
 		this.cacheDir = this.assetsDir + '/.cache';
 		this.cacheFile = this.cacheDir + '/index.json';
 		this.data = new Map();
@@ -64,6 +60,7 @@ export class AssetsCacheIndex {
 			
 			const cacheFileContent = readFileSync(this.cacheFile).toString();
 			const cacheIndex = JSON.parse(cacheFileContent) as CacheIndex;
+
 			cacheIndex.entries.forEach(item => this.data.set(item[0], item[1]));
 
 		} catch (error) {
@@ -90,7 +87,7 @@ export class AssetsCacheIndex {
 
 				diffResult.removed.push(relativeFilePath);
 				this.data.delete(relativeFilePath);
-				/*if (this.verbose)*/ console.log(chalk.yellow(`Removed: '${filepath}'`));
+				if (!this.silent) console.log(chalk.yellow(`Removed: '${filepath}'`));
 
 			} else if (this.data.has(relativeFilePath)) {
 
@@ -98,10 +95,10 @@ export class AssetsCacheIndex {
 
 					this.data.set(relativeFilePath, hash);
 					diffResult.changed.push(relativeFilePath);
-					/*if (this.verbose)*/ console.log(chalk.green(`Updated: `), filepath);
+					if (!this.silent) console.log(chalk.green(`Updated: `), filepath);
 
 				} else  {
-					/*if (this.verbose)*/ console.log(chalk.green('Not changed:'), filepath);
+					if (!this.silent) console.log(chalk.green('Not changed:'), filepath);
 					diffResult.hit.push(relativeFilePath);
 				}
 
@@ -109,7 +106,7 @@ export class AssetsCacheIndex {
 
 				this.data.set(relativeFilePath, hash);
 				diffResult.added.push(relativeFilePath);
-				/*if (this.verbose)*/ console.log(chalk.green('Added:'), filepath);
+				if (!this.silent) console.log(chalk.green('Added:'), filepath);
 			}
 
 			resolve();
