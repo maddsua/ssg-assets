@@ -3,7 +3,7 @@
 import path from 'path';
 import fs from 'fs';
 
-import { AssetsListItem, OutputFormat } from './types';
+import { AssetsListItem, OutputOption } from './types';
 
 import sharp from 'sharp';
 import chalk from 'chalk';
@@ -30,7 +30,7 @@ import { AssetsCacheIndex } from './content/cache';
 	const cacheDiff = await cacheIndex.diff(assets);
 	
 	//	convert changed assets
-	const convertAsset = async (asset: AssetsListItem, format: OutputFormat) => {
+	const convertAsset = async (asset: AssetsListItem, format: OutputOption) => {
 
 		if (format === 'original') {
 			fs.copyFileSync(asset.source, asset.dest);
