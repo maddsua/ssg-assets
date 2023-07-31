@@ -33,12 +33,12 @@ import chalk from 'chalk';
 
 		if (format === 'original') {
 			fs.copyFileSync(asset.source, asset.dest);
-			if (!config.silent) console.log(chalk.green(`Cloned original: `), asset.source);
+			if (!config.silent) console.log(chalk.green(`Cloned original: `), asset.dest);
 		} else {
 			const dest = asset.dest.replace(/\.[\d\w]+$/, `.${format}`);
 			await sharp(asset.source).toFormat(format, { quality: config.quality[format] || 90 }).toFile(dest);
 			fs.copyFileSync(dest, asset.cache + `.${format}`);
-			if (!config.silent) console.log(chalk.green(`Converted and cached: `), asset.source);
+			if (!config.silent) console.log(chalk.green(`Converted and cached: `), dest);
 		}
 	}
 	
