@@ -6,3 +6,4 @@ temp
 *.webp
 **/.cache
 *.tgz
+**/.cache.json
