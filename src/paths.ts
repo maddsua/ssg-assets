@@ -1,6 +1,9 @@
 import { existsSync, statSync } from 'fs';
 
-export const normalizePath = (filepath: string) => filepath.replace(/[\\\/]+/g, '/');
+/**
+ * Replace all backslashes, remove repeating and trailing slash
+ */
+export const normalizePath = (filepath: string) => filepath.replace(/[\\\/]+/g, '/').replace(/\/$/, '');
 
 export const fix_relative_glob = (pattern: string) => {
 
