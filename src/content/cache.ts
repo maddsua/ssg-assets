@@ -78,16 +78,15 @@ export class AssetsCacheIndex {
 			hit: []
 		};
 
+		let activeEntries = new Set<string>();
+
 		await Promise.all(assets.map(asset => new Promise<void>(async (resolve) => {
 
 			const hash = await hashFileContent(asset.source, this.verbose);
 
-			if (!hash) {
+			if (this.data.has(asset.slugHash)) {
 
-				diffResult.removed.push(asset.slugHash);
-				this.data.delete(asset.slugHash);
-
-			} else if (this.data.has(asset.slugHash)) {
+				activeEntries.add(asset.slugHash);
 
 				if (this.data.get(asset.slugHash) !== hash) {
 
@@ -100,13 +99,23 @@ export class AssetsCacheIndex {
 
 			} else {
 
+				activeEntries.add(asset.slugHash);
 				this.data.set(asset.slugHash, hash);
 				diffResult.added.push(asset.slugHash);
 			}
 
+			this.data.forEach((item) => {
+				if (activeEntries.has(item)) return
+
+				this.data.delete(asset.slugHash);
+				diffResult.removed.push(item);
+			});
+
 			resolve();
 
 		})));
+
+		console.log(activeEntries)
 
 		return diffResult;
 	};
