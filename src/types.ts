@@ -1,5 +1,5 @@
 export interface CacheItem {
-	nameHash: string;
+	fileName: string;
 	contentHash: string;
 };
 
