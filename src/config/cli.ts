@@ -20,10 +20,6 @@ export const cliArguments: Record<string, Argument> = {
 		argName: ['--nocache'],
 		actions: ['impl_bool']
 	},
-	justCopy: {
-		argName: ['--copy'],
-		actions: ['impl_bool']
-	},
 	formats: {
 		argName: ['--formats'],
 		actions: ['get_value', 'to_string_array']
@@ -33,11 +29,11 @@ export const cliArguments: Record<string, Argument> = {
 		actions: ['get_value', 'to_string_array']
 	},
 	inputDir: {
-		argName: ['--input'],
+		argName: ['--inputDir'],
 		actions: ['get_value']
 	},
 	outputDir: {
-		argName: ['--output'],
+		argName: ['--outputDir'],
 		actions: ['get_value']
 	},
 };
