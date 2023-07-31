@@ -3,8 +3,9 @@ import { inputFormats } from '../config/defaults';
 import { minimatch } from 'minimatch';
 import path from 'path';
 import fs from 'fs';
+import { Config } from '../types';
 
-const loadAllSupportedFiles = (directory: string) => {
+const loadAllSupportedFiles = (directory: string): string[] => {
 	const result = [];
 	const listDir = (dirpath: string) => fs.readdirSync(dirpath).forEach(file => {
 		const location = path.join(dirpath, file);
@@ -15,18 +16,18 @@ const loadAllSupportedFiles = (directory: string) => {
 	return result.map(item => item.replace(/[\\\/]+/g, '/'));
 };
 
-export const resolveSources = (srcDir: string, includes: string[], excludes: string[]) => {
+export const resolveAssets = (config: Config) => {
 
-	let entries = loadAllSupportedFiles(srcDir);
+	let entries = loadAllSupportedFiles(config.inputDir);
 
-	includes.forEach(item => entries = entries.filter(entry => minimatch(entry, item, {
+	config.include.forEach(item => entries = entries.filter(entry => minimatch(entry, item, {
 		matchBase: true,
 		nobrace: true,
 		noext: true,
 		nocase: true
 	})));
 
-	excludes.forEach(item => entries = entries.filter(entry => !minimatch(entry, item, {
+	config.exclude.forEach(item => entries = entries.filter(entry => !minimatch(entry, item, {
 		matchBase: true,
 		nobrace: true,
 		noext: true,
@@ -35,7 +36,10 @@ export const resolveSources = (srcDir: string, includes: string[], excludes: str
 
 	//console.log(entries);
 
-	return entries;
+	return entries.map(item => ({
+		input: item,
+		output: item.replace(new RegExp('^' + config.inputDir), config.outputDir)
+	}))
 };
 
-export default resolveSources;
+export default resolveAssets;
