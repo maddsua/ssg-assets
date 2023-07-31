@@ -20,10 +20,10 @@ import { AssetsCacheIndex } from './content/cache';
 		console.log('Current config:', config);
 	}
 	
-	const assets = resolveAssets(config);
-	
-	const cacheIndex = new AssetsCacheIndex(config.inputDir, config.verbose);
+	console.log(chalk.bgGreen.black(' Hashing assets... '));
 
+	const assets = resolveAssets(config);
+	const cacheIndex = new AssetsCacheIndex(config.inputDir, config.verbose);
 	const cacheDiff = await cacheIndex.diff(assets);
 
 	//if (config.verbose)
