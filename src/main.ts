@@ -1,16 +1,15 @@
 #!/usr/bin/env node
 
-import path from 'path';
-import fs from 'fs';
-
-import { AssetsListItem, OutputOption } from './types';
-
-import sharp from 'sharp';
-import chalk from 'chalk';
-
 import { loadConfig } from './config/loader';
 import { resolveAssets, resolveCachePath } from './content/loader';
 import { AssetsCacheIndex } from './content/cache';
+import { AssetsListItem, OutputOption } from './types';
+
+import path from 'path';
+import fs from 'fs';
+
+import sharp from 'sharp';
+import chalk from 'chalk';
 
 ( async () => {
 
