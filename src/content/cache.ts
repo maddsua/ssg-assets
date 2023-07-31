@@ -124,9 +124,8 @@ export class AssetsCacheIndex {
 
 		this.data.forEach((_, item) => {
 			if (activeEntries.has(item)) return;
-
 			this.data.delete(item);
-			diffResult.removed.push(item);
+			this.formats.map(format => diffResult.removed.push(item + '.' + format));
 		});
 
 		return diffResult;
