@@ -6,9 +6,8 @@ import path from 'path';
 
 import chalk from 'chalk';
 
-import type { ImageFormats, Config } from '../types';
-
-export const supportedImageFormats: ImageFormats[] = [ 'original', 'webp', 'avif' ];
+import type { Config } from '../types';
+import { imageFormats } from './defaults';
 
 //	Default config
 export const configEntries: Config = {
@@ -17,13 +16,14 @@ export const configEntries: Config = {
 	verbose: false,
 	nocache: false,
 	justCopy: false,
-	formats: supportedImageFormats,
+	formats: [...imageFormats],
 	exclude: [],
 	outputDir: '',
 	inputDir: ''
 };
 
 export const configEntriesMask = {
+	cli: [],
 	globalFile: ['config', 'foundLocalConfig'],
 	localFile: ['config', 'foundLocalConfig', 'inputDir', 'outputDir']
 };
@@ -41,6 +41,8 @@ export const loadConfig = () => {
 		}
 
 		const configEntry = optionId[1];
+
+		if (configEntriesMask.cli.find(item => item === configEntry)) return;
 
 		const option = cliArguments[configEntry];
 		if (!option) {
@@ -83,7 +85,7 @@ export const loadConfig = () => {
 
 		for (let key in importedConfig) {
 
-			if (configEntriesMask.globalFile.find(item => item === key)) continue;
+			if (configEntriesMask.globalFile.some(item => item === key)) continue;
 
 			if (!(key in configEntries)) {
 				console.log(chalk.yellow(`⚠  Unknown key '${key}'`), `(${configEntries.config})`);
@@ -126,7 +128,7 @@ export const loadConfig = () => {
 
 		for (let key in importedConfig) {
 
-			if (configEntriesMask.localFile.find(item => item === key)) continue;
+			if (configEntriesMask.localFile.some(item => item === key)) continue;
 
 			if (!(key in configEntries)) {
 				console.log(chalk.yellow(`⚠  Unknown key '${key}'`), `(${configEntries.config})`);
