@@ -1,4 +1,6 @@
 {
 	"verbose": true,
-	"justCopy": true
+	"justCopy": true,
+	"inputDir": "tests/assets",
+	"outputDir": "tests/dist"
 }
