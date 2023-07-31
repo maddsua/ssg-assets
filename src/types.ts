@@ -1,6 +1,8 @@
 export type CacheItem = [string, string];
 
-export type OutputFormat = 'original' | 'png' | 'jpg' | 'webp' | 'avif';
+export type OutputFormat = 'png' | 'jpg' | 'webp' | 'avif';
+
+export type OutputOption = 'original' | OutputFormat;
 
 export interface CacheIndex {
 	version: number;
@@ -30,7 +32,7 @@ export interface Config {
 	verbose: boolean;
 	silent: boolean;
 	nocache: boolean;
-	formats: OutputFormat[];
+	formats: OutputOption[];
 	exclude: string[];
 	include: string[];
 	inputDir: string | undefined;
