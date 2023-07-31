@@ -35,7 +35,7 @@ export interface Config {
 	assetDirConfig?: string;
 	verbose: boolean;
 	silent: boolean;
-	nocache: boolean;
+	noCache: boolean;
 	formats: OutputOption[];
 	exclude: string[];
 	include: string[];

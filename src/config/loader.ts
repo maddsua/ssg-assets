@@ -16,7 +16,7 @@ export const configEntries: Config = {
 	assetDirConfig: '',
 	verbose: false,
 	silent: false,
-	nocache: false,
+	noCache: false,
 	formats: ['original', 'webp', 'avif'],
 	exclude: [],
 	include: [],
