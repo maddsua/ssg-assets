@@ -12,6 +12,10 @@ export const cliArguments: Record<string, Argument> = {
 		argName: ['--verbose'],
 		actions: ['impl_bool']
 	},
+	silent: {
+		argName: ['--silent', '-s'],
+		actions: ['impl_bool']
+	},
 	nocache: {
 		argName: ['--nocache'],
 		actions: ['impl_bool']
