@@ -21,8 +21,3 @@ export interface Config {
 	outputDir: string | undefined;
 	quality: Record<string, number>
 };
-
-export interface Sources {
-	input: string;
-	action: 'convert' | 'copy';
-};
