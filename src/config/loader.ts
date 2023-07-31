@@ -13,6 +13,7 @@ export const supportedImageFormats: ImageFormats[] = [ 'original', 'webp', 'avif
 //	Default config
 export const configEntries: Config = {
 	config: 'ssgassets.config.json',
+	hasLocalConfig: false,
 	verbose: false,
 	nocache: false,
 	justCopy: false,
@@ -23,8 +24,8 @@ export const configEntries: Config = {
 };
 
 export const configEntriesMask = {
-	globalFile: ['config'],
-	localFile: ['config', 'inputDir', 'outputDir']
+	globalFile: ['config', 'foundLocalConfig'],
+	localFile: ['config', 'foundLocalConfig', 'inputDir', 'outputDir']
 };
 
 export const loadConfig = () => {
@@ -121,6 +122,7 @@ export const loadConfig = () => {
 	try {
 		const configFileContents = readFileSync(path.join(process.cwd(), path.join(configEntries.inputDir, 'ssgassets.config.json')));
 		const importedConfig = JSON.parse(configFileContents.toString());
+		configEntries.hasLocalConfig = true;
 
 		for (let key in importedConfig) {
 
@@ -143,7 +145,7 @@ export const loadConfig = () => {
 		//	oops, no config file hire. ok, it's fine too
 	}
 
-	console.log(configEntries);
+	//console.log(configEntries);
 
 	return configEntries;
 };
