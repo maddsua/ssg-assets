@@ -36,10 +36,15 @@ export const resolveAssets = (config: Config): AssetsListItem[] => {
 
 	//console.log(entries);
 
-	return entries.map(item => ({
-		input: item,
-		output: item.replace(new RegExp('^' + config.inputDir), config.outputDir)
-	}));
+	return entries.map(item => {
+		const slug = item.replace(new RegExp('^' + config.inputDir + '/'), '');
+		return {
+			input: item,
+			output: config.outputDir + '/' + slug,
+			cache: config.inputDir + '/.cache/' + slug,
+			slug
+		}
+	});
 };
 
 export default resolveAssets;
