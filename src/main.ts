@@ -3,7 +3,7 @@
 import path from 'path';
 import fs from 'fs';
 
-import { AssetsListItem } from './types';
+import { AssetsListItem, OutputFormat } from './types';
 
 import sharp from 'sharp';
 import chalk from 'chalk';
@@ -30,10 +30,17 @@ import { AssetsCacheIndex } from './content/cache';
 	const cacheDiff = await cacheIndex.diff(assets);
 	
 	//	convert changed assets
-	const convertAsset = async (asset: AssetsListItem, format: keyof sharp.FormatEnum) => {
-		const dest = asset.dest.replace(/\.[\d\w]+$/, `.${format}`);
-		await sharp(asset.source).toFormat(format, { quality: config.quality[format] || 90 }).toFile(dest);
-		fs.copyFileSync(dest, asset.cache + `.${format}`);
+	const convertAsset = async (asset: AssetsListItem, format: OutputFormat) => {
+
+		if (format === 'original') {
+			fs.copyFileSync(asset.source, asset.dest);
+			if (!config.silent) console.log(chalk.green(`Cloned original: `), asset.source);
+		} else {
+			const dest = asset.dest.replace(/\.[\d\w]+$/, `.${format}`);
+			await sharp(asset.source).toFormat(format, { quality: config.quality[format] || 90 }).toFile(dest);
+			fs.copyFileSync(dest, asset.cache + `.${format}`);
+			if (!config.silent) console.log(chalk.green(`Converted and cached: `), asset.source);
+		}
 	}
 	
 	const converJob = [cacheDiff.added, cacheDiff.changed].flat();
@@ -53,17 +60,7 @@ import { AssetsCacheIndex } from './content/cache';
 
 		} else if (asset.action === 'convert') {
 
-			await Promise.all(config.formats.map(async (format) => {
-
-				if (format === 'original') {
-					fs.copyFileSync(asset.source, asset.dest);
-				} else {
-					await convertAsset(asset, format);
-				}
-
-			}));
-
-			if (!config.silent) console.log(chalk.green(`Converted and cached: `), asset.source);
+			await Promise.all(config.formats.map(async (format) => convertAsset(asset, format)));
 		}
 	}));
 
@@ -83,17 +80,12 @@ import { AssetsCacheIndex } from './content/cache';
 
 			if (fs.existsSync(cacheFile)) {
 				fs.copyFileSync(cacheFile, destFile);
+				if (!config.silent) console.log(chalk.green('Cache hit:'), destFile);
 			} else {
-				
-				if (format === 'original') {
-					fs.copyFileSync(asset.source, asset.dest);
-				} else {
-					await convertAsset(asset, format);
-				}
+				await convertAsset(asset, format);
 			}
 		});
 
-		if (!config.silent) console.log(chalk.green('Cache hit:'), asset.source);
 	});
 
 	//	delete old files
