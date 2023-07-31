@@ -1,7 +1,7 @@
 import { cliArguments } from './cli';
-import { normalizePath } from '../paths';
+import { normalizePath, fix_relative_glob } from '../paths';
 
-import { readFileSync, existsSync, statSync } from 'fs';
+import { readFileSync } from 'fs';
 import process from 'process';
 import path from 'path';
 
@@ -161,30 +161,16 @@ export const loadConfig = () => {
 		configEntries.assetDirConfig = undefined;
 	}
 
-	//	fix directory patterns
-	const fix_directory_pattern = (pattern: string) => {
-
-		if (/[\\\/]\*$/.test(pattern)) return pattern;
-
-		try {
-			if (!existsSync(pattern)) return pattern;
-			if (!statSync(pattern).isDirectory()) return pattern;
-		} catch (_error) {
-			return pattern;
-		}
-
-		return pattern + '/*';
-	};
-	
-	configEntries.exclude = configEntries.exclude.map(item => fix_directory_pattern(item));
-	configEntries.include = configEntries.include.map(item => fix_directory_pattern(item));
-
 	//	normalize paths to forward slash
 	configEntries.inputDir = normalizePath(configEntries.inputDir);
 	configEntries.outputDir = normalizePath(configEntries.outputDir);
 	configEntries.exclude = configEntries.exclude.map(item => normalizePath(item));
 	configEntries.include = configEntries.include.map(item => normalizePath(item));
 
+	//	fix  glob patterns
+	configEntries.exclude = configEntries.exclude.map(item => fix_relative_glob(item));
+	configEntries.include = configEntries.include.map(item => fix_relative_glob(item));
+	
 	//console.log(configEntries);
 
 	return configEntries;
