@@ -18,6 +18,6 @@ export interface Config {
 	justCopy: boolean;
 	formats: ImageFormats[];
 	exclude: string[];
-	inputDir?: string;
-	outputDir?: string;
+	inputDir: string | undefined;
+	outputDir: string | undefined;
 };
