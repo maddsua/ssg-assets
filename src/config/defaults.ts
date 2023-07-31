@@ -6,3 +6,8 @@ export const imageQuality = {
 	jpg: 75,
 	png: 85
 };
+
+export default {
+	imageFormats,
+	imageQuality
+}
