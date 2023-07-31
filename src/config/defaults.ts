@@ -1,4 +1,4 @@
-export const inputFormats = ['png', 'jpeg', 'jpg', 'avif', 'webp', 'gif', 'svg'];
+export const inputFormats = [ 'png', 'jpeg', 'jpg', 'avif', 'webp', 'gif', 'svg' ];
 
 export const imageFormats = [ 'copy', 'webp', 'avif', 'png', 'jpg' ];
 
