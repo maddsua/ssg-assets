@@ -3,7 +3,7 @@ import { inputFormats } from '../config/defaults';
 import { minimatch } from 'minimatch';
 import path from 'path';
 import fs from 'fs';
-import { Config } from '../types';
+import type { Config, AssetsListItem } from '../types';
 
 const loadAllSupportedFiles = (directory: string): string[] => {
 	const result = [];
@@ -16,7 +16,7 @@ const loadAllSupportedFiles = (directory: string): string[] => {
 	return result.map(item => item.replace(/[\\\/]+/g, '/'));
 };
 
-export const resolveAssets = (config: Config) => {
+export const resolveAssets = (config: Config): AssetsListItem[] => {
 
 	let entries = loadAllSupportedFiles(config.inputDir);
 
@@ -39,7 +39,7 @@ export const resolveAssets = (config: Config) => {
 	return entries.map(item => ({
 		input: item,
 		output: item.replace(new RegExp('^' + config.inputDir), config.outputDir)
-	}))
+	}));
 };
 
 export default resolveAssets;
