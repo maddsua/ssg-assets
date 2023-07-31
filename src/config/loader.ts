@@ -39,7 +39,7 @@ export const loadConfig = () => {
 
 		const optionId = optionsMap.find(item => item[0] === argName);
 		if (!optionId) {
-			console.log(chalk.yellow(`⚠  Unknown option '${argName}'`), '(cli)');
+			console.warn(chalk.yellow(`⚠  Unknown option '${argName}'`), '(cli)');
 			return;
 		}
 
@@ -47,7 +47,7 @@ export const loadConfig = () => {
 
 		const option = cliArguments[configEntry];
 		if (!option) {
-			console.log(chalk.yellow(`⚠  Unmatched option '${arg}'`), '(cli)');
+			console.warn(chalk.yellow(`⚠  Unmatched option '${arg}'`), '(cli)');
 			return;
 		}
 
@@ -63,7 +63,7 @@ export const loadConfig = () => {
 				case 'get_value': {
 					temp = arg.split('=')?.at(1);
 					if (!temp) {
-						console.log(chalk.yellow(`⚠  Empty option '${arg}'`));
+						console.warn(chalk.yellow(`⚠  Empty option '${arg}'`));
 						return;
 					}
 				} break;
@@ -87,17 +87,17 @@ export const loadConfig = () => {
 		for (let key in importedConfig) {
 
 			if (configEntriesMask.globalFile.some(item => item === key)) {
-				console.log(chalk.yellow(`⚠  Option '${key}' cannot be set from ${configEntries.projectConfig}`));
+				console.warn(chalk.yellow(`⚠  Option '${key}' cannot be set from ${configEntries.projectConfig}`));
 				continue;
 			}
 
 			if (!(key in configEntries)) {
-				console.log(chalk.yellow(`⚠  Unknown key '${key}'`), `(${configEntries.projectConfig})`);
+				console.warn(chalk.yellow(`⚠  Unknown key '${key}'`), `(${configEntries.projectConfig})`);
 				continue;
 			}
 
 			if (typeof configEntries[key] !== typeof importedConfig[key]) {
-				console.log(chalk.yellow(`⚠  Key '${key}' type invalid`), `(${configEntries.projectConfig})`);
+				console.warn(chalk.yellow(`⚠  Key '${key}' type invalid`), `(${configEntries.projectConfig})`);
 				continue;
 			}
 
@@ -120,7 +120,7 @@ export const loadConfig = () => {
 
 	//	ensure that we don't write output to the source directory
 	if (typeof configEntries.inputDir === 'string' && configEntries.inputDir === configEntries.outputDir) {
-		console.log(chalk.red(`⚠  Input directory is the same as the output.`));
+		console.error(chalk.red(`⚠  Input directory is the same as the output.`));
 		process.exit(0);
 	}
 	
@@ -133,17 +133,17 @@ export const loadConfig = () => {
 		for (let key in importedConfig) {
 
 			if (configEntriesMask.localFile.some(item => item === key)) {
-				console.log(chalk.yellow(`⚠  Option '${key}' cannot be set from ${configEntries.assetDirConfig}`));
+				console.warn(chalk.yellow(`⚠  Option '${key}' cannot be set from ${configEntries.assetDirConfig}`));
 				continue;
 			}
 
 			if (!(key in configEntries)) {
-				console.log(chalk.yellow(`⚠  Unknown key '${key}'`), `(${configEntries.assetDirConfig})`);
+				console.warn(chalk.yellow(`⚠  Unknown key '${key}'`), `(${configEntries.assetDirConfig})`);
 				continue;
 			}
 
 			if (typeof configEntries[key] !== typeof importedConfig[key]) {
-				console.log(chalk.yellow(`⚠  Key '${key}' type invalid`), `(${configEntries.assetDirConfig})`);
+				console.warn(chalk.yellow(`⚠  Key '${key}' type invalid`), `(${configEntries.assetDirConfig})`);
 				continue;
 			}
 
