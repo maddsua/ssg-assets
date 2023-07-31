@@ -28,4 +28,7 @@ import { AssetsCacheIndex } from './content/cache';
 	
 	console.log(await cache.diff(assets));
 
+
+	cache.save();
+
 })();
