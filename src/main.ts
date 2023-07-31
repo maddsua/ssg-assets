@@ -11,15 +11,21 @@ import { loadConfig } from './config/loader';
 import { resolveAssets } from './content/loader';
 import { AssetsCacheIndex } from './content/cache';
 
-const config = loadConfig();
+( async () => {
 
-if (config.verbose) {
-	console.log('Verbose mode enabled. The tool is extra talkative now.');
-	console.log('Current config:', config);
-}
+	const config = loadConfig();
+	
+	if (config.verbose) {
+		console.log('Verbose mode enabled. The tool is extra talkative now.');
+		console.log('Current config:', config);
+	}
+	
+	const assets = resolveAssets(config);
+	
+	const cache = new AssetsCacheIndex(config.inputDir, config.verbose);
+	
+	console.log(assets);
+	
+	console.log(await cache.diff(assets));
 
-const assets = resolveAssets(config);
-
-const cache = new AssetsCacheIndex(config.inputDir);
-
-console.log(assets);
+})();
