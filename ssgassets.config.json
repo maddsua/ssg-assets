@@ -1,5 +1,6 @@
 {
 	"verbose": false,
+	"silent": true,
 	"inputDir": "tests/assets",
 	"outputDir": "tests/dist"
 }
