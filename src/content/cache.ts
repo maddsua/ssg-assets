@@ -75,7 +75,7 @@ export class AssetsCacheIndex {
 
 				diffResult.removed.push(filename);
 				this.data.delete(filename);
-				if (this.verbose) console.log(` File: '${filename}': removed`);
+				/*if (this.verbose)*/ console.log(chalk.yellow(`Removed: '${filename}'`));
 
 			} else if (this.data.has(filename)) {
 
@@ -83,20 +83,21 @@ export class AssetsCacheIndex {
 
 					this.data.set(filename, hash);
 					diffResult.changed.push(filename);
-					if (this.verbose) console.log(` File: '${filename}': updated`);
+					/*if (this.verbose)*/ console.log(chalk.green(`Updated: `), filename);
 
 				} else if (this.verbose)  {
-					console.log(` File: '${filename}': not changed`);
+					console.log(chalk.green('Not changed:'), filename);
 				}
 
 			} else {
 
 				this.data.set(filename, hash);
 				diffResult.added.push(filename);
-				if (this.verbose) console.log(` File: '${filename}': added`);
+				/*if (this.verbose)*/ console.log(chalk.green('Added:'), filename);
 			}
 
 			resolve();
+
 		})));
 
 		return diffResult;
