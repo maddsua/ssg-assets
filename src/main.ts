@@ -38,8 +38,20 @@ import { AssetsCacheIndex } from './content/cache';
 		if (!fs.existsSync(destdir))
 			fs.mkdirSync(destdir, { recursive: true });
 
-		console.log(asset);
-		fs.copyFileSync(asset.input, asset.output);
+		//console.log(asset);
+		//fs.copyFileSync(asset.input, asset.output);
+	});
+
+	//	copy cache-hit files
+	cacheDiff.hit.forEach(item => {
+
+		const asset = assetsMap.get(item);
+		const destdir = path.dirname(asset.output);
+
+		if (!fs.existsSync(destdir))
+			fs.mkdirSync(destdir, { recursive: true });
+
+		fs.copyFileSync(asset.output, cacheIndex.resolve(asset.input));
 	});
 
 	//if (config.verbose)
