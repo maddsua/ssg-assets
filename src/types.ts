@@ -2,7 +2,7 @@ export type OutputFormat = 'png' | 'jpg' | 'webp' | 'avif';
 export type OutputOption = 'original' | OutputFormat;
 
 export type CacheItem = {
-	name: string;
+	slugHash: string;
 	content: string;
 	formats: OutputFormat[];
 };
