@@ -102,6 +102,7 @@ export class AssetsCacheIndex {
 				if (this.data.get(asset.slugHash).content !== hash) {
 
 					this.data.set(asset.slugHash, {
+						slug: asset.slug,
 						slugHash: asset.slugHash,
 						content: hash,
 						formats: this.formats
@@ -116,6 +117,7 @@ export class AssetsCacheIndex {
 
 				activeEntries.add(asset.slugHash);
 				this.data.set(asset.slugHash, {
+					slug: asset.slug,
 					slugHash: asset.slugHash,
 					content: hash,
 					formats: this.formats
