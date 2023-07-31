@@ -20,3 +20,5 @@ if (config.verbose) {
 }
 
 const sources = resolveSources(config.inputDir, config.include, config.exclude);
+
+console.log(sources);
