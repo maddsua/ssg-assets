@@ -7,7 +7,7 @@ import path from 'path';
 import chalk from 'chalk';
 
 import type { Config } from '../types';
-import defaults from './defaults';
+import * as defaults from './defaults';
 
 //	Default config
 export const configEntries: Config = {
