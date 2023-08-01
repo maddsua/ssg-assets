@@ -73,7 +73,7 @@ export class AssetsCacheIndex {
 				return;
 			}
 
-			cacheIndex.entries.forEach(item => this.data.set(item.slugHash, item));
+			cacheIndex.entries.forEach(item => this.data.set(item.file, item));
 
 		} catch (error) {
 			console.error(chalk.red(`⚠  Failed to load cache index:`), error);
@@ -102,8 +102,7 @@ export class AssetsCacheIndex {
 				if (this.data.get(asset.slugHash).content !== hash) {
 
 					this.data.set(asset.slugHash, {
-						slug: asset.slug,
-						slugHash: asset.slugHash,
+						file: asset.slugHash,
 						content: hash,
 						formats: this.formats
 					});
@@ -117,8 +116,7 @@ export class AssetsCacheIndex {
 
 				activeEntries.add(asset.slugHash);
 				this.data.set(asset.slugHash, {
-					slug: asset.slug,
-					slugHash: asset.slugHash,
+					file: asset.slugHash,
 					content: hash,
 					formats: this.formats
 				});

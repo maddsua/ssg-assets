@@ -104,8 +104,15 @@ const convertAsset = async (asset: AssetsListItem, format: OutputOption, config:
 				const copyOrigin = format === 'original';
 	
 				if (fs.existsSync(cacheFile) || copyOrigin) {
-					fs.copyFileSync(copyOrigin ? asset.source : cacheFile, destFile);
+
+					const copy = {
+						source: copyOrigin ? asset.source : cacheFile,
+						dest: copyOrigin ? asset.dest : destFile
+					};
+
+					fs.copyFileSync(copy.source, copy.dest);;
 					if (!config.silent) console.log(chalk.green('Cache hit:'), destFile);
+
 				} else {
 					await convertAsset(asset, format, config);
 				}
@@ -122,12 +129,6 @@ const convertAsset = async (asset: AssetsListItem, format: OutputOption, config:
 			} catch (error) {
 				if (config.verbose) console.warn(chalk.yellow(`'${cachePath}' already removed`));
 			}
-	
-			/*try {
-				fs.rmSync(asset.dest);
-			} catch (error) {
-				if (config.verbose) console.log(chalk.yellow(`'${asset.source}' not present in '${config.outputDir}'`));
-			}*/
 	
 			if (!config.silent) console.log(chalk.yellow(`Removed: '${cachePath}'`));
 		});
