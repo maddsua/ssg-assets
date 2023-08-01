@@ -1,4 +1,4 @@
-import { inputFormats, canConvert } from '../config/defaults';
+import { inputFormats, sharpFormats } from '../config/defaults';
 
 import { createHash } from 'crypto';
 
@@ -53,7 +53,7 @@ export const resolveAssets = (config: Config): AssetsListItem[] => {
 			source: item,
 			dest: resolveDestPath(config.outputDir, slug),
 			cache: resolveCachePath(config.inputDir, slugHash),
-			action: canConvert.some(item => slug.endsWith(item)) ? 'convert' : 'copy'
+			action: sharpFormats.some(item => slug.endsWith(item)) ? 'sharp' : 'copy'
 		}
 	});
 };

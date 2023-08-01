@@ -11,7 +11,7 @@ import fs from 'fs';
 import sharp from 'sharp';
 import chalk from 'chalk';
 
-const convertAsset = async (asset: AssetsListItem, format: OutputOption, config: Config): Promise<null | Error> => {
+const sharpConvertAsset = async (asset: AssetsListItem, format: OutputOption, config: Config): Promise<null | Error> => {
 
 	/**
 	 * Yeah, yeah, I'm passing the entire config object here.
@@ -57,7 +57,7 @@ const convertAsset = async (asset: AssetsListItem, format: OutputOption, config:
 
 		await Promise.all(assets.map(async (asset) => {
 			config.formats.forEach(async (format) => {
-				await convertAsset(asset, format, config);
+				await sharpConvertAsset(asset, format, config);
 			});
 		}));
 
@@ -81,8 +81,8 @@ const convertAsset = async (asset: AssetsListItem, format: OutputOption, config:
 				fs.copyFileSync(asset.source, asset.dest);
 				if (!config.silent) console.log(chalk.green(`Cloned origin: `), asset.source);
 	
-			} else if (asset.action === 'convert') {
-				await Promise.all(config.formats.map(async (format) => convertAsset(asset, format, config)));
+			} else if (asset.action === 'sharp') {
+				await Promise.all(config.formats.map(async (format) => sharpConvertAsset(asset, format, config)));
 			}
 
 		}));
@@ -114,7 +114,7 @@ const convertAsset = async (asset: AssetsListItem, format: OutputOption, config:
 					if (!config.silent) console.log(chalk.green('Cache hit:'), destFile);
 
 				} else {
-					await convertAsset(asset, format, config);
+					await sharpConvertAsset(asset, format, config);
 				}
 			});
 		});
