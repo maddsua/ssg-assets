@@ -17,7 +17,7 @@ const sharpConvertAsset = async (asset: AssetsListItem, format: OutputOption, co
 	 * Yeah, yeah, I'm passing the entire config object here.
 	 * JS passes it by reference, so no performance loss here, only more noodle-code.
 	 */
-			
+
 	try {
 
 		if (format === 'original') {
@@ -48,7 +48,7 @@ const sharpConvertAsset = async (asset: AssetsListItem, format: OutputOption, co
 		console.log('Verbose mode enabled. The tool is extra talkative now.');
 		console.log('Current config:', config);
 	}
-	
+
 	console.log(chalk.bgGreen.black(' Hashing assets... '));
 
 	const assets = resolveAssets(config);
@@ -67,17 +67,17 @@ const sharpConvertAsset = async (asset: AssetsListItem, format: OutputOption, co
 		const cacheDiff = await cacheIndex.diff(assets);
 		const convertJob = [cacheDiff.added, cacheDiff.changed].flat();
 		const assetsMap = new Map<string, AssetsListItem>(assets.map(item => [item.slugHash, item]));
-	
+
 		await Promise.all(convertJob.map( async (item) => {
-	
+
 			const asset = assetsMap.get(item);
 			const destdir = path.dirname(asset.dest);
-	
+
 			if (!fs.existsSync(destdir))
 				fs.mkdirSync(destdir, { recursive: true });
-	
+
 			if (asset.action === 'copy') {
-	
+
 				fs.copyFileSync(asset.source, asset.dest);
 				if (!config.silent) console.log(chalk.green(`Cloned origin: `), asset.source);
 	
@@ -89,20 +89,20 @@ const sharpConvertAsset = async (asset: AssetsListItem, format: OutputOption, co
 	
 		//	copy cache-hit files
 		cacheDiff.hit.forEach(item => {
-	
+
 			const asset = assetsMap.get(item);
 			const destdir = path.dirname(asset.dest);
-	
+
 			if (!fs.existsSync(destdir))
 				fs.mkdirSync(destdir, { recursive: true });
-	
+
 			config.formats.forEach(async (format) => {
-	
+
 				const destFile = asset.dest.replace(/\.[\d\w]+$/, `.${format}`);
 				const cacheFile = asset.cache + `.${format}`;
-	
+
 				const copyOrigin = format === 'original';
-	
+
 				if (fs.existsSync(cacheFile) || copyOrigin) {
 
 					const copy = {
@@ -118,21 +118,21 @@ const sharpConvertAsset = async (asset: AssetsListItem, format: OutputOption, co
 				}
 			});
 		});
-	
+
 		//	delete old files
 		cacheDiff.removed.forEach(item => {
-	
+
 			const cachePath = resolveCachePath(config.inputDir, item);
-	
+
 			try {
 				fs.rmSync(cachePath);
 			} catch (error) {
 				if (config.verbose) console.warn(chalk.yellow(`'${cachePath}' already removed`));
 			}
-	
+
 			if (!config.silent) console.log(chalk.yellow(`Removed: '${cachePath}'`));
 		});
-	
+
 		cacheIndex.save();
 
 	}))();
