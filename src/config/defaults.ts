@@ -13,6 +13,7 @@ export const defaultConfig: Partial<Config> = {
 	formats: ['original', 'webp', 'avif'],
 	exclude: [],
 	include: [],
+	passtrough: [],
 	quality: {
 		avif: 80,
 		webp: 85,

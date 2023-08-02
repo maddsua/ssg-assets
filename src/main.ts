@@ -37,6 +37,13 @@ import path from 'path';
 
 	await Promise.all(assets.map(async (asset) => {
 
+		//	asset passtrough
+		if (asset.action === 'copy') {
+			fs.copyFileSync(asset.source, asset.dest);
+			if (!config.silent) console.log(chalk.green('Copied:'), asset.dest);
+			return;
+		}
+
 		//	sharp subroutine
 		config.formats.forEach(async (format) => {
 

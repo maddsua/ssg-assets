@@ -58,14 +58,25 @@ export const resolveAssets = async (config: Config): Promise<AssetsListItem[]> =
 	}
 
 	return entries.map((item, index) => {
+
 		const slug = item.replace(new RegExp('^' + config.inputDir + '/'), '');
+
+		const isPasstrough = config.passtrough.some(pattern => minimatch(item, pattern, {
+			matchBase: true,
+			nobrace: true,
+			noext: true,
+			nocase: true
+		}));
+
+		const sharpInput = sharpFormats.some(item => slug.endsWith(item));
+
 		return {
 			source: item,
 			dest: normalizePath(config.outputDir + '/' + slug),
 			cache: normalizePath(config.cacheDir + '/' + hashes[index]),
 			slug,
 			hash: hashes[index],
-			action: sharpFormats.some(item => slug.endsWith(item)) ? 'sharp' : 'copy'
+			action: (sharpInput && !isPasstrough) ? 'sharp' : 'copy'
 		}
 	});
 };
