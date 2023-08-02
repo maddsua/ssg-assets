@@ -7,10 +7,10 @@ import process from 'process';
 
 import chalk from 'chalk';
 
-import { ConfigSchema } from '../types';
+import { Config, ConfigSchema } from './schema';
 import { loadConfigFile } from './file';
 
-export const loadConfig = () => {
+export const loadConfig = (): Required<Config> => {
 
 	const mergedConfig = importArguments() as Record<string, any>;
 
@@ -51,10 +51,10 @@ export const loadConfig = () => {
 		});
 	}
 
-	const configEntries = Object.assign(defaultConfig, mergedConfig);
+	const configEntries = Object.assign(defaultConfig, mergedConfig) as Required<Config>;
 
-	configEntries.inputDir = normalizePath(configEntries.inputDir);
-	configEntries.outputDir = normalizePath(configEntries.outputDir);
+	configEntries.inputDir = normalizePath(configEntries.inputDir as string);
+	configEntries.outputDir = normalizePath(configEntries.outputDir as string);
 
 	configEntries.exclude = configEntries.exclude.map(item => normalizePath(item));
 	configEntries.include = configEntries.include.map(item => normalizePath(item));
@@ -78,7 +78,7 @@ export const loadConfig = () => {
 
 	configEntries.cacheDir = configEntries.inputDir + '/.cache';
 
-	return configEntries;
+	return configEntries as Required<Config>;
 };
 
 export default loadConfig;

@@ -2,7 +2,7 @@ import { readFileSync } from 'fs';
 import path from 'path';
 import chalk from 'chalk';
 
-import { ConfigSchema } from '../types';
+import { ConfigSchema } from './schema';
 
 export const loadConfigFile = (filePath: string): Record<string, any> | null => {
 

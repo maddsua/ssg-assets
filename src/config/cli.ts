@@ -1,4 +1,4 @@
-import { ConfigSchema } from '../types';
+import { ConfigSchema } from './schema';
 
 import process from 'process';
 import chalk from 'chalk';
