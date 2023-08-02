@@ -14,30 +14,26 @@ import path from 'path';
 
 ( async () => {
 
+	console.log('\n');
+
 	const config = loadConfig();
 	
 	if (config.verbose) {
 		console.log('Verbose mode enabled. The tool is extra talkative now.');
-		console.log('Current config:', config);
+		console.log('Current config:', config, '\n');
 	}
 
-	console.log(chalk.bgGreen.black(' Hashing assets... '));
+	console.log(chalk.bgGreen.black(' Hashing assets... '), '\n');
 
 	const assets = await resolveAssets(config);
 
-	//console.log(assets);
-
+	console.log(chalk.bgGreen.black(' Updating cache... '), '\n');
 	const cached = getCachedAssets(config.cacheDir);
-
 	const unusedCache = cached.filter(item => !assets.some(item1 => item1.hash === item.hash));
-
-	//console.log('unused:', unusedCache);
 
 	unusedCache.forEach(item => {
 		fs.statSync(item.file).isDirectory() ? fs.rmdirSync(item.file, { recursive: true }) : fs.rmSync(item.file);
-		//console.log(chalk.yellow('Removed from cache original:'), item.file);
 	});
-
 
 	await Promise.all(assets.map(async (asset) => {
 
