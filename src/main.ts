@@ -55,12 +55,12 @@ import path from 'path';
 				if (!config.silent) console.log(chalk.green('Cloned original:'), asset.dest);
 				return;
 			}
-			
+
 			//	try getting from cache
 			const cacheItem = asset.cache + `.${format}`;
 			if (fs.existsSync(cacheItem)) {
 				fs.copyFileSync(cacheItem, dest);
-				if (!config.silent) console.log(chalk.green('Cache hit:'), asset.dest);
+				if (!config.silent) console.log(chalk.green('Cache hit:'), dest);
 				return;
 			}
 
