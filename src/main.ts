@@ -27,11 +27,11 @@ import path from 'path';
 
 	const assets = await resolveAssets(config);
 
-	console.log(chalk.bgGreen.black(' Updating cache... '), '\n');
+	if (!config.noCache) console.log(chalk.bgGreen.black(' Updating cache... '), '\n');
 	const cached = getCachedAssets(config.cacheDir);
 	const unusedCache = cached.filter(item => !assets.some(item1 => item1.hash === item.hash));
 
-	unusedCache.forEach(item => {
+	if (!config.noCache) unusedCache.forEach(item => {
 		fs.statSync(item.file).isDirectory() ? fs.rmdirSync(item.file, { recursive: true }) : fs.rmSync(item.file);
 	});
 
@@ -54,7 +54,7 @@ import path from 'path';
 
 			//	try getting from cache
 			const cacheItem = asset.cache + `.${format}`;
-			if (fs.existsSync(cacheItem)) {
+			if (!config.noCache && fs.existsSync(cacheItem)) {
 				fs.copyFileSync(cacheItem, dest);
 				if (!config.silent) console.log(chalk.green('Cache hit:'), dest);
 				return;
@@ -62,7 +62,7 @@ import path from 'path';
 
 			//	convert using sharp
 			await sharp(asset.source).toFormat(format, { quality: config.quality[format] || 90 }).toFile(dest);
-			fs.copyFileSync(dest, cacheItem);
+			if (!config.noCache) fs.copyFileSync(dest, cacheItem);
 			if (!config.silent) console.log(chalk.green(`Converted${config.noCache ? '' : ' and cached'}:`), dest);
 		});
 	}));
