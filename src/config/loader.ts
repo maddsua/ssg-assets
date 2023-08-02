@@ -1,34 +1,29 @@
 import { importArguments } from './cli';
-import { normalizePath, fix_relative_glob } from '../paths';
+import { normalizePath, fix_relative_glob } from '../content/paths';
 
 import { defaultConfig, outputFormats } from './defaults';
 
-import { readFileSync } from 'fs';
 import process from 'process';
-import path from 'path';
 
 import chalk from 'chalk';
 
-import { Config, ConfigSchema } from '../types';
+import { ConfigSchema } from '../types';
 import { loadConfigFile } from './file';
-
-
-export const mergedConfigMask = {
-	globalFile: ['projectConfig', 'assetDirConfig'],
-	localFile: ['projectConfig', 'assetDirConfig', 'inputDir', 'outputDir']
-};
 
 export const loadConfig = () => {
 
-	const mergedConfig = importArguments() as Partial<Config>;
+	const mergedConfig = importArguments() as Record<string, any>;
 
 	const projectOption = loadConfigFile(mergedConfig.config || 'ssgassets.config.json');
 
-	Object.entries(projectOption).forEach(([prop, value]) => {
+	if (projectOption) Object.entries(projectOption).forEach(([prop, value]) => {
 		if (!ConfigSchema[prop]?.mutable_project) return;
 		if (!!mergedConfig[prop]) return;
 		mergedConfig[prop] = value;
 	});
+
+	mergedConfig.inputDir = normalizePath(mergedConfig.inputDir);
+	mergedConfig.outputDir = normalizePath(mergedConfig.outputDir);
 
 	if (!mergedConfig.inputDir) {
 		mergedConfig.inputDir = 'assets';
@@ -45,23 +40,26 @@ export const loadConfig = () => {
 		process.exit(0);
 	}
 
-	mergedConfig.inputDir = normalizePath(mergedConfig.inputDir);
-	mergedConfig.outputDir = normalizePath(mergedConfig.outputDir);
-
-	const assetsOption = loadConfigFile(mergedConfig.inputDir + '/ssgassets.config.json');
-
-	Object.entries(assetsOption).forEach(([prop, value]) => {
-		if (!ConfigSchema[prop]?.mutable_assets) return;
-		if (!!mergedConfig[prop]) return;
-		mergedConfig[prop] = value;
-	});
+	const assetConfigFilePath = mergedConfig.inputDir + '/ssgassets.config.json';
+	const assetsOption = loadConfigFile(assetConfigFilePath);
+	if (assetsOption) {
+		mergedConfig.assetConfig = assetConfigFilePath;
+		Object.entries(assetsOption).forEach(([prop, value]) => {
+			if (!ConfigSchema[prop]?.mutable_assets) return;
+			if (!!mergedConfig[prop]) return;
+			mergedConfig[prop] = value;
+		});
+	}
 
 	const configEntries = Object.assign(defaultConfig, mergedConfig);
+
+	configEntries.inputDir = normalizePath(configEntries.inputDir);
+	configEntries.outputDir = normalizePath(configEntries.outputDir);
 
 	configEntries.exclude = configEntries.exclude.map(item => normalizePath(item));
 	configEntries.include = configEntries.include.map(item => normalizePath(item));
 
-	//	fix  glob patterns
+	//	fix glob patterns
 	configEntries.exclude = configEntries.exclude.map(item => fix_relative_glob(item));
 	configEntries.include = configEntries.include.map(item => fix_relative_glob(item));
 
@@ -77,6 +75,8 @@ export const loadConfig = () => {
 			console.warn(chalk.yellow(`⚠  Unknown output format '${item}'`));
 		}
 	});
+
+	configEntries.cacheDir = configEntries.inputDir + '/.cache';
 
 	return configEntries;
 };

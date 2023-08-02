@@ -1,30 +1,35 @@
 import { inputFormats, sharpFormats } from '../config/defaults';
+import type { Config, AssetsListItem } from '../types';
+import { getFileHashSha256 } from './hash';
 
-import { createHash } from 'crypto';
+import { normalizePath } from './paths';
+
+import fs from 'fs';
 
 import { minimatch } from 'minimatch';
-import fs from 'fs';
-import type { Config, AssetsListItem } from '../types';
-
-export const resolveCachePath = (assetsDir: string, slugHash: string) => (assetsDir + '/.cache/items/' + slugHash).replace(/[\\\/]+/, '/');
-export const resolveDestPath = (assetsDir: string, slug: string) => (assetsDir + '/' + slug).replace(/[\\\/]+/, '/');
+import chalk from 'chalk';
 
 const loadAllSupportedFiles = (assetDir: string): string[] => {
 	
-	const result = [];
+	const result: string[] = [];
 
-	const listDir = (dir: string) => fs.readdirSync(dir).forEach(file => {
+	const listDir = (dir: string): void => fs.readdirSync(dir).forEach(file => {
 		const location = dir + '/' + file;
 		if (location.startsWith(assetDir + '/.cache')) return;
 		if (fs.statSync(location).isDirectory()) return listDir(location);
 		else if (inputFormats.some(ext => file.endsWith(`.${ext}`))) return result.push(location);
 	});
-	listDir(assetDir);
+
+	try {
+		listDir(assetDir);
+	} catch (_error) {
+		throw new Error('Unable to list source directory');;
+	}
 
 	return result.map(item => item.replace(/[\\\/]+/g, '/'));
 };
 
-export const resolveAssets = (config: Config): AssetsListItem[] => {
+export const resolveAssets = async (config: Config): Promise<AssetsListItem[]> => {
 
 	let entries = loadAllSupportedFiles(config.inputDir);
 
@@ -42,17 +47,23 @@ export const resolveAssets = (config: Config): AssetsListItem[] => {
 		nocase: true
 	})));
 
-	//console.log(entries);
+	let hashes: string[] = [];
 
-	return entries.map(item => {
+	try {
+		hashes = await Promise.all(entries.map(item => getFileHashSha256(item)));
+	} catch (error) {
+		console.error(chalk.red(`⚠  Failed to save cache index:`), error);
+		process.exit(1);
+	}
+
+	return entries.map((item, index) => {
 		const slug = item.replace(new RegExp('^' + config.inputDir + '/'), '');
-		const slugHash = createHash('sha256').update(slug).digest('hex');
 		return {
-			slug,
-			slugHash,
 			source: item,
-			dest: resolveDestPath(config.outputDir, slug),
-			cache: resolveCachePath(config.inputDir, slugHash),
+			dest: normalizePath(config.outputDir + '/' + slug),
+			cache: normalizePath(config.cacheDir + '/' + hashes[index]),
+			slug,
+			hash: hashes[index],
 			action: sharpFormats.some(item => slug.endsWith(item)) ? 'sharp' : 'copy'
 		}
 	});

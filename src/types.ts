@@ -27,26 +27,28 @@ export interface AssetsListItem {
 	dest: string;
 	cache: string;
 	slug: string;
-	slugHash: string;
+	hash: string;
 	action: 'sharp' | 'copy'
 };
 
 export interface Config {
 	config: string;
 	assetConfig?: string;
+	cacheDir: string;
 	verbose: boolean;
 	silent: boolean;
 	noCache: boolean;
 	formats: OutputOption[];
 	exclude: string[];
 	include: string[];
-	inputDir: string | undefined;
-	outputDir: string | undefined;
+	inputDir: string;
+	outputDir: string;
 	quality: Record<string, number>
 };
 
 interface ConfigTypeSchema {
 	type: string;
+	mutable?: boolean;
 	mutable_cli?: boolean;
 	mutable_project?: boolean;
 	mutable_assets?: boolean;
@@ -62,7 +64,11 @@ const configTypes: Record<keyof Config, ConfigTypeSchema> = {
 	},
 	assetConfig: {
 		type: 'string',
-		mutable_cli: false
+		mutable: false
+	},
+	cacheDir: {
+		type: 'string',
+		mutable: false,
 	},
 	verbose: {
 		type: 'boolean',

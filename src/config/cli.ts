@@ -44,7 +44,7 @@ export const importArguments = () => {
 						}
 	
 						if (optionType?.equals) {
-							const matches = (valueTemp as any[])?.map(item => optionType.equals.map((item1: any) => item1 === item)).flat();
+							const matches = (valueTemp as any[])?.map(item => optionType?.equals?.map((item1: any) => item1 === item)).flat();
 							if (!matches.some(item => item)) throw new Error('Option value mismatch');
 						}
 					}

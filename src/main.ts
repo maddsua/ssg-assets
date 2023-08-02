@@ -1,44 +1,16 @@
 #!/usr/bin/env node
 
 import { loadConfig } from './config/loader';
-import { resolveAssets, resolveCachePath } from './content/loader';
-import { AssetsCacheIndex } from './content/cache';
-import { AssetsListItem, Config, OutputOption } from './types';
+import { resolveAssets } from './content/loader';
 
-import path from 'path';
+import { getCachedAssets } from './content/cache';
+
 import fs from 'fs';
 
 import sharp from 'sharp';
 import chalk from 'chalk';
+import path from 'path';
 
-const sharpConvertAsset = async (asset: AssetsListItem, format: OutputOption, config: Config): Promise<null | Error> => {
-
-	/**
-	 * Yeah, yeah, I'm passing the entire config object here.
-	 * JS passes it by reference, so no performance loss here, only more noodle-code.
-	 */
-
-	try {
-
-		if (format === 'original') {
-
-			fs.copyFileSync(asset.source, asset.dest);
-			if (!config.silent) console.log(chalk.green('Cloned original:'), asset.dest);
-
-		} else {
-
-			const dest = asset.dest.replace(/\.[\d\w]+$/, `.${format}`);
-			await sharp(asset.source).toFormat(format, { quality: config.quality[format] || 90 }).toFile(dest);
-			fs.copyFileSync(dest, asset.cache + `.${format}`);
-			if (!config.silent) console.log(chalk.green(`Converted${config.noCache ? '' : ' and cached'}:`), dest);
-		}
-
-		return null;
-
-	} catch (error) {
-		return error;
-	}
-}
 
 ( async () => {
 
@@ -51,90 +23,52 @@ const sharpConvertAsset = async (asset: AssetsListItem, format: OutputOption, co
 
 	console.log(chalk.bgGreen.black(' Hashing assets... '));
 
-	const assets = resolveAssets(config);
+	const assets = await resolveAssets(config);
 
-	await (config.noCache ? (async () => {
+	//console.log(assets);
 
-		await Promise.all(assets.map(async (asset) => {
-			config.formats.forEach(async (format) => {
-				await sharpConvertAsset(asset, format, config);
-			});
-		}));
+	const cached = getCachedAssets(config.cacheDir);
 
-	}) : (async () => {
+	const unusedCache = cached.filter(item => !assets.some(item1 => item1.hash === item.hash));
 
-		const cacheIndex = new AssetsCacheIndex(config);
-		const cacheDiff = await cacheIndex.diff(assets);
-		const convertJob = [cacheDiff.added, cacheDiff.changed].flat();
-		const assetsMap = new Map<string, AssetsListItem>(assets.map(item => [item.slugHash, item]));
+	//console.log('unused:', unusedCache);
 
-		await Promise.all(convertJob.map( async (item) => {
+	unusedCache.forEach(item => {
+		fs.statSync(item.file).isDirectory() ? fs.rmdirSync(item.file, { recursive: true }) : fs.rmSync(item.file);
+		//console.log(chalk.yellow('Removed from cache original:'), item.file);
+	});
 
-			const asset = assetsMap.get(item);
-			const destdir = path.dirname(asset.dest);
 
-			if (!fs.existsSync(destdir))
-				fs.mkdirSync(destdir, { recursive: true });
+	await Promise.all(assets.map(async (asset) => {
 
-			if (asset.action === 'copy') {
+		//	sharp subroutine
+		config.formats.forEach(async (format) => {
 
+			const dest = asset.dest.replace(/\.[\d\w]+$/, `.${format}`);
+			const destDir = path.dirname(asset.dest);
+			if (!fs.existsSync(destDir))
+				fs.mkdirSync(destDir, { recursive: true });
+			
+			//	copy if it's original
+			if (format === 'original') {
 				fs.copyFileSync(asset.source, asset.dest);
-				if (!config.silent) console.log(chalk.green(`Cloned origin: `), asset.source);
-	
-			} else if (asset.action === 'sharp') {
-				await Promise.all(config.formats.map(async (format) => sharpConvertAsset(asset, format, config)));
+				if (!config.silent) console.log(chalk.green('Cloned original:'), asset.dest);
+				return;
+			}
+			
+			//	try getting from cache
+			const cacheItem = asset.cache + `.${format}`;
+			if (fs.existsSync(cacheItem)) {
+				fs.copyFileSync(cacheItem, dest);
+				if (!config.silent) console.log(chalk.green('Cache hit:'), asset.dest);
+				return;
 			}
 
-		}));
-	
-		//	copy cache-hit files
-		cacheDiff.hit.forEach(item => {
-
-			const asset = assetsMap.get(item);
-			const destdir = path.dirname(asset.dest);
-
-			if (!fs.existsSync(destdir))
-				fs.mkdirSync(destdir, { recursive: true });
-
-			config.formats.forEach(async (format) => {
-
-				const destFile = asset.dest.replace(/\.[\d\w]+$/, `.${format}`);
-				const cacheFile = asset.cache + `.${format}`;
-
-				const copyOrigin = format === 'original';
-
-				if (fs.existsSync(cacheFile) || copyOrigin) {
-
-					const copy = {
-						source: copyOrigin ? asset.source : cacheFile,
-						dest: copyOrigin ? asset.dest : destFile
-					};
-
-					fs.copyFileSync(copy.source, copy.dest);;
-					if (!config.silent) console.log(chalk.green('Cache hit:'), destFile);
-
-				} else {
-					await sharpConvertAsset(asset, format, config);
-				}
-			});
+			//	convert using sharp
+			await sharp(asset.source).toFormat(format, { quality: config.quality[format] || 90 }).toFile(dest);
+			fs.copyFileSync(dest, cacheItem);
+			if (!config.silent) console.log(chalk.green(`Converted${config.noCache ? '' : ' and cached'}:`), dest);
 		});
-
-		//	delete old files
-		cacheDiff.removed.forEach(item => {
-
-			const cachePath = resolveCachePath(config.inputDir, item);
-
-			try {
-				fs.rmSync(cachePath);
-			} catch (error) {
-				if (config.verbose) console.warn(chalk.yellow(`'${cachePath}' already removed`));
-			}
-
-			if (!config.silent) console.log(chalk.yellow(`Removed: '${cachePath}'`));
-		});
-
-		cacheIndex.save();
-
-	}))();
+	}));
 
 })();
