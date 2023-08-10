@@ -53,7 +53,7 @@ export const resolveAssets = async (config: Config): Promise<AssetsListItem[]> =
 	try {
 		hashes = await Promise.all(entries.map(item => getFileHashSha256(item)));
 	} catch (error) {
-		console.error(chalk.red(`⚠  Failed to save cache index:`), error);
+		console.error(chalk.red(`⚠  Failed to hash asset file:`), error);
 		process.exit(1);
 	}
 
