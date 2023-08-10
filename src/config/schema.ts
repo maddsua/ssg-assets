@@ -11,7 +11,7 @@ export interface Config {
 	formats: OutputOption[];
 	exclude: string[];
 	include: string[];
-	passtrough: string[];
+	passthrough: string[];
 	inputDir: string;
 	outputDir: string;
 	quality: Record<string, number>
@@ -71,7 +71,7 @@ const configTypes: Record<keyof Config, ConfigTypeSchema> = {
 		subtype: 'array',
 		of: 'string',
 	},
-	passtrough: {
+	passthrough: {
 		type: 'object',
 		mutable_project: true,
 		mutable_assets: true,
