@@ -1,11 +1,11 @@
 import fs from 'fs';
 
-interface Cached {
+export interface CachedAsset {
 	hash: string;
 	file: string;
 }
 
-export const getCachedAssets = (cacheDir: string): Cached[] => {
+export const getCachedAssets = (cacheDir: string): CachedAsset[] => {
 
 	if (!fs.existsSync(cacheDir))
 		fs.mkdirSync(cacheDir);
