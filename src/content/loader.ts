@@ -61,7 +61,7 @@ export const resolveAssets = async (config: Config): Promise<AssetsListItem[]> =
 
 		const slug = item.replace(new RegExp('^' + config.inputDir + '/'), '');
 
-		const isPasstrough = config.passtrough.some(pattern => minimatch(item, pattern, {
+		const isPasstrough = config.passthrough.some(pattern => minimatch(item, pattern, {
 			matchBase: true,
 			nobrace: true,
 			noext: true,
