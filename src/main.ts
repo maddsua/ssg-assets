@@ -94,7 +94,7 @@ import path from 'path';
 			fs.copyFileSync(asset.source, asset.dest);
 			stats.copied++;
 
-			if (config.verbose) console.log(chalk.green('Cloned:'), asset.dest);
+			console.log(chalk.green('Copied:'), asset.dest);
 			return;
 		}
 
@@ -106,7 +106,7 @@ import path from 'path';
 				if (await skipIfNotChanged(asset.source, asset.dest)) return;
 				fs.copyFileSync(asset.source, asset.dest);
 				stats.copied++;
-				if (config.verbose) console.log(chalk.green('Cloned original:'), asset.dest);
+				console.log(chalk.green('Copied original:'), asset.dest);
 				return;
 			}
 			
@@ -127,7 +127,7 @@ import path from 'path';
 			await sharp(asset.source).toFormat(format, { quality: config.quality[format] || 90 }).toFile(dest);
 			if (!config.noCache) fs.copyFileSync(dest, cacheItem);
 			stats.converted++;
-			if (config.verbose) console.log(chalk.green(`Converted${config.noCache ? '' : ' and cached'}:`), dest);
+			console.log(chalk.green(`Converted${config.noCache ? '' : ' and cached'}:`), dest);
 		});
 	}));
 
