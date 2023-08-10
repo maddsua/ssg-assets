@@ -136,20 +136,23 @@ import path from 'path';
 	console.log('\n');
 	console.log(chalk.bgGreen.black(' Processing done. '));
 
-	console.log('\nResults:');
-	console.table({
-		'Total inputs': {
-			'Assets': stats.converted
-		},
-		'Not changed': {
-			'Assets': stats.notChanged
-		},
-		'Cache hits': {
-			'Assets': stats.cacheHits
-		},
-		'Copied files': {
-			'Assets': stats.copied
-		}
-	});
+	if (config.verbose) {
+		console.log('\nResults:');
+		console.table({
+			'Total inputs': {
+				'Assets': stats.converted
+			},
+			'Not changed': {
+				'Assets': stats.notChanged
+			},
+			'Cache hits': {
+				'Assets': stats.cacheHits
+			},
+			'Copied files': {
+				'Assets': stats.copied
+			}
+		});
+	}
+
 
 })();
