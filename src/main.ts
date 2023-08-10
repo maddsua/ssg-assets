@@ -57,7 +57,7 @@ import path from 'path';
 	const stats = {
 		notChanged: 0,
 		cacheHits: 0,
-		passedThrough: 0,
+		copied: 0,
 		converted: 0
 	};
 
@@ -94,7 +94,7 @@ import path from 'path';
 
 			if (await skipIfNotChanged(asset.source, asset.dest)) return;
 			fs.copyFileSync(asset.source, asset.dest);
-			stats.passedThrough++;
+			stats.copied++;
 
 			console.log(chalk.green('Cloned:'), asset.dest);
 			return;
@@ -107,6 +107,7 @@ import path from 'path';
 			if (format === 'original') {
 				if (await skipIfNotChanged(asset.source, asset.dest)) return;
 				fs.copyFileSync(asset.source, asset.dest);
+				stats.copied++;
 				console.log(chalk.green('Cloned original:'), asset.dest);
 				return;
 			}
@@ -134,9 +135,21 @@ import path from 'path';
 
 	console.log('\n');
 	console.log(chalk.bgGreen.black(' Processing done. '));
-	console.log('Total inputs:', stats.converted);
-	console.log('Not changed:', stats.notChanged);
-	console.log('Cache hits:', stats.cacheHits);
-	console.log('Passed through:', stats.passedThrough);
+
+	console.log('\nResults:');
+	console.table({
+		'Total inputs': {
+			'Assets': stats.converted
+		},
+		'Not changed': {
+			'Assets': stats.notChanged
+		},
+		'Cache hits': {
+			'Assets': stats.cacheHits
+		},
+		'Copied': {
+			'Assets': stats.copied
+		}
+	});
 
 })();
