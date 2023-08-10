@@ -37,6 +37,11 @@ import path from 'path';
 
 	await Promise.all(assets.map(async (asset) => {
 
+		//	create dest dir
+		const destDir = path.dirname(asset.dest);
+		if (!fs.existsSync(destDir))
+			fs.mkdirSync(destDir, { recursive: true });
+
 		//	asset passtrough
 		if (asset.action === 'copy') {
 			fs.copyFileSync(asset.source, asset.dest);
@@ -48,9 +53,6 @@ import path from 'path';
 		config.formats.forEach(async (format) => {
 
 			const dest = asset.dest.replace(/\.[\d\w]+$/, `.${format}`);
-			const destDir = path.dirname(asset.dest);
-			if (!fs.existsSync(destDir))
-				fs.mkdirSync(destDir, { recursive: true });
 			
 			//	copy if it's original
 			if (format === 'original') {
