@@ -63,12 +63,6 @@ export const loadConfig = (): Required<Config> => {
 	configEntries.exclude = configEntries.exclude.map(item => fix_relative_glob(item));
 	configEntries.include = configEntries.include.map(item => fix_relative_glob(item));
 
-	//	double-check flags
-	if (configEntries.silent && configEntries.verbose) {
-		configEntries.verbose = false;
-		console.warn(chalk.yellow(`⚠  Both 'silent' and 'verbose' flags are specified, 'verbose' will be suppressed.`));
-	}
-
 	//	check for unknown output formats
 	configEntries.formats.forEach(item => {
 		if (!outputFormats.some(item1 => item === item1)) {

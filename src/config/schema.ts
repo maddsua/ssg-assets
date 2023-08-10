@@ -6,7 +6,6 @@ export interface Config {
 	assetConfig: string;
 	cacheDir: string;
 	verbose: boolean;
-	silent: boolean;
 	resetCache: boolean;
 	noCache: boolean;
 	formats: OutputOption[];
@@ -52,11 +51,6 @@ const configTypes: Record<keyof Config, ConfigTypeSchema> = {
 		mutable_project: true
 	},
 	noCache: {
-		type: 'boolean',
-		mutable_project: true,
-		mutable_assets: true
-	},
-	silent: {
 		type: 'boolean',
 		mutable_project: true,
 		mutable_assets: true

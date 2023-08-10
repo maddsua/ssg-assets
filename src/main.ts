@@ -70,7 +70,7 @@ import path from 'path';
 				return;
 			}
 
-			if (!config.silent) console.log(chalk.green('Not changed:'), destpath);
+			if (config.verbose) console.log(chalk.green('Not changed:'), destpath);
 			resolve(true);
 
 		})().catch((_error) => resolve(false)));
@@ -84,7 +84,7 @@ import path from 'path';
 		if (asset.action === 'copy') {
 			if (await skipIfNotChanged(asset.source, asset.dest)) return;
 			fs.copyFileSync(asset.source, asset.dest);
-			if (!config.silent) console.log(chalk.green('Cloned:'), asset.dest);
+			console.log(chalk.green('Cloned:'), asset.dest);
 			return;
 		}
 
@@ -95,7 +95,7 @@ import path from 'path';
 			if (format === 'original') {
 				if (await skipIfNotChanged(asset.source, asset.dest)) return;
 				fs.copyFileSync(asset.source, asset.dest);
-				if (!config.silent) console.log(chalk.green('Cloned original:'), asset.dest);
+				console.log(chalk.green('Cloned original:'), asset.dest);
 				return;
 			}
 			
@@ -107,14 +107,14 @@ import path from 'path';
 				if (await skipIfNotChanged(cacheItem, dest)) return;
 
 				fs.copyFileSync(cacheItem, dest);
-				if (!config.silent) console.log(chalk.green('Cache hit:'), dest);
+				console.log(chalk.green('Cache hit:'), dest);
 				return;
 			}
 
 			//	convert using sharp
 			await sharp(asset.source).toFormat(format, { quality: config.quality[format] || 90 }).toFile(dest);
 			if (!config.noCache) fs.copyFileSync(dest, cacheItem);
-			if (!config.silent) console.log(chalk.green(`Converted${config.noCache ? '' : ' and cached'}:`), dest);
+			console.log(chalk.green(`Converted${config.noCache ? '' : ' and cached'}:`), dest);
 		});
 	}));
 
