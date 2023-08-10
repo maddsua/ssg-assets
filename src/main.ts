@@ -33,14 +33,14 @@ import path from 'path';
 
 		if (!config.resetCache) {
 
-			console.log(chalk.bgWhite.black(' Updating cache... '), '\n');
+			console.log('Updating cache...');
 
 			const unusedCache = cached.filter(item => !assets.some(item1 => item1.hash === item.hash));
 			unusedCache.forEach(item => nukePath(item.file));
 
 		} else {
 
-			console.log(chalk.bgWhite.black(' Resetting cache... '), '\n');
+			console.log('Resetting cache...');
 
 			cached.forEach(item => nukePath(item.file));
 			cached = [];
@@ -139,6 +139,9 @@ import path from 'path';
 		console.log('\nResults:');
 		console.table({
 			'Total inputs': {
+				'Assets': assets.length
+			},
+			'Converted': {
 				'Assets': stats.converted
 			},
 			'Not changed': {
