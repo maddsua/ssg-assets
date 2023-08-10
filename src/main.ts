@@ -40,6 +40,22 @@ import path from 'path';
 		//	skip assets with no assigned action
 		if (!asset.action) return;
 
+		const skipIfNotChanged = (sourcePath: string, destpath: string) => new Promise<boolean>(resolve => (async () => {
+
+			//	not checking if file exist, it will just fail and return false
+			const destModified = fs.statSync(destpath).mtimeMs;
+			const sourceModified = fs.statSync(sourcePath).mtimeMs;
+
+			if (destModified !== sourceModified) {
+				resolve(false);
+				return;
+			}
+
+			if (!config.silent) console.log(chalk.green('Not changed:'), destpath);
+			resolve(true);
+
+		})().catch((_error) => resolve(false)));
+
 		//	create dest dir
 		const destDir = path.dirname(asset.dest);
 		if (!fs.existsSync(destDir))
@@ -47,6 +63,7 @@ import path from 'path';
 
 		//	asset passtrough
 		if (asset.action === 'copy') {
+			if (await skipIfNotChanged(asset.source, asset.dest)) return;
 			fs.copyFileSync(asset.source, asset.dest);
 			if (!config.silent) console.log(chalk.green('Cloned:'), asset.dest);
 			return;
@@ -55,25 +72,20 @@ import path from 'path';
 		//	sharp subroutine
 		config.formats.forEach(async (format) => {
 
-			const dest = asset.dest.replace(/\.[\d\w]+$/, `.${format}`);
-			
 			//	copy if it's original
 			if (format === 'original') {
+				if (await skipIfNotChanged(asset.source, asset.dest)) return;
 				fs.copyFileSync(asset.source, asset.dest);
 				if (!config.silent) console.log(chalk.green('Cloned original:'), asset.dest);
 				return;
 			}
-
+			
 			//	try getting from cache
+			const dest = asset.dest.replace(/\.[\d\w]+$/, `.${format}`);
 			const cacheItem = asset.cache + `.${format}`;
 			if (!config.noCache && fs.existsSync(cacheItem)) {
 
-				if (fs.existsSync(dest)) {
-					if (fs.statSync(dest).mtimeMs === fs.statSync(cacheItem).mtimeMs) {
-						if (!config.silent) console.log(chalk.green('Not changed:'), dest);
-						return;
-					}
-				}
+				if (await skipIfNotChanged(cacheItem, dest)) return;
 
 				fs.copyFileSync(cacheItem, dest);
 				if (!config.silent) console.log(chalk.green('Cache hit:'), dest);
