@@ -12,6 +12,8 @@
 		"allowSyntheticDefaultImports": true,
 		"declaration": true,
 		"sourceMap": false,
+		"noEmit": true,
+		"strict": true,
 		"jsx": "preserve"
 	},
 	"exclude": [

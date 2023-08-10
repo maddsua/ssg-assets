@@ -1,7 +1,10 @@
 node_modules
+bin
 dist
+temp
 tests/result
 *.avif
 *.webp
 **/.cache
 *.tgz
+**/.cache.json

@@ -1,4 +1,4 @@
-//	This file is here so npm would shut the fuck up.
+//	This file is here so typescript imports would shut the fuck up.
 //	Include appropriate component submodule instead.
 //	Submodules: ./react, ./astro, ./vue
 

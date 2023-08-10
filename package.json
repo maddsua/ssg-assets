@@ -1,24 +1,15 @@
 {
 	"private": false,
 	"name": "@maddsua/ssg-assets",
-	"version": "1.6.2",
-	"description": "Converts media assets for your static website and provides handy components fro React, Astro and Vue",
-	"keywords": [
-		"build",
-		"assets",
-		"component",
-		"astro",
-		"vue"
-	],
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/maddsua/ssg-assets.git"
+	"version": "2.0.0",
+	"type": "module",
+	"engines": {
+		"node": ">=16.4.0"
 	},
 	"bin": {
-		"ssgassets": "./dist/main.js",
-		"ssga": "./dist/main.js"
+		"ssgassets": "./bin/main.js",
+		"ssga": "./bin/main.js"
 	},
-	"type": "module",
 	"main": "./dist/dummy.js",
 	"types": "./dist/dummy.d.ts",
 	"exports": {
@@ -40,28 +31,42 @@
 		}
 	},
 	"files": [
-		"dist",
+		"bin",
 		"package.json",
 		"package-lock.json",
 		"components",
 		"*.d.ts"
 	],
 	"scripts": {
-		"build": "tsc",
-		"dev": "tsc --watch",
-		"test": "node dist/main.js tests/assets/:tests/result/",
+		"lint": "tsc",
+		"bundle": "esbuild src/main.ts --outfile=bin/main.js --bundle --platform=node --format=esm --external:sharp --external:chalk --external:minimatch",
+		"build": "run-s lint bundle",
+		"dev": "esbuild src/main.ts --outfile=bin/main.js --bundle --platform=node --format=esm --external:sharp --external:chalk --external:minimatch --watch",
+		"test": "node bin/main.js --verbose",
 		"test_components": "cd components && tsc --noemit"
 	},
 	"dependencies": {
-		"chalk": "^5.2.0",
-		"glob": "^10.2.7",
-		"minimatch": "^9.0.1",
-		"sharp": "^0.32.1"
+		"chalk": "^5.3.0",
+		"minimatch": "^9.0.3",
+		"sharp": "^0.32.4"
 	},
 	"devDependencies": {
 		"@types/node": "^18.16.17",
 		"astro": "^2.7.0",
+		"npm-run-all": "^4.1.5",
 		"preact": "^10.15.1",
 		"vue": "^3.3.4"
+	},
+	"description": "Converts media assets for your static website and provides handy components fro React, Astro and Vue",
+	"keywords": [
+		"build",
+		"assets",
+		"component",
+		"astro",
+		"vue"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/maddsua/ssg-assets.git"
 	}
 }
