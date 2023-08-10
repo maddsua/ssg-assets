@@ -1,0 +1,9 @@
+{
+	"verbose": true,
+	"silent": false,
+	"inputDir": "tests/assets",
+	"outputDir": "tests/dist",
+	"passtrough": [
+		"*.jpg"
+	]
+}
