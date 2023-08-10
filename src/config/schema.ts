@@ -7,6 +7,7 @@ export interface Config {
 	cacheDir: string;
 	verbose: boolean;
 	silent: boolean;
+	resetCache: boolean;
 	noCache: boolean;
 	formats: OutputOption[];
 	exclude: string[];
@@ -40,6 +41,11 @@ const configTypes: Record<keyof Config, ConfigTypeSchema> = {
 	cacheDir: {
 		type: 'string',
 		mutable: false,
+	},
+	resetCache: {
+		type: 'boolean',
+		mutable_project: false,
+		mutable_assets: false
 	},
 	verbose: {
 		type: 'boolean',
