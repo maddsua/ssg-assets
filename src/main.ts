@@ -147,7 +147,7 @@ import path from 'path';
 		'Cache hits': {
 			'Assets': stats.cacheHits
 		},
-		'Copied': {
+		'Copied files': {
 			'Assets': stats.copied
 		}
 	});
