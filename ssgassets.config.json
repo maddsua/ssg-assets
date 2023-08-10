@@ -4,6 +4,6 @@
 	"inputDir": "tests/assets",
 	"outputDir": "tests/dist",
 	"passtrough": [
-		"*.jpg"
+		"*.webm"
 	]
 }
