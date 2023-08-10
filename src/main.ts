@@ -20,7 +20,7 @@ import path from 'path';
 		console.log('Current config:', config, '\n');
 	}
 
-	console.log(chalk.bgWhite.black(' Hashing assets... '), '\n');
+	console.log('Hashing assets...');
 
 	const assets = await resolveAssets(config);
 	let cached: CachedAsset[] | null = null;
@@ -58,6 +58,8 @@ import path from 'path';
 		copied: 0,
 		converted: 0
 	};
+
+	console.log(chalk.bgWhite.black('\n Converting... \n'));
 
 	await Promise.all(assets.map(async (asset) => {
 
@@ -131,12 +133,10 @@ import path from 'path';
 		});
 	}));
 
-	if (config.verbose) console.log('\n');
-
-	console.log(chalk.bgGreen.black(' Processing done. '));
+	console.log(chalk.bgGreen.black('\n Processing done. \n'));
 
 	if (config.verbose) {
-		console.log('\nResults:');
+		console.log('Results:');
 		console.table({
 			'Total inputs': {
 				'Assets': assets.length
