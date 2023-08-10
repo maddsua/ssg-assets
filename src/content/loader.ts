@@ -1,4 +1,4 @@
-import { inputFormats, sharpFormats } from '../config/defaults';
+import { sharpFormats } from '../config/defaults';
 import type { AssetsListItem } from './types';
 import type { Config } from '../config/schema';
 import { getFileHashSha256 } from './hash';
@@ -10,7 +10,7 @@ import fs from 'fs';
 import { minimatch } from 'minimatch';
 import chalk from 'chalk';
 
-const loadAllSupportedFiles = (assetDir: string): string[] => {
+const loadAllAssetFiles = (assetDir: string): string[] => {
 	
 	const result: string[] = [];
 
@@ -18,7 +18,7 @@ const loadAllSupportedFiles = (assetDir: string): string[] => {
 		const location = dir + '/' + file;
 		if (location.startsWith(assetDir + '/.cache')) return;
 		if (fs.statSync(location).isDirectory()) return listDir(location);
-		else if (inputFormats.some(ext => file.endsWith(`.${ext}`))) return result.push(location);
+		else return result.push(location);
 	});
 
 	try {
@@ -32,7 +32,7 @@ const loadAllSupportedFiles = (assetDir: string): string[] => {
 
 export const resolveAssets = async (config: Config): Promise<AssetsListItem[]> => {
 
-	let entries = loadAllSupportedFiles(config.inputDir);
+	let entries = loadAllAssetFiles(config.inputDir);
 
 	config.include.forEach(item => entries = entries.filter(entry => minimatch(entry, item, {
 		matchBase: true,
@@ -57,7 +57,7 @@ export const resolveAssets = async (config: Config): Promise<AssetsListItem[]> =
 		process.exit(1);
 	}
 
-	return entries.map((item, index) => {
+	return entries.map((item, index): AssetsListItem => {
 
 		const slug = item.replace(new RegExp('^' + config.inputDir + '/'), '');
 
@@ -76,7 +76,7 @@ export const resolveAssets = async (config: Config): Promise<AssetsListItem[]> =
 			cache: normalizePath(config.cacheDir + '/' + hashes[index]),
 			slug,
 			hash: hashes[index],
-			action: (sharpInput && !isPasstrough) ? 'sharp' : 'copy'
+			action: (sharpInput && !isPasstrough) ? 'sharp' : (isPasstrough ? 'copy' : undefined)
 		}
 	});
 };

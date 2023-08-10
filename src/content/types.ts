@@ -26,5 +26,5 @@ export interface AssetsListItem {
 	cache: string;
 	slug: string;
 	hash: string;
-	action: 'sharp' | 'copy'
+	action: 'sharp' | 'copy' | undefined;
 };

@@ -37,6 +37,9 @@ import path from 'path';
 
 	await Promise.all(assets.map(async (asset) => {
 
+		//	skip assets with no assigned action
+		if (!asset.action) return;
+
 		//	create dest dir
 		const destDir = path.dirname(asset.dest);
 		if (!fs.existsSync(destDir))
@@ -45,7 +48,7 @@ import path from 'path';
 		//	asset passtrough
 		if (asset.action === 'copy') {
 			fs.copyFileSync(asset.source, asset.dest);
-			if (!config.silent) console.log(chalk.green('Copied:'), asset.dest);
+			if (!config.silent) console.log(chalk.green('Cloned:'), asset.dest);
 			return;
 		}
 
