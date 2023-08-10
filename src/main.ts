@@ -67,6 +67,14 @@ import path from 'path';
 			//	try getting from cache
 			const cacheItem = asset.cache + `.${format}`;
 			if (!config.noCache && fs.existsSync(cacheItem)) {
+
+				if (fs.existsSync(dest)) {
+					if (fs.statSync(dest).mtimeMs === fs.statSync(cacheItem).mtimeMs) {
+						if (!config.silent) console.log(chalk.green('Not changed:'), dest);
+						return;
+					}
+				}
+
 				fs.copyFileSync(cacheItem, dest);
 				if (!config.silent) console.log(chalk.green('Cache hit:'), dest);
 				return;
