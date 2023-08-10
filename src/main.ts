@@ -56,7 +56,7 @@ import path from 'path';
 
 	const stats = {
 		notChanged: 0,
-		restoredFromCache: 0,
+		cacheHits: 0,
 		passedThrough: 0,
 		converted: 0
 	};
@@ -118,7 +118,7 @@ import path from 'path';
 
 				if (await skipIfNotChanged(cacheItem, dest)) return;
 				fs.copyFileSync(cacheItem, dest);
-				stats.restoredFromCache++;
+				stats.cacheHits++;
 				
 				console.log(chalk.green('Cache hit:'), dest);
 				return;
@@ -131,5 +131,12 @@ import path from 'path';
 			console.log(chalk.green(`Converted${config.noCache ? '' : ' and cached'}:`), dest);
 		});
 	}));
+
+	console.log('\n');
+	console.log(chalk.bgGreen.black(' Processing done. '));
+	console.log('Total inputs:', stats.converted);
+	console.log('Not changed:', stats.notChanged);
+	console.log('Cache hits:', stats.cacheHits);
+	console.log('Passed through:', stats.passedThrough);
 
 })();
