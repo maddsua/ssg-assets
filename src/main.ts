@@ -20,7 +20,7 @@ import path from 'path';
 		console.log('Current config:', config, '\n');
 	}
 
-	console.log(chalk.bgGreen.black(' Hashing assets... '), '\n');
+	console.log(chalk.bgWhite.black(' Hashing assets... '), '\n');
 
 	const assets = await resolveAssets(config);
 	let cached: CachedAsset[] | null = null;
@@ -33,14 +33,14 @@ import path from 'path';
 
 		if (!config.resetCache) {
 
-			console.log(chalk.bgGreen.black(' Updating cache... '), '\n');
+			console.log(chalk.bgWhite.black(' Updating cache... '), '\n');
 
 			const unusedCache = cached.filter(item => !assets.some(item1 => item1.hash === item.hash));
 			unusedCache.forEach(item => nukePath(item.file));
 
 		} else {
 
-			console.log(chalk.bgGreen.black(' Resetting cache... '), '\n');
+			console.log(chalk.bgWhite.black(' Resetting cache... '), '\n');
 
 			cached.forEach(item => nukePath(item.file));
 			cached = [];
@@ -130,6 +130,8 @@ import path from 'path';
 			if (config.verbose) console.log(chalk.green(`Converted${config.noCache ? '' : ' and cached'}:`), dest);
 		});
 	}));
+
+	if (config.verbose) console.log('\n');
 
 	console.log(chalk.bgGreen.black(' Processing done. '));
 
