@@ -3,14 +3,13 @@
 import { loadConfig } from './config/loader';
 import { resolveAssets } from './content/loader';
 
-import { getCachedAssets } from './content/cache';
+import { getCachedAssets, CachedAsset } from './content/cache';
 
 import fs from 'fs';
 
 import sharp from 'sharp';
 import chalk from 'chalk';
 import path from 'path';
-
 
 ( async () => {
 
@@ -26,14 +25,30 @@ import path from 'path';
 	console.log(chalk.bgGreen.black(' Hashing assets... '), '\n');
 
 	const assets = await resolveAssets(config);
+	let cached: CachedAsset[] | null = null;
 
-	if (!config.noCache) console.log(chalk.bgGreen.black(' Updating cache... '), '\n');
-	const cached = getCachedAssets(config.cacheDir);
-	const unusedCache = cached.filter(item => !assets.some(item1 => item1.hash === item.hash));
+	if (!config.noCache) {
 
-	if (!config.noCache) unusedCache.forEach(item => {
-		fs.statSync(item.file).isDirectory() ? fs.rmdirSync(item.file, { recursive: true }) : fs.rmSync(item.file);
-	});
+		cached = getCachedAssets(config.cacheDir);
+
+		const nukePath = (pathname: string) => fs.statSync(pathname).isDirectory() ? fs.rmdirSync(pathname, { recursive: true }) : fs.rmSync(pathname);
+
+		if (!config.resetCache) {
+
+			console.log(chalk.bgGreen.black(' Updating cache... '), '\n');
+
+			const unusedCache = cached.filter(item => !assets.some(item1 => item1.hash === item.hash));
+			unusedCache.forEach(item => nukePath(item.file));
+
+		} else {
+
+			console.log(chalk.bgGreen.black(' Resetting cache... '), '\n');
+
+			cached.forEach(item => nukePath(item.file));
+			cached = [];
+		}
+
+	}
 
 	await Promise.all(assets.map(async (asset) => {
 
