@@ -54,6 +54,13 @@ import path from 'path';
 		console.log(chalk.bgWhite.black(' Cache disabled '), '\n');
 	}
 
+	const stats = {
+		notChanged: 0,
+		restoredFromCache: 0,
+		passedThrough: 0,
+		converted: 0
+	};
+
 	await Promise.all(assets.map(async (asset) => {
 
 		//	skip assets with no assigned action
@@ -71,6 +78,8 @@ import path from 'path';
 			}
 
 			if (config.verbose) console.log(chalk.green('Not changed:'), destpath);
+			stats.notChanged++;
+
 			resolve(true);
 
 		})().catch((_error) => resolve(false)));
@@ -82,8 +91,11 @@ import path from 'path';
 
 		//	asset passtrough
 		if (asset.action === 'copy') {
+
 			if (await skipIfNotChanged(asset.source, asset.dest)) return;
 			fs.copyFileSync(asset.source, asset.dest);
+			stats.passedThrough++;
+
 			console.log(chalk.green('Cloned:'), asset.dest);
 			return;
 		}
@@ -105,8 +117,9 @@ import path from 'path';
 			if (!config.noCache && fs.existsSync(cacheItem)) {
 
 				if (await skipIfNotChanged(cacheItem, dest)) return;
-
 				fs.copyFileSync(cacheItem, dest);
+				stats.restoredFromCache++;
+				
 				console.log(chalk.green('Cache hit:'), dest);
 				return;
 			}
@@ -116,6 +129,9 @@ import path from 'path';
 			if (!config.noCache) fs.copyFileSync(dest, cacheItem);
 			console.log(chalk.green(`Converted${config.noCache ? '' : ' and cached'}:`), dest);
 		});
+
+		stats.converted++;
+
 	}));
 
 })();
