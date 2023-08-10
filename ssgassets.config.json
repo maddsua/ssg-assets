@@ -1,9 +1,8 @@
 {
 	"verbose": false,
-	"silent": false,
 	"inputDir": "tests/assets",
 	"outputDir": "tests/dist",
-	"passtrough": [
+	"passthrough": [
 		"*.webm"
 	]
 }
