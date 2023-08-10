@@ -13,12 +13,10 @@ import path from 'path';
 
 ( async () => {
 
-	console.log('\n');
-
 	const config = loadConfig();
 	
 	if (config.verbose) {
-		console.log('Verbose mode enabled. The tool is extra talkative now.');
+		console.log('Verbose mode enabled. Tool is extra talkative now.');
 		console.log('Current config:', config, '\n');
 	}
 
@@ -96,7 +94,7 @@ import path from 'path';
 			fs.copyFileSync(asset.source, asset.dest);
 			stats.copied++;
 
-			console.log(chalk.green('Cloned:'), asset.dest);
+			if (config.verbose) console.log(chalk.green('Cloned:'), asset.dest);
 			return;
 		}
 
@@ -108,7 +106,7 @@ import path from 'path';
 				if (await skipIfNotChanged(asset.source, asset.dest)) return;
 				fs.copyFileSync(asset.source, asset.dest);
 				stats.copied++;
-				console.log(chalk.green('Cloned original:'), asset.dest);
+				if (config.verbose) console.log(chalk.green('Cloned original:'), asset.dest);
 				return;
 			}
 			
@@ -121,7 +119,7 @@ import path from 'path';
 				fs.copyFileSync(cacheItem, dest);
 				stats.cacheHits++;
 				
-				console.log(chalk.green('Cache hit:'), dest);
+				if (config.verbose) console.log(chalk.green('Cache hit:'), dest);
 				return;
 			}
 
@@ -129,11 +127,10 @@ import path from 'path';
 			await sharp(asset.source).toFormat(format, { quality: config.quality[format] || 90 }).toFile(dest);
 			if (!config.noCache) fs.copyFileSync(dest, cacheItem);
 			stats.converted++;
-			console.log(chalk.green(`Converted${config.noCache ? '' : ' and cached'}:`), dest);
+			if (config.verbose) console.log(chalk.green(`Converted${config.noCache ? '' : ' and cached'}:`), dest);
 		});
 	}));
 
-	console.log('\n');
 	console.log(chalk.bgGreen.black(' Processing done. '));
 
 	if (config.verbose) {
