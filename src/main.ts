@@ -127,11 +127,9 @@ import path from 'path';
 			//	convert using sharp
 			await sharp(asset.source).toFormat(format, { quality: config.quality[format] || 90 }).toFile(dest);
 			if (!config.noCache) fs.copyFileSync(dest, cacheItem);
+			stats.converted++;
 			console.log(chalk.green(`Converted${config.noCache ? '' : ' and cached'}:`), dest);
 		});
-
-		stats.converted++;
-
 	}));
 
 })();
