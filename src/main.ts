@@ -48,6 +48,10 @@ import path from 'path';
 			cached = [];
 		}
 
+	} else {
+
+		if (config.resetCache) console.warn(chalk.yellow('noCache and resetCache flags cannot be used at the same time. Just saying.', '\n'));
+		console.log(chalk.bgWhite.black(' Cache disabled '), '\n');
 	}
 
 	await Promise.all(assets.map(async (asset) => {
