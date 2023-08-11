@@ -1,7 +1,7 @@
 {
 	"private": false,
 	"name": "@maddsua/ssg-assets",
-	"version": "2.0.0a2",
+	"version": "2.0.0",
 	"type": "module",
 	"engines": {
 		"node": ">=16.4.0"
