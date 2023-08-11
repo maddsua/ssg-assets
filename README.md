@@ -3,7 +3,7 @@ Convert media assets for your static website
 
 Makes a bunch of avif and webp files from jpeg's and png's.
 
-If you're using Netlify, be sure to enable netlify-plugin-cache to speed up builds in TIMES
+If you're using Netlify, be sure to enable netlify-plugin-cache to get the max speeed out of builds!
 
 ## Config:
 
