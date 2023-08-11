@@ -25,6 +25,11 @@ import path from 'path';
 	const assets = await resolveAssets(config);
 	let cached: CachedAsset[] | null = null;
 
+	if (!assets.length) {
+		console.error(chalk.red(`⚠  No assets were located`));
+		process.exit(1);
+	}
+
 	if (!config.noCache) {
 
 		cached = getCachedAssets(config.cacheDir);
