@@ -4,6 +4,7 @@ import { loadConfig } from './config/loader';
 import { resolveAssets } from './content/loader';
 
 import { getCachedAssets, CachedAsset } from './content/cache';
+import type { Config } from './config/schema';
 
 import fs from 'fs';
 
@@ -25,10 +26,7 @@ import path from 'path';
 	const assets = await resolveAssets(config);
 	let cached: CachedAsset[] | null = null;
 
-	if (!assets.length) {
-		console.error(chalk.red(`⚠  No assets were located`));
-		process.exit(1);
-	}
+	if (!assets.length) throw new Error('No assets were located');
 
 	if (!config.noCache) {
 
@@ -161,4 +159,8 @@ import path from 'path';
 		});
 	}
 
-})();
+})().catch((error: Error | any) => {
+	if (error instanceof Error) console.error(chalk.red(`❌ Asset processing terminated:\n-> ${error.message}`))
+		else console.error(chalk.red(`❌  Asset processing terminated:\nUnhandled exception:`), error);
+	process.exit(1);
+});
