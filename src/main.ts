@@ -59,7 +59,7 @@ import path from 'path';
 		notChanged: 0,
 		cacheHits: 0,
 		copied: 0,
-		converted: 0
+		sharpConverted: 0
 	};
 
 	console.log('\r');
@@ -131,18 +131,18 @@ import path from 'path';
 			//	convert using sharp
 			await sharp(asset.source).toFormat(format, { quality: config.quality[format] || 90 }).toFile(dest);
 			if (!config.noCache) fs.copyFileSync(dest, cacheItem);
-			stats.converted++;
+			stats.sharpConverted++;
 			console.log(chalk.green(`Converted${config.noCache ? '' : ' and cached'}:`), dest);
 		});
 	}));
 
 	const anythingDone = Object.values(stats).some(item => item > 0);
 	if (config.verbose && anythingDone) {
-		console.log('\nResults:');
-		if (stats.converted) console.log('  Converted:', stats.converted);
-		if (stats.cacheHits) console.log('  Cache hits:', stats.cacheHits);
-		if (stats.copied) console.log('  Copied:', stats.copied);
-		if (stats.notChanged) console.log('  Verified:', stats.notChanged);
+		console.log('\r');
+		if (stats.sharpConverted) console.log('Converted:', stats.sharpConverted, 'images');
+		if (stats.cacheHits) console.log('Cache hits:', stats.cacheHits);
+		if (stats.copied) console.log('Copied:', stats.copied, 'assets');
+		if (stats.notChanged) console.log('Verified:', stats.notChanged, 'assets');
 	}
 
 	console.log(chalk.bgGreen.black('\n Processing done. \n'));
