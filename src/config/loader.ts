@@ -18,12 +18,9 @@ export const loadConfig = (): Required<Config> => {
 
 	if (projectOption) Object.entries(projectOption).forEach(([prop, value]) => {
 		if (!ConfigSchema[prop]?.mutable_project) return;
-		if (!!mergedConfig[prop]) return;
+		if (mergedConfig[prop]) return;
 		mergedConfig[prop] = value;
 	});
-
-	mergedConfig.inputDir = normalizePath(mergedConfig.inputDir);
-	mergedConfig.outputDir = normalizePath(mergedConfig.outputDir);
 
 	if (!mergedConfig.inputDir) {
 		mergedConfig.inputDir = 'assets';
@@ -33,6 +30,9 @@ export const loadConfig = (): Required<Config> => {
 		mergedConfig.outputDir = 'dist/assets';
 		console.log(`Using default output directory: '${mergedConfig.outputDir}'`);
 	}
+
+	mergedConfig.inputDir = normalizePath(mergedConfig.inputDir);
+	mergedConfig.outputDir = normalizePath(mergedConfig.outputDir);
 
 	//	ensure that we don't write output to the source directory
 	if (mergedConfig.inputDir.startsWith(mergedConfig.outputDir) || mergedConfig.outputDir.startsWith(mergedConfig.inputDir)) {
