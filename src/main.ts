@@ -26,6 +26,7 @@ import path from 'path';
 	let cached: CachedAsset[] | null = null;
 
 	if (!assets.length) throw new Error('No assets were located');
+	if (config.verbose) console.log('Found', assets.length, 'asset files\n');
 
 	if (!config.noCache) {
 
@@ -60,6 +61,8 @@ import path from 'path';
 		copied: 0,
 		converted: 0
 	};
+
+	console.log('\r');
 
 	await Promise.all(assets.map(async (asset) => {
 
@@ -133,28 +136,16 @@ import path from 'path';
 		});
 	}));
 
-	console.log(chalk.bgGreen.black('\n Processing done. \n'));
-
-	if (config.verbose) {
-		console.log('Results:');
-		console.table({
-			'Total inputs': {
-				'Assets': assets.length
-			},
-			'Converted': {
-				'Assets': stats.converted
-			},
-			'Not changed': {
-				'Assets': stats.notChanged
-			},
-			'Cache hits': {
-				'Assets': stats.cacheHits
-			},
-			'Copied files': {
-				'Assets': stats.copied
-			}
-		});
+	const anythingDone = Object.values(stats).some(item => item > 0);
+	if (config.verbose && anythingDone) {
+		console.log('\nResults:');
+		if (stats.converted) console.log('  Converted:', stats.converted);
+		if (stats.cacheHits) console.log('  Cache hits:', stats.cacheHits);
+		if (stats.copied) console.log('  Copied:', stats.copied);
+		if (stats.notChanged) console.log('  Verified:', stats.notChanged);
 	}
+
+	console.log(chalk.bgGreen.black('\n Processing done. \n'));
 
 })().catch((error: Error | any) => {
 	if (error instanceof Error) console.error(chalk.red(`❌ Asset processing terminated:\n-> ${error.message}`))
