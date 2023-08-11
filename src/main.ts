@@ -61,8 +61,6 @@ import path from 'path';
 		converted: 0
 	};
 
-	console.log(chalk.bgWhite.black('\n Converting... \n'));
-
 	await Promise.all(assets.map(async (asset) => {
 
 		//	skip assets with no assigned action
