@@ -3,31 +3,59 @@ Convert media assets for your static website
 
 Makes a bunch of avif and webp files from jpeg's and png's.
 
-For now, asset cache is stored on git, which is not ideal. Still thinking about implementing Netlify build cache support.
+If you're using Netlify, be sure to enable netlify-plugin-cache to speed up builds in TIMES
 
-CLI usage example: `ssga assets/:public/`
+## Config:
 
-## Flags:
+Config interface says it all:
 
-- `-n` or `--no-cache` - Don't use caching
+```typescript
+interface Config {
 
-- `-v` or `--verbose` - Report everything!
+  // path to main config, user-immutable
+  config: string;
 
-- `-c` or `--copy` - Don't convert anything, just copy
+  // path to asset directory config, user-immutable
+  assetConfig: string;
 
-- `--formats=[list]` - Specify image formats to convert to.
+  // path to cache directory, user-immutable
+  cacheDir: string;
 
-	Valid options are: `original`, `webp`, `avif`
+  // print more info
+  verbose: boolean;
 
-## Skip over files:
+  // nukes the old cache
+  resetCache: boolean;
 
-Add `.noassets` to a directory to skip some of the content. Syntax is like that:
+  // ignores cache completely
+  noCache: boolean;
 
-```ini
-# skip everything inside the "svgs" subdirectory
-assets/svgs
-# and all mp4 files too
-*.mp4
+  // specify image formats for Sharp to convert to
+  formats: OutputOption[];
+
+  // skip assets that match these glob patterns
+  exclude: string[];
+
+  // only include assets that match these glob patterns
+  include: string[];
+
+  // simply copy the assets that match these glob patterns
+  passthrough: string[];
+
+  // input directory, defaults to ./assets
+  inputDir: string;
+
+  // output directory, defaults ot ./dist/assets
+  outputDir: string;
+
+  //  set image quality
+  quality: Record<string, number>
+}
+```
+
+All of the mutable options can be used in cli like so:
+```bash
+ssga --inputDir=./content --outputDir=./www/content --formats=webp,avif,jpg
 ```
 
 # Frontend components
