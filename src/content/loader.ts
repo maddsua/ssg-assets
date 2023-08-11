@@ -53,7 +53,7 @@ export const resolveAssets = async (config: Config): Promise<AssetsListItem[]> =
 	try {
 		hashes = await Promise.all(entries.map(item => getFileHashSha256(item)));
 	} catch (error) {
-		console.error(chalk.red(`⚠  Failed to save cache index:`), error);
+		console.error(chalk.red(`⚠  Failed to hash asset file:`), error);
 		process.exit(1);
 	}
 
@@ -61,7 +61,7 @@ export const resolveAssets = async (config: Config): Promise<AssetsListItem[]> =
 
 		const slug = item.replace(new RegExp('^' + config.inputDir + '/'), '');
 
-		const isPasstrough = config.passtrough.some(pattern => minimatch(item, pattern, {
+		const isPasstrough = config.passthrough.some(pattern => minimatch(item, pattern, {
 			matchBase: true,
 			nobrace: true,
 			noext: true,

@@ -6,12 +6,12 @@ export interface Config {
 	assetConfig: string;
 	cacheDir: string;
 	verbose: boolean;
-	silent: boolean;
+	resetCache: boolean;
 	noCache: boolean;
 	formats: OutputOption[];
 	exclude: string[];
 	include: string[];
-	passtrough: string[];
+	passthrough: string[];
 	inputDir: string;
 	outputDir: string;
 	quality: Record<string, number>
@@ -41,16 +41,16 @@ const configTypes: Record<keyof Config, ConfigTypeSchema> = {
 		type: 'string',
 		mutable: false,
 	},
+	resetCache: {
+		type: 'boolean',
+		mutable_project: false,
+		mutable_assets: false
+	},
 	verbose: {
 		type: 'boolean',
 		mutable_project: true
 	},
 	noCache: {
-		type: 'boolean',
-		mutable_project: true,
-		mutable_assets: true
-	},
-	silent: {
 		type: 'boolean',
 		mutable_project: true,
 		mutable_assets: true
@@ -71,7 +71,7 @@ const configTypes: Record<keyof Config, ConfigTypeSchema> = {
 		subtype: 'array',
 		of: 'string',
 	},
-	passtrough: {
+	passthrough: {
 		type: 'object',
 		mutable_project: true,
 		mutable_assets: true,

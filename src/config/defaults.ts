@@ -7,12 +7,11 @@ export const outputFormats: OutputOption[] = [ 'original', 'webp', 'avif', 'png'
 export const defaultConfig: Partial<Config> = {
 	config: 'ssgassets.config.json',
 	verbose: false,
-	silent: false,
 	noCache: false,
 	formats: ['original', 'webp', 'avif'],
 	exclude: [],
 	include: [],
-	passtrough: [],
+	passthrough: [],
 	quality: {
 		avif: 80,
 		webp: 85,

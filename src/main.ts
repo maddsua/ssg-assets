@@ -3,7 +3,7 @@
 import { loadConfig } from './config/loader';
 import { resolveAssets } from './content/loader';
 
-import { getCachedAssets } from './content/cache';
+import { getCachedAssets, CachedAsset } from './content/cache';
 
 import fs from 'fs';
 
@@ -11,29 +11,58 @@ import sharp from 'sharp';
 import chalk from 'chalk';
 import path from 'path';
 
-
 ( async () => {
-
-	console.log('\n');
 
 	const config = loadConfig();
 	
 	if (config.verbose) {
-		console.log('Verbose mode enabled. The tool is extra talkative now.');
+		console.log('Verbose mode enabled. Tool is extra talkative now.');
 		console.log('Current config:', config, '\n');
 	}
 
-	console.log(chalk.bgGreen.black(' Hashing assets... '), '\n');
+	console.log('Hashing assets...');
 
 	const assets = await resolveAssets(config);
+	let cached: CachedAsset[] | null = null;
 
-	if (!config.noCache) console.log(chalk.bgGreen.black(' Updating cache... '), '\n');
-	const cached = getCachedAssets(config.cacheDir);
-	const unusedCache = cached.filter(item => !assets.some(item1 => item1.hash === item.hash));
+	if (!assets.length) throw new Error('No assets were located');
+	if (config.verbose) console.log('Found', assets.length, 'asset files\n');
 
-	if (!config.noCache) unusedCache.forEach(item => {
-		fs.statSync(item.file).isDirectory() ? fs.rmdirSync(item.file, { recursive: true }) : fs.rmSync(item.file);
-	});
+	if (!config.noCache) {
+
+		cached = getCachedAssets(config.cacheDir);
+
+		const nukePath = (pathname: string) => fs.statSync(pathname).isDirectory() ? fs.rmdirSync(pathname, { recursive: true }) : fs.rmSync(pathname);
+
+		if (!config.resetCache) {
+
+			console.log('Updating cache...');
+
+			const unusedCache = cached.filter(item => !assets.some(item1 => item1.hash === item.hash));
+			unusedCache.forEach(item => nukePath(item.file));
+
+		} else {
+
+			console.log('Resetting cache...');
+
+			cached.forEach(item => nukePath(item.file));
+			cached = [];
+		}
+
+	} else {
+
+		if (config.resetCache) console.warn(chalk.yellow('noCache and resetCache flags cannot be used at the same time. Just saying.', '\n'));
+		console.log(chalk.bgWhite.black(' Cache disabled '), '\n');
+	}
+
+	const stats = {
+		notChanged: 0,
+		cacheHits: 0,
+		copied: 0,
+		sharpConverted: 0
+	};
+
+	console.log('\r');
 
 	await Promise.all(assets.map(async (asset) => {
 
@@ -51,7 +80,9 @@ import path from 'path';
 				return;
 			}
 
-			if (!config.silent) console.log(chalk.green('Not changed:'), destpath);
+			if (config.verbose) console.log(chalk.green('Not changed:'), destpath);
+			stats.notChanged++;
+
 			resolve(true);
 
 		})().catch((_error) => resolve(false)));
@@ -63,20 +94,24 @@ import path from 'path';
 
 		//	asset passtrough
 		if (asset.action === 'copy') {
+
 			if (await skipIfNotChanged(asset.source, asset.dest)) return;
 			fs.copyFileSync(asset.source, asset.dest);
-			if (!config.silent) console.log(chalk.green('Cloned:'), asset.dest);
+			stats.copied++;
+
+			console.log(chalk.green('Copied:'), asset.dest);
 			return;
 		}
 
 		//	sharp subroutine
-		config.formats.forEach(async (format) => {
+		await Promise.all(config.formats.map(async (format) => {
 
 			//	copy if it's original
 			if (format === 'original') {
 				if (await skipIfNotChanged(asset.source, asset.dest)) return;
 				fs.copyFileSync(asset.source, asset.dest);
-				if (!config.silent) console.log(chalk.green('Cloned original:'), asset.dest);
+				stats.copied++;
+				console.log(chalk.green('Copied original:'), asset.dest);
 				return;
 			}
 			
@@ -86,17 +121,35 @@ import path from 'path';
 			if (!config.noCache && fs.existsSync(cacheItem)) {
 
 				if (await skipIfNotChanged(cacheItem, dest)) return;
-
 				fs.copyFileSync(cacheItem, dest);
-				if (!config.silent) console.log(chalk.green('Cache hit:'), dest);
+				stats.cacheHits++;
+				
+				console.log(chalk.green('Cache hit:'), dest);
 				return;
 			}
 
 			//	convert using sharp
 			await sharp(asset.source).toFormat(format, { quality: config.quality[format] || 90 }).toFile(dest);
 			if (!config.noCache) fs.copyFileSync(dest, cacheItem);
-			if (!config.silent) console.log(chalk.green(`Converted${config.noCache ? '' : ' and cached'}:`), dest);
-		});
+			stats.sharpConverted++;
+			console.log(chalk.green(`Converted${config.noCache ? '' : ' and cached'}:`), dest);
+		}));
+
 	}));
 
-})();
+	const anythingDone = Object.values(stats).some(item => item > 0);
+	if (config.verbose && anythingDone) {
+		console.log('\r');
+		if (stats.sharpConverted) console.log('Converted:', stats.sharpConverted, 'images');
+		if (stats.cacheHits) console.log('Cache hits:', stats.cacheHits);
+		if (stats.copied) console.log('Copied:', stats.copied, 'assets');
+		if (stats.notChanged) console.log('Verified:', stats.notChanged, 'assets');
+	}
+
+	console.log(chalk.bgGreen.black('\n Processing done. \n'));
+
+})().catch((error: Error | any) => {
+	if (error instanceof Error) console.error(chalk.red(`❌ Asset processing terminated:\n-> ${error.message}`))
+		else console.error(chalk.red(`❌  Asset processing terminated:\nUnhandled exception:`), error);
+	process.exit(1);
+});

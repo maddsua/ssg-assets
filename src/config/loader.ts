@@ -3,8 +3,6 @@ import { normalizePath, fix_relative_glob } from '../content/paths';
 
 import { defaultConfig, outputFormats } from './defaults';
 
-import process from 'process';
-
 import chalk from 'chalk';
 
 import { Config, ConfigSchema } from './schema';
@@ -18,12 +16,9 @@ export const loadConfig = (): Required<Config> => {
 
 	if (projectOption) Object.entries(projectOption).forEach(([prop, value]) => {
 		if (!ConfigSchema[prop]?.mutable_project) return;
-		if (!!mergedConfig[prop]) return;
+		if (mergedConfig[prop]) return;
 		mergedConfig[prop] = value;
 	});
-
-	mergedConfig.inputDir = normalizePath(mergedConfig.inputDir);
-	mergedConfig.outputDir = normalizePath(mergedConfig.outputDir);
 
 	if (!mergedConfig.inputDir) {
 		mergedConfig.inputDir = 'assets';
@@ -34,11 +29,12 @@ export const loadConfig = (): Required<Config> => {
 		console.log(`Using default output directory: '${mergedConfig.outputDir}'`);
 	}
 
+	mergedConfig.inputDir = normalizePath(mergedConfig.inputDir);
+	mergedConfig.outputDir = normalizePath(mergedConfig.outputDir);
+
 	//	ensure that we don't write output to the source directory
-	if (mergedConfig.inputDir.startsWith(mergedConfig.outputDir) || mergedConfig.outputDir.startsWith(mergedConfig.inputDir)) {
-		console.error(chalk.red(`⚠  Input and output paths must be separate directories.`));
-		process.exit(0);
-	}
+	if (mergedConfig.inputDir.startsWith(mergedConfig.outputDir) || mergedConfig.outputDir.startsWith(mergedConfig.inputDir))
+		throw new Error('Input and output directories must not contain each other');
 
 	const assetConfigFilePath = mergedConfig.inputDir + '/ssgassets.config.json';
 	const assetsOption = loadConfigFile(assetConfigFilePath);
@@ -62,12 +58,6 @@ export const loadConfig = (): Required<Config> => {
 	//	fix glob patterns
 	configEntries.exclude = configEntries.exclude.map(item => fix_relative_glob(item));
 	configEntries.include = configEntries.include.map(item => fix_relative_glob(item));
-
-	//	double-check flags
-	if (configEntries.silent && configEntries.verbose) {
-		configEntries.verbose = false;
-		console.warn(chalk.yellow(`⚠  Both 'silent' and 'verbose' flags are specified, 'verbose' will be suppressed.`));
-	}
 
 	//	check for unknown output formats
 	configEntries.formats.forEach(item => {
