@@ -124,7 +124,7 @@ import path from 'path';
 				fs.copyFileSync(cacheItem, dest);
 				stats.cacheHits++;
 				
-				if (config.verbose) console.log(chalk.green('Cache hit:'), dest);
+				console.log(chalk.green('Cache hit:'), dest);
 				return;
 			}
 
