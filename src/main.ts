@@ -26,7 +26,7 @@ import path from 'path';
 	let cached: CachedAsset[] | null = null;
 
 	if (!assets.length) throw new Error('No assets were located');
-	if (config.verbose) console.log('Found', assets.length, 'asset files\n');
+	if (config.verbose) console.log('Found', assets.length, 'asset sources\n');
 
 	if (!config.noCache) {
 
@@ -137,8 +137,7 @@ import path from 'path';
 
 	}));
 
-	const anythingDone = Object.values(stats).some(item => item > 0);
-	if (config.verbose && anythingDone) {
+	if (Object.values(stats).some(item => item > 0)) {
 		console.log('\r');
 		if (stats.sharpConverted) console.log('Converted:', stats.sharpConverted, 'images');
 		if (stats.cacheHits) console.log('Cache hits:', stats.cacheHits);
