@@ -37,7 +37,7 @@ export const loadConfig = (): Required<Config> => {
 	//	ensure that we don't write output to the source directory
 	if (mergedConfig.inputDir.startsWith(mergedConfig.outputDir) || mergedConfig.outputDir.startsWith(mergedConfig.inputDir)) {
 		console.error(chalk.red(`⚠  Input and output paths must be separate directories.`));
-		process.exit(0);
+		process.exit(1);
 	}
 
 	const assetConfigFilePath = mergedConfig.inputDir + '/ssgassets.config.json';
