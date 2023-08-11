@@ -4,7 +4,6 @@ import { loadConfig } from './config/loader';
 import { resolveAssets } from './content/loader';
 
 import { getCachedAssets, CachedAsset } from './content/cache';
-import type { Config } from './config/schema';
 
 import fs from 'fs';
 
