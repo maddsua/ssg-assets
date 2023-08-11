@@ -104,7 +104,7 @@ import path from 'path';
 		}
 
 		//	sharp subroutine
-		config.formats.forEach(async (format) => {
+		await Promise.all(config.formats.map(async (format) => {
 
 			//	copy if it's original
 			if (format === 'original') {
@@ -133,7 +133,8 @@ import path from 'path';
 			if (!config.noCache) fs.copyFileSync(dest, cacheItem);
 			stats.sharpConverted++;
 			console.log(chalk.green(`Converted${config.noCache ? '' : ' and cached'}:`), dest);
-		});
+		}));
+
 	}));
 
 	const anythingDone = Object.values(stats).some(item => item > 0);
