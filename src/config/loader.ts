@@ -3,8 +3,6 @@ import { normalizePath, fix_relative_glob } from '../content/paths';
 
 import { defaultConfig, outputFormats } from './defaults';
 
-import process from 'process';
-
 import chalk from 'chalk';
 
 import { Config, ConfigSchema } from './schema';
