@@ -1,9 +1,9 @@
 <script setup lang="ts">
 
 import Img from './Img.vue';
-import { Props, mapSources } from '../components_shared';
+import { PictireProps, mapSources } from '../components_shared';
 
-const { src, alt, classlist, lazy, sizes, formats, draggable, adaptiveModes } = defineProps<Props>();
+const { src, alt, classlist, lazy, sizes, formats, draggable, adaptiveModes } = defineProps<PictireProps>();
 
 </script>
 

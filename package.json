@@ -1,7 +1,7 @@
 {
 	"private": false,
 	"name": "@maddsua/ssg-assets",
-	"version": "2.0.0",
+	"version": "2.1.0",
 	"type": "module",
 	"engines": {
 		"node": ">=16.4.0"
@@ -43,7 +43,8 @@
 		"build": "run-s lint bundle",
 		"dev": "esbuild src/main.ts --outfile=bin/main.js --bundle --platform=node --format=esm --external:sharp --external:chalk --external:minimatch --watch",
 		"test": "node bin/main.js --verbose",
-		"test_components": "cd components && tsc --noemit"
+		"test_components": "cd components && tsc --noemit",
+		"deploy": "npm publish --access=public"
 	},
 	"dependencies": {
 		"chalk": "^5.3.0",

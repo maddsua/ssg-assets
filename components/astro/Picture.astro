@@ -1,8 +1,10 @@
 ---
 import Img from './Img.astro';
-import { Props, mapSources } from '../components_shared';
+import { PictireProps, mapSources } from '../components_shared';
 
+export interface Props extends PictireProps {};
 const { src, alt, classlist, lazy, sizes, formats, draggable, adaptiveModes } = Astro.props;
+
 const sources = mapSources(src, formats, adaptiveModes);
 ---
 

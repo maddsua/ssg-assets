@@ -5,7 +5,7 @@ export interface AdaptiveMode {
 
 type ImageFormats = string | string[];
 
-export interface Props {
+export interface PictireProps {
 	src: string;
 	alt: string;
 	classlist?: string;
@@ -14,7 +14,16 @@ export interface Props {
 	lazy?: boolean;
 	sizes?: number | number[];
 	adaptiveModes?: AdaptiveMode[];
-}
+};
+
+export interface ImageProps {
+	src: string;
+	alt: string;
+	classlist?: string;
+	lazy?: boolean;
+	sizes?: number | number[];
+	draggable?: boolean;
+};
 
 export const supportedFormats = [ 'avif', 'webp', 'png', 'jpg' ];
 

@@ -1,16 +1,9 @@
 <script setup lang="ts">
 
 import Img from './Img.vue';
+import type { ImageProps } from '../components_shared';
 
-interface Props {
-	src: string;
-	alt: string;
-	classlist?: string;
-	lazy?: boolean;
-	sizes?: number | number[];
-	draggable?: boolean;
-}
-const { src, alt, classlist, lazy, sizes, draggable } = defineProps<Props>();
+const { src, alt, classlist, lazy, sizes, draggable } = defineProps<ImageProps>();
 
 const size = sizes ? (typeof sizes === 'number' ? ({
 	width: sizes,

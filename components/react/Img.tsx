@@ -1,3 +1,5 @@
+import { ImageProps } from "../components_shared";
+
 interface i_sizes {
 	width: number | undefined,
 	height: number | undefined
@@ -17,21 +19,9 @@ export const decideSize = (sizes: number | number[] | undefined): i_sizes => {
 	}
 };
 
-interface Props {
-	src: string;
-	alt: string;
-	classlist?: string;
-	lazy?: boolean;
-	sizes?: number | number[];
-	draggable?: boolean;
-}
-
-/**
- * Advanced \<img\> component
- */
-export default ({src, alt, classlist, lazy, sizes, draggable}: Props) => {
+export default ({src, alt, classlist, lazy, sizes, draggable}: ImageProps) => {
 
 	const size = decideSize(sizes);
 
 	return <img className={classlist} src={src} alt={alt} width={size.width} height={size.height} draggable={draggable} loading={ lazy !== false ? 'lazy' : undefined } />
-}
+};

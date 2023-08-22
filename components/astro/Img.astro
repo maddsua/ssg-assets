@@ -1,12 +1,7 @@
 ---
-export interface Props {
-	src: string;
-	alt: string;
-	classlist?: string;
-	lazy?: boolean;
-	sizes?: number | number[];
-	draggable?: boolean;
-}
+import { ImageProps } from '../components_shared';
+
+export interface Props extends ImageProps {};
 const { src, alt, classlist, lazy, sizes, draggable } = Astro.props;
 
 const size = sizes ? (typeof sizes === 'number' ? ({

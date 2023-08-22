@@ -1,10 +1,10 @@
 import Img from "./Img.jsx";
-import { Props, mapSources } from '../components_shared';
+import { PictireProps, mapSources } from '../components_shared';
 
 /**
  * Advanced \<picture\> component
  */
-export default ({ src, alt, classlist, lazy, sizes, formats, draggable, adaptiveModes }: Props) => {
+export default ({ src, alt, classlist, lazy, sizes, formats, draggable, adaptiveModes }: PictireProps) => {
 
 	const sources = mapSources(src, formats, adaptiveModes);
 
