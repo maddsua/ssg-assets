@@ -4,7 +4,7 @@ import chalk from 'chalk';
 
 import { ConfigSchema } from './schema';
 
-export const loadConfigFile = (filePath: string): Record<string, any> => {
+export const loadConfigFile = (filePath: string): Record<string, any> | null => {
 
 	const configEntries: Record<string, any> = {};
 
@@ -32,7 +32,7 @@ export const loadConfigFile = (filePath: string): Record<string, any> => {
 		}
 
 	} catch (_error) {
-		return {};
+		return null;
 	}
 
 	return configEntries;
