@@ -1,7 +1,7 @@
 {
 	"private": false,
 	"name": "@maddsua/ssg-assets",
-	"version": "3.0.0",
+	"version": "3.0.1",
 	"type": "module",
 	"engines": {
 		"node": ">=16.4.0"
@@ -32,9 +32,13 @@
 	},
 	"files": [
 		"bin",
+		"dist",
 		"package.json",
 		"package-lock.json",
-		"components",
+		"components/components_shared.ts",
+		"components/astro",
+		"components/react",
+		"components/vue",
 		"*.d.ts"
 	],
 	"scripts": {

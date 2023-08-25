@@ -1,10 +1,23 @@
+# npm stuff
 node_modules
+*.tgz
+
+# build results
 bin
-dist
+**/dist/*
+
+# but not these
+!dist/dummy.js
+!dist/dummy.d.ts
+
+# temp rubbish
 temp
 tests/result
+
+# results of media conversions
 *.avif
 *.webp
+
+# medi cache
 **/.cache
-*.tgz
 **/.cache.json
