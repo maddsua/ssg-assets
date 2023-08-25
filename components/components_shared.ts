@@ -5,13 +5,14 @@ export interface AdaptiveMode {
 	modifier: ModeModifier;
 };
 
-type ImageFormats = string | string[];
+type ImageFormats = 'jpg' | 'png' | 'gif' | 'webp' | 'avif';
+export type ImageFormatsType = ImageFormats | ImageFormats[] | string | string[];
 
 export interface PictireProps {
 	src: string;
 	alt: string;
 	classlist?: string;
-	formats?: ImageFormats;
+	formats?: ImageFormatsType;
 	draggable?: boolean;
 	lazy?: boolean;
 	sizes?: number | number[];
@@ -36,7 +37,7 @@ export const adaptBaseImageUrl = (src: string, adaptiveModes?: AdaptiveMode[]) =
 	return applyUrlModifier(src, adaptiveModes[0].modifier);
 };
 
-export const mapSources = (src: string, formats?: ImageFormats, adaptiveModes?: AdaptiveMode[]) => {
+export const mapSources = (src: string, formats?: ImageFormatsType, adaptiveModes?: AdaptiveMode[]) => {
 
 	const requestedFormats = formats ? (typeof formats === 'string') ? formats.replace('\s','').split(',') : formats : [];
 	const imageAltFormats = requestedFormats.filter(format => supportedFormats.some(item => item.toLowerCase() === format));
