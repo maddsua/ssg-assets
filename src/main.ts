@@ -169,7 +169,8 @@ const printCliConfig = (config: Config) => {
 			}
 
 			//	convert using sharp
-			await sharp(asset.source).toFormat(format, { quality: config.quality[format] || 90 }).toFile(dest);
+			const outputQuality = config.quality[format] || 90
+			await sharp(asset.source).toFormat(format, { quality: outputQuality }).toFile(dest);
 			if (!config.noCache) fs.copyFileSync(dest, cacheItem);
 			stats.sharpConverted++;
 			console.log(chalk.green(`Converted${config.noCache ? '' : ' and cached'}:`), dest);
