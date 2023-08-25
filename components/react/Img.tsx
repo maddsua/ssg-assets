@@ -1,8 +1,8 @@
-import { ImageProps, getImageSize } from '../components_shared';
+import { ImageProps, getImageSize, classToString, styleToString } from '../components_shared';
 
-export default ({src, alt, classlist, lazy, sizes, draggable}: ImageProps) => {
+export default (props: ImageProps) => {
 
-	const size = getImageSize(sizes);
+	const size = getImageSize(props.sizes);
 
-	return <img className={classlist} src={src} alt={alt} width={size?.width} height={size?.height} draggable={draggable} loading={ lazy !== false ? 'lazy' : undefined } />
+	return <img src={props.src} alt={props.alt} width={size?.width} height={size?.height} draggable={props.draggable} loading={ props.lazy !== false ? 'lazy' : undefined } className={classToString(props.class)} style={styleToString(props.style)}/>
 };

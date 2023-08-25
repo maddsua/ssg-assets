@@ -1,19 +1,19 @@
 import Img from "./Img.jsx";
-import { PictireProps, mapSources, adaptBaseImageUrl } from '../components_shared';
+import { PictireProps, mapSources, adaptBaseImageUrl, classToString, styleToString } from '../components_shared';
 
 /**
  * Advanced \<picture\> component
  */
-export default ({ src, alt, classlist, lazy, sizes, formats, draggable, adaptiveModes }: PictireProps) => {
+export default (props: PictireProps) => {
 
-	const sources = mapSources(src, formats, adaptiveModes);
+	const sources = mapSources(props.src, props.formats, props.adaptiveModes);
 
 	return (
-		<picture className={classlist}>
+		<picture className={classToString(props.class)} style={styleToString(props.style)}>
 			{ sources.map(item => (
 				<source srcset={item.source} type={item.type} media={item.media as string | undefined} />
 			)) }
-			<Img src={adaptBaseImageUrl(src)} alt={alt} draggable={draggable} lazy={lazy} sizes={sizes} />
+			<Img src={adaptBaseImageUrl(props.src)} alt={props.alt} draggable={props.draggable} lazy={props.lazy} sizes={props.sizes} class={props.imgClass} style={props.imgStyle} />
 		</picture>
 	);
-}
+};

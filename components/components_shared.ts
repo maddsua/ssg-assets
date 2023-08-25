@@ -7,29 +7,27 @@ export interface AdaptiveMode {
 	modifier: ModeModifier;
 };
 
-type ImageFormats = 'jpg' | 'png' | 'gif' | 'webp' | 'avif';
-export type ImageFormatsType = ImageFormats | ImageFormats[] | string | string[];
-
+export type ImageFormats = 'jpg' | 'png' | 'gif' | 'webp' | 'avif';
+type ImageFormatsType = ImageFormats | ImageFormats[] | string | string[];
 type ImageSizesProp = number | number[];
-
-export interface PictireProps {
-	src: string;
-	alt: string;
-	classlist?: string;
-	formats?: ImageFormatsType;
-	draggable?: boolean;
-	lazy?: boolean;
-	sizes?: ImageSizesProp;
-	adaptiveModes?: AdaptiveMode[];
-};
+type ElementClass = string | string[] | Record<string, boolean>;
+type ElementStyle = string | Record<string, string | number> | Record<`${string}:${string}`, boolean>;
 
 export interface ImageProps {
 	src: string;
 	alt: string;
-	classlist?: string;
+	class?: ElementClass;
+	style?: ElementStyle;
 	lazy?: boolean;
 	sizes?: number | number[];
 	draggable?: boolean;
+};
+
+export interface PictireProps extends ImageProps {
+	formats?: ImageFormatsType;
+	adaptiveModes?: AdaptiveMode[];
+	imgClass?: ElementClass;
+	imgStyle?: ElementStyle;
 };
 
 export const supportedFormats = [ 'avif', 'webp', 'png', 'jpg' ];
@@ -68,3 +66,28 @@ export const getImageSize = (sizes?: ImageSizesProp) => sizes ? (typeof sizes ==
 	width: sizes[0],
 	height: sizes?.length >= 2 ? sizes[1] : sizes[0]
 })) : undefined;
+
+export const classToString = (elemclass?: ElementClass) => {
+
+	if (typeof elemclass === 'string') 
+		return elemclass;
+	
+	else if (Array.isArray(elemclass))
+		return elemclass.filter(item => !!item).join(' ');
+
+	else if (typeof elemclass === 'object')
+		return Object.entries(elemclass).filter(item => !!item[1]).map(item => item[0]).join(' ');
+
+	return undefined;
+};
+
+export const styleToString = (elemstyle?: ElementStyle) => {
+
+	if (typeof elemstyle === 'string') 
+		return elemstyle;
+
+	else if (typeof elemstyle === 'object')
+		return Object.entries(elemstyle).filter(item => !!item[1]).map(item => typeof item[1] === 'boolean' ? item[0] : `${item[0]}: ${item[1]}`).join('; ');
+
+	return undefined;
+};
