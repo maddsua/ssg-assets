@@ -9,9 +9,9 @@ export const defaultConfig: Partial<Config> = {
 	include: [],
 	passthrough: [],
 	quality: {
-		avif: 80,
+		avif: 85,
 		webp: 85,
-		jpg: 75,
+		jpg: 80,
 		png: 85
 	}
 };
