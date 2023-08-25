@@ -29,14 +29,23 @@ const testData: Array<{
 	},
 	{
 		url: '/banners/1248.jpg',
-		adaptive: [],
+		adaptive: [
+			{
+				'media': 'orientation: landscape',
+				'modifier': '.desktop'
+			},
+			{
+				'media': 'orientation: portrait',
+				'modifier': '.mobile'
+			}
+		],
 		formats: ['webp', 'avif']
 	}
-]
+];
 
 const results = testData.map(item => ({
 	img: adaptBaseImageUrl(item.url, item.adaptive),
-	sources: mapSources(item.url, item.formats, item.adaptive)
+	sources: mapSources(item.url, item.formats, item.adaptive).map(item => ({ media: item.media, source: item.source }))
 }));
 
 console.log(results);
