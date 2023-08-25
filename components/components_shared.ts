@@ -44,14 +44,14 @@ export const mapSources = (src: string, formats?: ImageFormats, adaptiveModes?: 
 	const sources = imageAltFormats.map(format => ({
 		source: `${src.replace(/\.[\w\d]+/, '')}.${format}`,
 		type: `image/${format}`,
-		media: null as string | null
+		media: undefined as string | undefined
 	}));
 	
-	const adaptiveSources = adaptiveModes?.map(mode => sources.map(item => ({
+	const adaptiveSources = (adaptiveModes?.length && adaptiveModes?.length > 1) ? adaptiveModes?.map(mode => sources.map(item => ({
 		media: `(${mode.media})`,
-		source: mode.modifier ? item.source.replace(/\..*$/, '') + mode.modifier + item.source.match(/\..*$/)?.[0] : item.source,
+		source: applyUrlModifier(item.source, mode.modifier),
 		type: item.type
-	}))).flat(1);
+	}))).flat(1) : undefined;
 	
-	return adaptiveSources?.length ? adaptiveSources : sources || [];
+	return adaptiveSources || sources || [];
 };
