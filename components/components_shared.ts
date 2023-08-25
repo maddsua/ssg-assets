@@ -10,7 +10,7 @@ export interface AdaptiveMode {
 export type ImageFormats = 'jpg' | 'png' | 'gif' | 'webp' | 'avif';
 type ImageFormatsType = ImageFormats | ImageFormats[] | string | string[];
 type ImageSizesProp = number | number[];
-type ElementClass = string | string[] | Record<string, any>;
+type ElementClass = string | string[] | Record<string, boolean>;
 type ElementStyle = string | Record<string, string | number> | Record<`${string}:${string}`, boolean>;
 
 export interface ImageProps {
