@@ -20,26 +20,24 @@ const size = sizes ? (typeof sizes === 'number' ? ({
 
 <script>
 
-	(() => {
-		document.querySelectorAll<HTMLImageElement>('img[loading="lazy"][data-maddsua-component]').forEach(image => {
+	export const asyncSleep = (timeout: number) => new Promise<void>(resolve => setTimeout(resolve, timeout));
 
-			if (image.complete) return;
+	document.querySelectorAll<HTMLImageElement>('img[loading="lazy"][data-maddsua-component]').forEach(image => {
 
-			image.style.transition = `opacity 500ms ease`;
-			image.style.opacity = '0';
+		if (image.complete) return;
 
-			image.onload = () => {
-				setTimeout(() => {
-					image.style.opacity = '1';
+		image.style.transition = `opacity 500ms ease`;
+		image.style.opacity = '0';
 
-					setTimeout(() => {
-						image.style.transition = '';
-						image.style.opacity = '';
-					}, 500);
+		image.onload = async () => {
 
-				}, 100);
-			};
-		});
-	})()
+			await asyncSleep(10);
+			image.style.opacity = '1';
+
+			await asyncSleep(500);
+			image.style.transition = '';
+			image.style.opacity = '';
+		};
+	});
 
 </script>
