@@ -1,7 +1,8 @@
 
 type ModeModifier = string | null | undefined;
+type ModeMedia = string | null | undefined;
 export interface AdaptiveMode {
-	media: string;
+	media: ModeMedia;
 	modifier: ModeModifier;
 };
 
@@ -39,7 +40,7 @@ export const adaptBaseImageUrl = (src: string, adaptiveModes?: AdaptiveMode[]) =
 
 export const mapSources = (src: string, formats?: ImageFormatsType, adaptiveModes?: AdaptiveMode[]) => {
 
-	const requestedFormats = formats ? (typeof formats === 'string') ? formats.replace('\s','').split(',') : formats : [];
+	const requestedFormats = formats ? (typeof formats === 'string') ? formats.split(',').map(item => item.trim()) : formats : [];
 	const imageAltFormats = requestedFormats.filter(format => supportedFormats.some(item => item.toLowerCase() === format));
 	
 	const sources = imageAltFormats.map(format => ({
@@ -48,12 +49,9 @@ export const mapSources = (src: string, formats?: ImageFormatsType, adaptiveMode
 		media: undefined as string | undefined
 	}));
 	
-	const useAdaptive = (adaptiveModes?.length && adaptiveModes?.length > 1);
-	const adaptiveSources = useAdaptive ? adaptiveModes?.map(mode => sources.map(item => ({
+	return adaptiveModes?.length ? adaptiveModes?.map(mode => sources.map(item => ({
 		media: `(${mode.media})`,
 		source: applyUrlModifier(item.source, mode.modifier),
 		type: item.type
-	}))).flat(1) : undefined;
-	
-	return adaptiveSources || sources || [];
+	}))).flat(1) : sources || [];
 };
