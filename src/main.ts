@@ -94,30 +94,30 @@ const printCliConfig = (config: Config) => {
 		sharpConverted: 0
 	};
 
+	const skipIfNotChanged = (sourcePath: string, destpath: string) => new Promise<boolean>(resolve => (async () => {
+		
+		//	not checking if file exist, it will just fail and return false
+		const destModified = fs.statSync(destpath).mtimeMs;
+		const sourceModified = fs.statSync(sourcePath).mtimeMs;
+		
+		if (destModified !== sourceModified) {
+			resolve(false);
+			return;
+		}
+		
+		if (config.verbose) console.log(chalk.green('Not changed:'), destpath);
+		stats.notChanged++;
+		
+		resolve(true);
+		
+	})().catch((_error) => resolve(false)));
+	
 	console.log('\r');
 
 	await Promise.all(assets.map(async (asset) => {
 
 		//	skip assets with no assigned action
 		if (!asset.action) return;
-
-		const skipIfNotChanged = (sourcePath: string, destpath: string) => new Promise<boolean>(resolve => (async () => {
-
-			//	not checking if file exist, it will just fail and return false
-			const destModified = fs.statSync(destpath).mtimeMs;
-			const sourceModified = fs.statSync(sourcePath).mtimeMs;
-
-			if (destModified !== sourceModified) {
-				resolve(false);
-				return;
-			}
-
-			if (config.verbose) console.log(chalk.green('Not changed:'), destpath);
-			stats.notChanged++;
-
-			resolve(true);
-
-		})().catch((_error) => resolve(false)));
 
 		//	create dest dir
 		const destDir = path.dirname(asset.dest);
