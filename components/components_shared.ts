@@ -47,7 +47,8 @@ export const mapSources = (src: string, formats?: ImageFormats, adaptiveModes?: 
 		media: undefined as string | undefined
 	}));
 	
-	const adaptiveSources = (adaptiveModes?.length && adaptiveModes?.length > 1) ? adaptiveModes?.map(mode => sources.map(item => ({
+	const useAdaptive = (adaptiveModes?.length && adaptiveModes?.length > 1);
+	const adaptiveSources = useAdaptive ? adaptiveModes?.map(mode => sources.map(item => ({
 		media: `(${mode.media})`,
 		source: applyUrlModifier(item.source, mode.modifier),
 		type: item.type
