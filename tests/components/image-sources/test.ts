@@ -1,5 +1,8 @@
 //	This test should be run with Deno
 //	I'm to lazy to adapt this nonsence for nodeJS
+//
+//	This is not an automated test, it's used to verify image source generation,
+//	but that is not needed to be tested on each build
 
 import { mapSources, adaptBaseImageUrl, AdaptiveMode, ImageFormatsType } from '../../../components/components_shared.ts';
 
