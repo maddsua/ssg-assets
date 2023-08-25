@@ -1,7 +1,8 @@
 import { importArguments } from './cli';
 import { normalizePath, fix_relative_glob } from '../content/paths';
 
-import { defaultConfig, outputFormats } from './defaults';
+import { defaultConfig } from './defaults';
+import { outputFormats } from '../formats';
 
 import chalk from 'chalk';
 

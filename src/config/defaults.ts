@@ -1,8 +1,4 @@
-import { OutputOption } from "../content/types";
 import { Config } from './schema';
-
-export const sharpFormats = [ 'png', 'jpeg', 'jpg', 'avif', 'webp', 'gif' ];
-export const outputFormats: OutputOption[] = [ 'original', 'webp', 'avif', 'png', 'jpg' ];
 
 export const defaultConfig: Partial<Config> = {
 	config: 'ssgassets.config.json',

@@ -2,6 +2,8 @@
 
 import { loadConfig } from './config/loader';
 import { resolveAssets } from './content/loader';
+import { sharpFormats } from './formats';
+import type { OutputFormat } from './types';
 
 import { getCachedAssets, CachedAsset } from './content/cache';
 
@@ -136,18 +138,21 @@ const printCliConfig = (config: Config) => {
 		//	sharp subroutine
 		await Promise.all(config.formats.map(async (format) => {
 
-			//	copy if it's original
+			//	extract original image format
 			if (format === 'original') {
-				if (await skipIfNotChanged(asset.source, asset.dest)) return;
-				fs.copyFileSync(asset.source, asset.dest);
-				stats.copied++;
-				console.log(chalk.green('Copied original:'), asset.dest);
-				return;
-			}
 
-			//	skip conversion for the same format as the source, if we already copied original
-			if (asset.source.endsWith(format) && config.formats.some(format => format === 'original')) {
-				return;
+				const originalFormat = asset.source.replace(/^.+\./, '');
+				if (!originalFormat.length) {
+					console.error(chalk.red('Unable to determine image format for:'), asset.source);
+					return;
+				}
+
+				if (!sharpFormats.some(item => item === originalFormat)) {
+					console.error(chalk.red('Unsupported output format for:'), asset.source, `[${originalFormat}]`);
+					return;
+				}
+
+				format = originalFormat as OutputFormat;
 			}
 
 			//	try getting from cache

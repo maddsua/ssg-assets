@@ -1,5 +1,5 @@
-import { sharpFormats } from '../config/defaults';
-import type { AssetsListItem } from './types';
+import { sharpFormats } from '../formats';
+import type { AssetsListItem } from '../types';
 import type { Config } from '../config/schema';
 import { getFileHashSha256 } from './hash';
 

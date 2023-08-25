@@ -1,5 +1,5 @@
-import { outputFormats } from "./defaults";
-import { OutputOption } from "../content/types";
+import { outputFormats } from '../formats';
+import { OutputOption } from '../types';
 
 export interface Config {
 	config: string;
