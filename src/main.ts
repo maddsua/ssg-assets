@@ -138,7 +138,7 @@ const printCliConfig = (config: Config) => {
 		//	sharp subroutine
 		await Promise.all(config.formats.map(async (format) => {
 
-			//	extract original image format
+			//	detect original image format
 			if (format === 'original') {
 
 				const originalFormat = asset.source.replace(/^.+\./, '');
@@ -148,7 +148,7 @@ const printCliConfig = (config: Config) => {
 				}
 
 				if (!sharpFormats.some(item => item === originalFormat)) {
-					console.error(chalk.red('Unsupported output format for:'), asset.source, `[${originalFormat}]`);
+					console.error(chalk.red('Unsupported output format for:'), `${asset.source}, [${originalFormat}]`);
 					return;
 				}
 
