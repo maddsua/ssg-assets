@@ -5,11 +5,41 @@ import { resolveAssets } from './content/loader';
 
 import { getCachedAssets, CachedAsset } from './content/cache';
 
+import { Config } from './config/schema';
+
 import fs from 'fs';
 
 import sharp from 'sharp';
 import chalk from 'chalk';
 import path from 'path';
+
+const printCliConfig = (config: Config) => {
+
+	console.log('\r');
+	console.log(chalk.bgWhite.black(' Current config: '));
+	console.log('----');
+
+	const configFilesList = [config.config && 'project', config.assetConfig && 'asset dir'];
+	
+	const temp = {
+		'Config files': configFilesList.length ? configFilesList.join(', ') : 'none',
+		'Cache': config.noCache ? 'disabled' : 'enabled',
+		'Load from': `"${config.inputDir}"`,
+		'Save to': `"${config.outputDir}"`,
+		'Output formats': config.formats?.join(', ') || 'unset',
+	};
+
+	if (config.exclude.length) Object.assign(temp, {
+		'Excluded': config.exclude.join(', ')
+	});
+
+	if (config.include.length) Object.assign(temp, {
+		'Include filter': config.include.join(', ')
+	});
+
+	Object.entries(temp).forEach(item => console.log(item[0], ':', chalk.green(item[1])));
+	console.log('----\n');
+};
 
 ( async () => {
 
@@ -17,7 +47,7 @@ import path from 'path';
 	
 	if (config.verbose) {
 		console.log('Verbose mode enabled. Tool is extra talkative now.');
-		console.log('Current config:', config, '\n');
+		printCliConfig(config);
 	}
 
 	console.log('Hashing assets...');
