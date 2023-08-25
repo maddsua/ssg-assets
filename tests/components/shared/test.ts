@@ -10,7 +10,12 @@ const testData: Array<{
 }> = [
 	{
 		url: '/cats/1.png',
-		adaptive: [],
+		adaptive: [
+			{
+				'media': 'orientation: portrait',
+				'modifier': '.mobile'
+			}
+		],
 		formats: ['webp', 'avif']
 	},
 	{
