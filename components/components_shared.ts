@@ -48,9 +48,11 @@ export const mapSources = (src: string, formats?: ImageFormatsType, adaptiveMode
 		type: `image/${format}`,
 		media: undefined as string | undefined
 	}));
+
+	if (adaptiveModes?.length === 1) adaptiveModes.push({ media: null, modifier: null });
 	
 	return adaptiveModes?.length ? adaptiveModes?.map(mode => sources.map(item => ({
-		media: `(${mode.media})`,
+		media: mode.media ? `(${mode.media})` : undefined,
 		source: applyUrlModifier(item.source, mode.modifier),
 		type: item.type
 	}))).flat(1) : sources || [];
