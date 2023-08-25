@@ -1,6 +1,7 @@
 
 type ModeModifier = string | null | undefined;
 type ModeMedia = string | null | undefined;
+
 export interface AdaptiveMode {
 	media: ModeMedia;
 	modifier: ModeModifier;
@@ -9,6 +10,8 @@ export interface AdaptiveMode {
 type ImageFormats = 'jpg' | 'png' | 'gif' | 'webp' | 'avif';
 export type ImageFormatsType = ImageFormats | ImageFormats[] | string | string[];
 
+type ImageSizesProp = number | number[];
+
 export interface PictireProps {
 	src: string;
 	alt: string;
@@ -16,7 +19,7 @@ export interface PictireProps {
 	formats?: ImageFormatsType;
 	draggable?: boolean;
 	lazy?: boolean;
-	sizes?: number | number[];
+	sizes?: ImageSizesProp;
 	adaptiveModes?: AdaptiveMode[];
 };
 
@@ -57,3 +60,11 @@ export const mapSources = (src: string, formats?: ImageFormatsType, adaptiveMode
 		type: item.type
 	}))).flat(1) : sources || [];
 };
+
+export const getImageSize = (sizes?: ImageSizesProp) => sizes ? (typeof sizes === 'number' ? ({
+	width: sizes,
+	height: sizes
+}) : ({
+	width: sizes[0],
+	height: sizes?.length >= 2 ? sizes[1] : sizes[0]
+})) : undefined;

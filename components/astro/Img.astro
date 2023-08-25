@@ -1,22 +1,13 @@
 ---
-import { ImageProps } from '../components_shared';
+import { ImageProps, getImageSize } from '../components_shared';
 
 export interface Props extends ImageProps {};
 const { src, alt, classlist, lazy, sizes, draggable } = Astro.props;
 
-const size = sizes ? (typeof sizes === 'number' ? ({
-	width: sizes,
-	height: sizes
-}) : ({
-	width: sizes[0],
-	height: sizes?.length >= 2 ? sizes[1] : sizes[0]
-})) : ({
-	width: undefined,
-	height: undefined
-});
+const size = getImageSize(sizes);
 ---
 
-<img class={classlist} src={src} alt={alt} width={size.width} height={size.height} draggable={ draggable === true ? 'true' : 'false' } loading={ lazy !== false ? 'lazy' : undefined } data-maddsua-component="astro:ssgassets:img" />
+<img class={classlist} src={src} alt={alt} width={size?.width} height={size?.height} draggable={ draggable === true ? 'true' : 'false' } loading={ lazy !== false ? 'lazy' : undefined } data-maddsua-component="astro:ssgassets:img" />
 
 <script>
 
