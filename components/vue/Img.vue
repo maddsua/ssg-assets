@@ -3,14 +3,14 @@
 import Img from './Img.vue';
 import { ImageProps, getImageSize } from '../components_shared';
 
-const { src, alt, classlist, lazy, sizes, draggable } = defineProps<ImageProps>();
+const props = defineProps<ImageProps>();
 
-const size = getImageSize(sizes);
+const size = getImageSize(props.sizes);
 
 </script>
 
 <template>
 
-	<img :class="classlist" :src="src" :alt="alt" :width="size?.width" :height="size?.height" :draggable="draggable === true ? 'true' : 'false'" :loading="lazy !== false ? 'lazy' : undefined"  data-maddsua-component="vue:ssgassets:img" />
+	<img :class="props.classlist" :src="props.src" :alt="props.alt" :width="size?.width" :height="size?.height" :draggable="props.draggable === true ? 'true' : 'false'" :loading="props.lazy !== false ? 'lazy' : undefined"  data-maddsua-component="vue:ssgassets:img" />
 
 </template>

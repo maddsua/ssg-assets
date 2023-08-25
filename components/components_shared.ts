@@ -12,17 +12,6 @@ export type ImageFormatsType = ImageFormats | ImageFormats[] | string | string[]
 
 type ImageSizesProp = number | number[];
 
-export interface PictireProps {
-	src: string;
-	alt: string;
-	classlist?: string;
-	formats?: ImageFormatsType;
-	draggable?: boolean;
-	lazy?: boolean;
-	sizes?: ImageSizesProp;
-	adaptiveModes?: AdaptiveMode[];
-};
-
 export interface ImageProps {
 	src: string;
 	alt: string;
@@ -30,6 +19,11 @@ export interface ImageProps {
 	lazy?: boolean;
 	sizes?: number | number[];
 	draggable?: boolean;
+};
+
+export interface PictireProps extends ImageProps {
+	formats?: ImageFormatsType;
+	adaptiveModes?: AdaptiveMode[];
 };
 
 export const supportedFormats = [ 'avif', 'webp', 'png', 'jpg' ];
