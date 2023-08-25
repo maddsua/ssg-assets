@@ -32,15 +32,20 @@
 	},
 	"files": [
 		"bin",
+		"dist",
 		"package.json",
 		"package-lock.json",
-		"components",
+		"components/components_shared.ts",
+		"components/astro",
+		"components/react",
+		"components/vue",
 		"*.d.ts"
 	],
 	"scripts": {
 		"lint": "tsc",
 		"bundle": "esbuild src/main.ts --outfile=bin/main.js --bundle --platform=node --format=esm --external:sharp --external:chalk --external:minimatch",
-		"build": "run-s lint bundle",
+		"mkdummy": "node mkdummyindex.mjs",
+		"build": "run-s lint bundle mkdummy",
 		"dev": "esbuild src/main.ts --outfile=bin/main.js --bundle --platform=node --format=esm --external:sharp --external:chalk --external:minimatch --watch",
 		"test": "node bin/main.js --verbose",
 		"test_components": "cd components && tsc --noemit",
