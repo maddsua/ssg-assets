@@ -80,3 +80,17 @@ export const classToString = (elemclass?: ElementClass) => {
 
 	return undefined;
 };
+
+export const styleToString = (elemstyle?: ElementStyle) => {
+
+	if (typeof elemstyle === 'string') 
+		return elemstyle;
+	
+	else if (Array.isArray(elemstyle))
+		return elemstyle.filter(item => !!item).join('; ');
+
+	else if (typeof elemstyle === 'object')
+		return Object.entries(elemstyle).filter(item => !!item[1]).map(item => `${item[0]}: ${item[1]}`).join('; ');
+
+	return undefined;
+};
