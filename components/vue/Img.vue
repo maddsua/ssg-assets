@@ -20,6 +20,6 @@ const size = sizes ? (typeof sizes === 'number' ? ({
 
 <template>
 
-<img :class="classlist" :src="src" :alt="alt" :width="size.width" :height="size.height" :draggable="draggable === true ? 'true' : 'false'" :loading="lazy !== false ? 'lazy' : undefined"  data-maddsua-component="vue:ssgassets:img" />
+	<img :class="classlist" :src="src" :alt="alt" :width="size.width" :height="size.height" :draggable="draggable === true ? 'true' : 'false'" :loading="lazy !== false ? 'lazy' : undefined"  data-maddsua-component="vue:ssgassets:img" />
 
 </template>
