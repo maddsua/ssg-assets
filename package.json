@@ -44,8 +44,7 @@
 	"scripts": {
 		"lint": "tsc",
 		"bundle": "esbuild src/main.ts --outfile=bin/main.js --bundle --platform=node --format=esm --external:sharp --external:chalk --external:minimatch",
-		"mkdummy": "node mkdummyindex.mjs",
-		"build": "run-s lint bundle mkdummy",
+		"build": "run-s lint bundle",
 		"dev": "esbuild src/main.ts --outfile=bin/main.js --bundle --platform=node --format=esm --external:sharp --external:chalk --external:minimatch --watch",
 		"test": "node bin/main.js --verbose",
 		"test_components": "cd components && tsc --noemit",
