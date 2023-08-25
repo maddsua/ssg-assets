@@ -1,18 +1,25 @@
-export interface AdaptiveMode {
-	media: string;
-	modifier: string | null | undefined;
-}
 
-type ImageFormats = string | string[];
+type ModeModifier = string | null | undefined;
+type ModeMedia = string | null | undefined;
+
+export interface AdaptiveMode {
+	media: ModeMedia;
+	modifier: ModeModifier;
+};
+
+type ImageFormats = 'jpg' | 'png' | 'gif' | 'webp' | 'avif';
+export type ImageFormatsType = ImageFormats | ImageFormats[] | string | string[];
+
+type ImageSizesProp = number | number[];
 
 export interface PictireProps {
 	src: string;
 	alt: string;
 	classlist?: string;
-	formats?: ImageFormats;
+	formats?: ImageFormatsType;
 	draggable?: boolean;
 	lazy?: boolean;
-	sizes?: number | number[];
+	sizes?: ImageSizesProp;
 	adaptiveModes?: AdaptiveMode[];
 };
 
@@ -27,22 +34,37 @@ export interface ImageProps {
 
 export const supportedFormats = [ 'avif', 'webp', 'png', 'jpg' ];
 
-export const mapSources = (src: string, formats?: ImageFormats, adaptiveModes?: AdaptiveMode[]) => {
+const applyUrlModifier = (src: string, modifier: ModeModifier) => modifier ? src.replace(/\..*$/, '') + modifier + src.match(/\..*$/)?.[0] : src;
 
-	const requestedFormats = formats ? (typeof formats === 'string') ? formats.replace('\s','').split(',') : formats : [];
+export const adaptBaseImageUrl = (src: string, adaptiveModes?: AdaptiveMode[]) => {
+	if (!adaptiveModes || adaptiveModes?.length < 2) return src;
+	return applyUrlModifier(src, adaptiveModes[0].modifier);
+};
+
+export const mapSources = (src: string, formats?: ImageFormatsType, adaptiveModes?: AdaptiveMode[]) => {
+
+	const requestedFormats = formats ? (typeof formats === 'string') ? formats.split(',').map(item => item.trim()) : formats : [];
 	const imageAltFormats = requestedFormats.filter(format => supportedFormats.some(item => item.toLowerCase() === format));
 	
 	const sources = imageAltFormats.map(format => ({
 		source: `${src.replace(/\.[\w\d]+/, '')}.${format}`,
 		type: `image/${format}`,
-		media: null as string | null
+		media: undefined as string | undefined
 	}));
+
+	if (adaptiveModes?.length === 1) adaptiveModes.push({ media: null, modifier: null });
 	
-	const adaptiveSources = adaptiveModes?.map(item => sources.map(i_src => ({
-		media: `(${item.media})`,
-		source: item.modifier ? i_src.source.replace(/\..*$/, '') + item.modifier + i_src.source.match(/\..*$/)?.[0] : i_src.source,
-		type: i_src.type
-	}))).flat(1);
-	
-	return adaptiveSources?.length ? adaptiveSources : sources || [];
-}
+	return adaptiveModes?.length ? adaptiveModes?.map(mode => sources.map(item => ({
+		media: mode.media ? `(${mode.media})` : undefined,
+		source: applyUrlModifier(item.source, mode.modifier),
+		type: item.type
+	}))).flat(1) : sources || [];
+};
+
+export const getImageSize = (sizes?: ImageSizesProp) => sizes ? (typeof sizes === 'number' ? ({
+	width: sizes,
+	height: sizes
+}) : ({
+	width: sizes[0],
+	height: sizes?.length >= 2 ? sizes[1] : sizes[0]
+})) : undefined;

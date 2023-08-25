@@ -1,45 +1,34 @@
 ---
-import { ImageProps } from '../components_shared';
+import { ImageProps, getImageSize } from '../components_shared';
 
 export interface Props extends ImageProps {};
 const { src, alt, classlist, lazy, sizes, draggable } = Astro.props;
 
-const size = sizes ? (typeof sizes === 'number' ? ({
-	width: sizes,
-	height: sizes
-}) : ({
-	width: sizes[0],
-	height: sizes?.length >= 2 ? sizes[1] : sizes[0]
-})) : ({
-	width: undefined,
-	height: undefined
-});
+const size = getImageSize(sizes);
 ---
 
-<img class={classlist} src={src} alt={alt} width={size.width} height={size.height} draggable={ draggable === true ? 'true' : 'false' } loading={ lazy !== false ? 'lazy' : undefined } data-maddsua-component="astro:ssgassets:img" />
+<img class={classlist} src={src} alt={alt} width={size?.width} height={size?.height} draggable={ draggable === true ? 'true' : 'false' } loading={ lazy !== false ? 'lazy' : undefined } data-maddsua-component="astro:ssgassets:img" />
 
 <script>
 
-	(() => {
-		document.querySelectorAll<HTMLImageElement>('img[loading="lazy"][data-maddsua-component]').forEach(image => {
+	export const asyncSleep = (timeout: number) => new Promise<void>(resolve => setTimeout(resolve, timeout));
 
-			if (image.complete) return;
+	document.querySelectorAll<HTMLImageElement>('img[loading="lazy"][data-maddsua-component]').forEach(image => {
 
-			image.style.transition = `opacity 500ms ease`;
-			image.style.opacity = '0';
+		if (image.complete) return;
 
-			image.onload = () => {
-				setTimeout(() => {
-					image.style.opacity = '1';
+		image.style.transition = `opacity 500ms ease`;
+		image.style.opacity = '0';
 
-					setTimeout(() => {
-						image.style.transition = '';
-						image.style.opacity = '';
-					}, 500);
+		image.onload = async () => {
 
-				}, 100);
-			};
-		});
-	})()
+			await asyncSleep(10);
+			image.style.opacity = '1';
+
+			await asyncSleep(500);
+			image.style.transition = '';
+			image.style.opacity = '';
+		};
+	});
 
 </script>

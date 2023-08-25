@@ -20,6 +20,7 @@
 		"node_modules",
 		"dist",
 		"components",
+		"tests",
 		"*.d.ts"
 	]
 }
