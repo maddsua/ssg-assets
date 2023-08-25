@@ -10,8 +10,8 @@ export interface AdaptiveMode {
 export type ImageFormats = 'jpg' | 'png' | 'gif' | 'webp' | 'avif';
 type ImageFormatsType = ImageFormats | ImageFormats[] | string | string[];
 type ImageSizesProp = number | number[];
-type ElementClass = string | string[] | Record<string, string> | object;
-type ElementStyle = string | Record<string, any> | object;
+type ElementClass = string | string[] | Record<string, any>;
+type ElementStyle = string | Record<string, string | number>;
 
 export interface ImageProps {
 	src: string;
@@ -76,7 +76,7 @@ export const classToString = (elemclass?: ElementClass) => {
 		return elemclass.filter(item => !!item).join(' ');
 
 	else if (typeof elemclass === 'object')
-		return Object.entries(elemclass).filter(item => !!item[1]).map(item => item[1]).join(' ');
+		return Object.entries(elemclass).filter(item => !!item[1]).map(item => item[0]).join(' ');
 
 	return undefined;
 };
@@ -85,9 +85,6 @@ export const styleToString = (elemstyle?: ElementStyle) => {
 
 	if (typeof elemstyle === 'string') 
 		return elemstyle;
-	
-	else if (Array.isArray(elemstyle))
-		return elemstyle.filter(item => !!item).join('; ');
 
 	else if (typeof elemstyle === 'object')
 		return Object.entries(elemstyle).filter(item => !!item[1]).map(item => `${item[0]}: ${item[1]}`).join('; ');
