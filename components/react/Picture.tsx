@@ -1,5 +1,5 @@
 import Img from "./Img.jsx";
-import { PictireProps, mapSources, adaptBaseImageUrl } from '../components_shared';
+import { PictireProps, mapSources, adaptBaseImageUrl, classToString } from '../components_shared';
 
 /**
  * Advanced \<picture\> component
@@ -9,7 +9,7 @@ export default (props: PictireProps) => {
 	const sources = mapSources(props.src, props.formats, props.adaptiveModes);
 
 	return (
-		<picture className={props.classlist}>
+		<picture className={classToString(props.class)}>
 			{ sources.map(item => (
 				<source srcset={item.source} type={item.type} media={item.media as string | undefined} />
 			)) }

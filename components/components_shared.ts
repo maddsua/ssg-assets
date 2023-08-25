@@ -67,8 +67,16 @@ export const getImageSize = (sizes?: ImageSizesProp) => sizes ? (typeof sizes ==
 	height: sizes?.length >= 2 ? sizes[1] : sizes[0]
 })) : undefined;
 
-export const classToString = (elemclass: ElementClass) => {
-	if (typeof elemclass === 'string') return elemclass;
-	if (Array.isArray(elemclass)) return elemclass.filter(item => !!item).join(' ');
-	return Object.entries(elemclass).filter(item => !!item[1]).map(item => item[1]).join(' ');
+export const classToString = (elemclass?: ElementClass) => {
+
+	if (typeof elemclass === 'string') 
+		return elemclass;
+	
+	else if (Array.isArray(elemclass))
+		return elemclass.filter(item => !!item).join(' ');
+
+	else if (typeof elemclass === 'object')
+		return Object.entries(elemclass).filter(item => !!item[1]).map(item => item[1]).join(' ');
+
+	return undefined;
 };
