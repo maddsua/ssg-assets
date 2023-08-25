@@ -144,7 +144,12 @@ const printCliConfig = (config: Config) => {
 				console.log(chalk.green('Copied original:'), asset.dest);
 				return;
 			}
-			
+
+			//	skip conversion for the same format as the source, if we already copied original
+			if (asset.source.endsWith(format) && config.formats.some(format => format === 'original')) {
+				return;
+			}
+
 			//	try getting from cache
 			const dest = asset.dest.replace(/\.[\d\w]+$/, `.${format}`);
 			const cacheItem = asset.cache + `.${format}`;
