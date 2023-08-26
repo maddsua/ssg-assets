@@ -139,17 +139,17 @@ const printCliConfig = (config: Config) => {
 		//	sharp subroutine
 		await Promise.all(config.formats.map(async (format) => {
 
-			//	detect original image format
+			//	detect original image format for recompression or just copy original
 			if (format === 'original') {
 
 				const originalFormat = asset.source.replace(/^.+\./, '');
-				if (!originalFormat.length) {
-					console.error(chalk.red('Unable to determine image format for:'), asset.source);
-					return;
-				}
+				const canConvert = originalFormat.length && sharpFormats.some(item => item === originalFormat);
 
-				if (!sharpFormats.some(item => item === originalFormat)) {
-					console.error(chalk.red('Unsupported output format for:'), `${asset.source}, [${originalFormat}]`);
+				if (!canConvert) {
+					if (await skipIfNotChanged(asset.source, asset.dest)) return;
+					fs.copyFileSync(asset.source, asset.dest);
+					stats.copied++;
+					console.log(chalk.green('Copied (non-conv.):'), asset.dest);
 					return;
 				}
 
