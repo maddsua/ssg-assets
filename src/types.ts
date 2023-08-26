@@ -19,11 +19,25 @@ export interface CacheDiff {
 	hit: string[];
 };
 
-export interface AssetsListItem {
+interface AssetListBaseItem {
 	source: string;
 	dest: string;
 	cache: string;
 	slug: string;
 	hash: string;
-	action: 'sharp' | 'copy' | undefined;
 };
+
+interface AssetListSharpItem extends AssetListBaseItem {
+	format: ImageFormat;
+	action: 'sharp';
+};
+
+interface AssetListCopyItem extends AssetListBaseItem {
+	action: 'copy';
+};
+
+interface AssetListNoActionItem extends AssetListBaseItem {
+	action: null | undefined;
+};
+
+export type AssetsListItem = AssetListSharpItem | AssetListCopyItem | AssetListNoActionItem;

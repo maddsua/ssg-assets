@@ -48,18 +48,18 @@ export const resolveAssets = async (config: Config): Promise<AssetsListItem[]> =
 		nocase: true
 	})));
 
-	let hashes: string[] = [];
-
-	try {
-		hashes = await Promise.all(entries.map(item => getFileHashSha256(item)));
-	} catch (error) {
-		console.error(chalk.red(`⚠  Failed to hash asset file:`), error);
-		process.exit(1);
-	}
-
-	return entries.map((item, index): AssetsListItem => {
+	return await Promise.all(entries.map(async (item): Promise<AssetsListItem> => {
 
 		const slug = item.replace(new RegExp('^' + config.inputDir + '/'), '');
+		const hash = await getFileHashSha256(item);
+
+		const assetBaseData = {
+			source: item,
+			dest: normalizePath(config.outputDir + '/' + slug),
+			cache: normalizePath(config.cacheDir + '/' + hash),
+			slug,
+			hash: hash
+		};
 
 		const isPasstrough = config.passthrough.some(pattern => minimatch(item, pattern, {
 			matchBase: true,
@@ -67,18 +67,20 @@ export const resolveAssets = async (config: Config): Promise<AssetsListItem[]> =
 			noext: true,
 			nocase: true
 		}));
+		if (isPasstrough) return Object.assign(assetBaseData, {
+			action: 'copy'
+		} as const);
 
-		const sharpInput = imageFormat.some(item => slug.endsWith(item));
+		const imageAssetFormat = imageFormat.find(item => slug.endsWith(item));
+		if (!imageAssetFormat) return Object.assign(assetBaseData, {
+			action: undefined
+		} as const);
 
-		return {
-			source: item,
-			dest: normalizePath(config.outputDir + '/' + slug),
-			cache: normalizePath(config.cacheDir + '/' + hashes[index]),
-			slug,
-			hash: hashes[index],
-			action: (isPasstrough ? 'copy' : (sharpInput ? 'sharp' : undefined))
-		}
-	});
+		return Object.assign(assetBaseData, {
+			action: 'sharp',
+			format: imageAssetFormat
+		} as const);
+	}));
 };
 
 export default resolveAssets;

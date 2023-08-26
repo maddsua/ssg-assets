@@ -2,7 +2,6 @@
 
 import { loadConfig } from './config/loader';
 import { resolveAssets } from './content/loader';
-import { imageFormat, ImageFormat } from './formats';
 
 import { getCachedAssets, CachedAsset } from './content/cache';
 
@@ -137,22 +136,7 @@ const printCliConfig = (config: Config) => {
 		//	sharp subroutine
 		await Promise.all(config.formats.map(async (format) => {
 
-			//	detect original image format for recompression or just copy original
-			if (format === 'original') {
-
-				const originalFormat = asset.source.replace(/^.+\./, '');
-				const isSharpImageFormat = originalFormat.length && imageFormat.some(item => item === originalFormat);
-
-				if (!isSharpImageFormat) {
-					if (await skipIfNotChanged(asset.source, asset.dest)) return;
-					fs.copyFileSync(asset.source, asset.dest);
-					stats.copied++;
-					console.log(chalk.green('Copied (non-conv.):'), asset.dest);
-					return;
-				}
-
-				format = originalFormat as ImageFormat;
-			}
+			if (format === 'original') format = asset.format;
 
 			//	try getting from cache
 			const dest = asset.dest.replace(/\.[\d\w]+$/, `.${format}`);
