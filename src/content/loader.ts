@@ -1,5 +1,5 @@
 import { imageFormat } from '../formats';
-import type { AssetsListItem } from '../types';
+import type { ImageFormat } from '../formats';
 import type { Config } from '../config/schema';
 import { getFileHashSha256 } from './hash';
 
@@ -8,7 +8,27 @@ import { normalizePath } from './paths';
 import fs from 'fs';
 
 import { minimatch } from 'minimatch';
-import chalk from 'chalk';
+
+interface AssetListBaseItem {
+	source: string;
+	dest: string;
+	cache: string;
+	slug: string;
+	hash: string;
+};
+
+interface AssetListSharpItem extends AssetListBaseItem {
+	format: ImageFormat;
+	action: 'sharp';
+};
+interface AssetListCopyItem extends AssetListBaseItem {
+	action: 'copy';
+};
+interface AssetListNoActionItem extends AssetListBaseItem {
+	action: null | undefined;
+};
+
+export type AssetsListItem = AssetListSharpItem | AssetListCopyItem | AssetListNoActionItem;
 
 const loadAllAssetFiles = (assetDir: string): string[] => {
 	
@@ -72,13 +92,13 @@ export const resolveAssets = async (config: Config): Promise<AssetsListItem[]> =
 		} as const);
 
 		const imageAssetFormat = imageFormat.find(item => slug.endsWith(item));
-		if (!imageAssetFormat) return Object.assign(assetBaseData, {
-			action: undefined
-		} as const);
-
-		return Object.assign(assetBaseData, {
+		if (imageAssetFormat) return Object.assign(assetBaseData, {
 			action: 'sharp',
 			format: imageAssetFormat
+		} as const);
+		
+		return Object.assign(assetBaseData, {
+			action: undefined
 		} as const);
 	}));
 };
