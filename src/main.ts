@@ -91,7 +91,8 @@ const printCliConfig = (config: Config) => {
 		notChanged: 0,
 		cacheHits: 0,
 		copied: 0,
-		sharpConverted: 0
+		sharpConverted: 0,
+		cached: 0
 	};
 
 	const skipIfNotChanged = (sourcePath: string, destpath: string) => new Promise<boolean>(resolve => (async () => {
@@ -171,8 +172,13 @@ const printCliConfig = (config: Config) => {
 			//	convert using sharp
 			const outputQuality = config.quality[format] || 90
 			await sharp(asset.source).toFormat(format, { quality: outputQuality }).toFile(dest);
-			if (!config.noCache) fs.copyFileSync(dest, cacheItem);
 			stats.sharpConverted++;
+
+			if (!config.noCache) {
+				fs.copyFileSync(dest, cacheItem);
+				stats.cached++;
+			}
+
 			console.log(chalk.green(`Converted${config.noCache ? '' : ' and cached'}:`), dest);
 		}));
 
@@ -181,6 +187,7 @@ const printCliConfig = (config: Config) => {
 	if (Object.values(stats).some(item => item > 0)) {
 		console.log('\r');
 		if (stats.sharpConverted) console.log('Converted:', stats.sharpConverted, 'images');
+		if (stats.cached) console.log('Cached:', stats.cached);
 		if (stats.cacheHits) console.log('Cache hits:', stats.cacheHits);
 		if (stats.copied) console.log('Copied:', stats.copied, 'assets');
 		if (stats.notChanged) console.log('Verified:', stats.notChanged, 'assets');
