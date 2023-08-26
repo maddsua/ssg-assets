@@ -1,5 +1,5 @@
-import { outputFormats } from "./defaults";
-import { OutputOption } from "../content/types";
+import { outputOption } from '../formats';
+import { OutputOption } from '../formats';
 
 export interface Config {
 	config: string;
@@ -62,7 +62,7 @@ const configTypes: Record<keyof Config, ConfigTypeSchema> = {
 		subtype: 'array',
 		stringSeparator: ',',
 		of: 'string',
-		equals: outputFormats
+		equals: outputOption
 	},
 	exclude: {
 		type: 'object',

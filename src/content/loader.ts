@@ -1,5 +1,5 @@
-import { sharpFormats } from '../config/defaults';
-import type { AssetsListItem } from './types';
+import { imageFormat } from '../formats';
+import type { AssetsListItem } from '../types';
 import type { Config } from '../config/schema';
 import { getFileHashSha256 } from './hash';
 
@@ -68,7 +68,7 @@ export const resolveAssets = async (config: Config): Promise<AssetsListItem[]> =
 			nocase: true
 		}));
 
-		const sharpInput = sharpFormats.some(item => slug.endsWith(item));
+		const sharpInput = imageFormat.some(item => slug.endsWith(item));
 
 		return {
 			source: item,
@@ -76,7 +76,7 @@ export const resolveAssets = async (config: Config): Promise<AssetsListItem[]> =
 			cache: normalizePath(config.cacheDir + '/' + hashes[index]),
 			slug,
 			hash: hashes[index],
-			action: (sharpInput && !isPasstrough) ? 'sharp' : (isPasstrough ? 'copy' : undefined)
+			action: (isPasstrough ? 'copy' : (sharpInput ? 'sharp' : undefined))
 		}
 	});
 };

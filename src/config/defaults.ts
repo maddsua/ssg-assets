@@ -1,8 +1,4 @@
-import { OutputOption } from "../content/types";
 import { Config } from './schema';
-
-export const sharpFormats = [ 'png', 'jpeg', 'jpg', 'avif', 'webp', 'gif' ];
-export const outputFormats: OutputOption[] = [ 'original', 'webp', 'avif', 'png', 'jpg' ];
 
 export const defaultConfig: Partial<Config> = {
 	config: 'ssgassets.config.json',
@@ -13,9 +9,9 @@ export const defaultConfig: Partial<Config> = {
 	include: [],
 	passthrough: [],
 	quality: {
-		avif: 80,
+		avif: 85,
 		webp: 85,
-		jpg: 75,
+		jpg: 80,
 		png: 85
 	}
 };

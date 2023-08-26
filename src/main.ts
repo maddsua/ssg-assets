@@ -2,6 +2,7 @@
 
 import { loadConfig } from './config/loader';
 import { resolveAssets } from './content/loader';
+import { imageFormat, ImageFormat } from './formats';
 
 import { getCachedAssets, CachedAsset } from './content/cache';
 
@@ -92,30 +93,30 @@ const printCliConfig = (config: Config) => {
 		sharpConverted: 0
 	};
 
+	const skipIfNotChanged = (sourcePath: string, destpath: string) => new Promise<boolean>(resolve => (async () => {
+		
+		//	not checking if file exist, it will just fail and return false
+		const destModified = fs.statSync(destpath).mtimeMs;
+		const sourceModified = fs.statSync(sourcePath).mtimeMs;
+		
+		if (destModified !== sourceModified) {
+			resolve(false);
+			return;
+		}
+		
+		if (config.verbose) console.log(chalk.green('Not changed:'), destpath);
+		stats.notChanged++;
+		
+		resolve(true);
+		
+	})().catch((_error) => resolve(false)));
+	
 	console.log('\r');
 
 	await Promise.all(assets.map(async (asset) => {
 
 		//	skip assets with no assigned action
 		if (!asset.action) return;
-
-		const skipIfNotChanged = (sourcePath: string, destpath: string) => new Promise<boolean>(resolve => (async () => {
-
-			//	not checking if file exist, it will just fail and return false
-			const destModified = fs.statSync(destpath).mtimeMs;
-			const sourceModified = fs.statSync(sourcePath).mtimeMs;
-
-			if (destModified !== sourceModified) {
-				resolve(false);
-				return;
-			}
-
-			if (config.verbose) console.log(chalk.green('Not changed:'), destpath);
-			stats.notChanged++;
-
-			resolve(true);
-
-		})().catch((_error) => resolve(false)));
 
 		//	create dest dir
 		const destDir = path.dirname(asset.dest);
@@ -136,15 +137,23 @@ const printCliConfig = (config: Config) => {
 		//	sharp subroutine
 		await Promise.all(config.formats.map(async (format) => {
 
-			//	copy if it's original
+			//	detect original image format for recompression or just copy original
 			if (format === 'original') {
-				if (await skipIfNotChanged(asset.source, asset.dest)) return;
-				fs.copyFileSync(asset.source, asset.dest);
-				stats.copied++;
-				console.log(chalk.green('Copied original:'), asset.dest);
-				return;
+
+				const originalFormat = asset.source.replace(/^.+\./, '');
+				const isSharpImageFormat = originalFormat.length && imageFormat.some(item => item === originalFormat);
+
+				if (!isSharpImageFormat) {
+					if (await skipIfNotChanged(asset.source, asset.dest)) return;
+					fs.copyFileSync(asset.source, asset.dest);
+					stats.copied++;
+					console.log(chalk.green('Copied (non-conv.):'), asset.dest);
+					return;
+				}
+
+				format = originalFormat as ImageFormat;
 			}
-			
+
 			//	try getting from cache
 			const dest = asset.dest.replace(/\.[\d\w]+$/, `.${format}`);
 			const cacheItem = asset.cache + `.${format}`;
@@ -159,10 +168,14 @@ const printCliConfig = (config: Config) => {
 			}
 
 			//	convert using sharp
-			await sharp(asset.source).toFormat(format, { quality: config.quality[format] || 90 }).toFile(dest);
-			if (!config.noCache) fs.copyFileSync(dest, cacheItem);
+			const outputQuality = config.quality[format] || 90
+			await sharp(asset.source).toFormat(format, { quality: outputQuality }).toFile(dest);
+
 			stats.sharpConverted++;
+			if (!config.noCache) fs.copyFileSync(dest, cacheItem);
+
 			console.log(chalk.green(`Converted${config.noCache ? '' : ' and cached'}:`), dest);
+			
 		}));
 
 	}));
