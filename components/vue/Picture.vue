@@ -11,7 +11,7 @@ const props = defineProps<PictireProps>();
 
 	<picture :class="props.class" :style="styleToString(props.style)" data-maddsua-component="vue:ssgassets:picture">
 		<source v-for="item of mapSources(props.src, props.formats, props.adaptiveModes)" :srcset="item.source" :type="item.type" :media="(item.media as string | undefined)" />
-		<Img :src="adaptBaseImageUrl(props.src)" :alt="props.alt" :draggable="props.draggable" :lazy="props.lazy" :sizes="props.sizes" :class="props.imgClass" :style="props.imgStyle" />
+		<Img :src="adaptBaseImageUrl(props.src, props.adaptiveModes)" :alt="props.alt" :draggable="props.draggable" :lazy="props.lazy" :sizes="props.sizes" :class="props.imgClass" :style="props.imgStyle" />
 	</picture>
 
 </template>

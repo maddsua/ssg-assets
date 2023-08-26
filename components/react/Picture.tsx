@@ -13,7 +13,7 @@ export default (props: PictireProps) => {
 			{ sources.map(item => (
 				<source srcset={item.source} type={item.type} media={item.media as string | undefined} />
 			)) }
-			<Img src={adaptBaseImageUrl(props.src)} alt={props.alt} draggable={props.draggable} lazy={props.lazy} sizes={props.sizes} class={props.imgClass} style={props.imgStyle} />
+			<Img src={adaptBaseImageUrl(props.src, props.adaptiveModes)} alt={props.alt} draggable={props.draggable} lazy={props.lazy} sizes={props.sizes} class={props.imgClass} style={props.imgStyle} />
 		</picture>
 	);
 };

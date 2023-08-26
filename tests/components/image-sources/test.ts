@@ -4,12 +4,12 @@
 //	This is not an automated test, it's used to verify image source generation,
 //	but that is not needed to be tested on each build
 
-import { mapSources, adaptBaseImageUrl, AdaptiveMode, ImageFormatsType } from '../../../components/components_shared.ts';
+import { mapSources, adaptBaseImageUrl, AdaptiveMode, ImageFormats } from '../../../components/components_shared.ts';
 
 const testData: Array<{
 	url: string;
 	adaptive: AdaptiveMode[];
-	formats: ImageFormatsType;
+	formats: ImageFormats[];
 }> = [
 	{
 		url: '/cats/1.png',
@@ -36,15 +36,15 @@ const testData: Array<{
 		formats: ['webp', 'avif']
 	},
 	{
-		url: '/banners/1248.jpg',
+		url: '/assets/banners/141022/uk_desktop.jpg',
 		adaptive: [
 			{
-				'media': 'orientation: landscape',
-				'modifier': '.desktop'
+				media: 'orientation: landscape',
+				modifier: '_desktop'
 			},
 			{
-				'media': 'orientation: portrait',
-				'modifier': '.mobile'
+				media: 'orientation: portrait',
+				modifier: '_mobile'
 			}
 		],
 		formats: ['webp', 'avif']
@@ -52,8 +52,8 @@ const testData: Array<{
 ];
 
 const results = testData.map(item => ({
+	sources: mapSources(item.url, item.formats, item.adaptive).map(item => ({ media: item.media, source: item.source })),
 	img: adaptBaseImageUrl(item.url, item.adaptive),
-	sources: mapSources(item.url, item.formats, item.adaptive).map(item => ({ media: item.media, source: item.source }))
 }));
 
 console.log(results);
