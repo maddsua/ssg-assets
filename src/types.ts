@@ -1,10 +1,9 @@
-export type OutputFormat = 'png' | 'jpg' | 'webp' | 'avif';
-export type OutputOption = 'original' | OutputFormat;
+import type { ImageFormat } from './formats';
 
 export type CacheItem = {
 	file: string;
 	content: string;
-	formats: OutputFormat[];
+	formats: ImageFormat[];
 };
 
 export interface CacheIndex {

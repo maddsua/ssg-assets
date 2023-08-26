@@ -2,7 +2,7 @@ import { importArguments } from './cli';
 import { normalizePath, fix_relative_glob } from '../content/paths';
 
 import { defaultConfig } from './defaults';
-import { outputFormats } from '../formats';
+import { outputOption } from '../formats';
 
 import chalk from 'chalk';
 
@@ -62,7 +62,7 @@ export const loadConfig = (): Required<Config> => {
 
 	//	check for unknown output formats
 	configEntries.formats.forEach(item => {
-		if (!outputFormats.some(item1 => item === item1)) {
+		if (!outputOption.some(item1 => item === item1)) {
 			console.warn(chalk.yellow(`⚠  Unknown output format '${item}'`));
 		}
 	});

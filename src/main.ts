@@ -2,8 +2,7 @@
 
 import { loadConfig } from './config/loader';
 import { resolveAssets } from './content/loader';
-import { sharpFormats } from './formats';
-import type { OutputFormat } from './types';
+import { imageFormat, ImageFormat } from './formats';
 
 import { getCachedAssets, CachedAsset } from './content/cache';
 
@@ -143,9 +142,9 @@ const printCliConfig = (config: Config) => {
 			if (format === 'original') {
 
 				const originalFormat = asset.source.replace(/^.+\./, '');
-				const canConvert = originalFormat.length && sharpFormats.some(item => item === originalFormat);
+				const isSharpImageFormat = originalFormat.length && imageFormat.some(item => item === originalFormat);
 
-				if (!canConvert) {
+				if (!isSharpImageFormat) {
 					if (await skipIfNotChanged(asset.source, asset.dest)) return;
 					fs.copyFileSync(asset.source, asset.dest);
 					stats.copied++;
@@ -153,7 +152,7 @@ const printCliConfig = (config: Config) => {
 					return;
 				}
 
-				format = originalFormat as OutputFormat;
+				format = originalFormat as ImageFormat;
 			}
 
 			//	try getting from cache
