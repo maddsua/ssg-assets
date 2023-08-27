@@ -1,6 +1,7 @@
 # ssg-assets
 
 Converts media assets for static websites, apps and so on.
+
 Makes a bunch of avif and webp's from jpeg's, png's and such.
 
 <img src="https://raw.githubusercontent.com/maddsua/ssg-assets/added-illustration/docs/illustration.webp">
