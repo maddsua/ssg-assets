@@ -64,21 +64,34 @@ Drop this option into a json config file or use directly in CLI:
 ```bash
 ssga --inputDir=./content --outputDir=./www/content --formats=webp,avif,jpg
 ```
-Some options cannot be modified by user or a specific config load method (like a json file can't modify it's location, duh), the tool will tell you if your config can break it.
+Some options cannot be modified by user or by a specific config load method (like a json file can't modify it's own location, duh), the tool will tell you if your config can break it.
 
-# Frontend components
+## Frontend components
 
-You can import the Img and Picture components for React, Astro and Vue. It's just the same HTML elements, but a bit more smart.
+Having multiple image formats is fun, but placing all the source tags for a picture is not. So here, have these UI framework components:
 
-## Import paths:
+- Vue
+- React/Preact
+- Astro
+- HTML (renders directly to HTML text, intended for server use)
 
-### Astro:
+Don't try to import package's root directly, instead import the subpath for the framework you're using.
 
+Component import path: `@maddsua/ssg-assets/[framework]`.
+
+For instance, this is how you import a Picture component for Vue:
 ```js
-import { Picture } from '@maddsua/ssg-assets/astro';
+import { Picture } from '@maddsua/ssg-assets/vue';
 ```
 
-Add this to your `astro.config`:
+### If stuff does not work
+
+Your bundler/compiler may choke on this, so try using this config line for Webpack:
+
+```js
+transpilePackages: ['@maddsua/ssg-assets']
+```
+or this one for Vite:
 
 ```js
 vite: {
@@ -86,22 +99,4 @@ vite: {
         noExternal: '@maddsua/ssg-assets'
     }
 }
-```
-
-### React (Next):
-
-```js
-import { Picture } from '@maddsua/ssg-assets/react';
-```
-
-Add this to your next config:
-
-```js
-transpilePackages: ['@maddsua/ssg-assets']
-```
-
-### Vue:
-
-```js
-import { Picture } from '@maddsua/ssg-assets/vue';
 ```
