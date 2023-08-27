@@ -91,3 +91,5 @@ export const styleToString = (elemstyle?: ElementStyle) => {
 
 	return undefined;
 };
+
+export const attributeListToString = (attrList: [string, any][]) => attrList.filter(item => typeof item === 'string' || typeof item === 'boolean' || typeof item === 'boolean').map(([attr, value]) => `${attr}="${typeof value === 'string' ? value.replace(/\"/, '\"') : value}"`).join(' ');
