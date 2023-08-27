@@ -12,7 +12,7 @@ export default (props: PictireProps) => {
 		['class', classToString(props.class)],
 		['style', styleToString(props.style)]
 	];
-	
+
 	return (`
 		<picture ${attributeListToString(attrList)}>
 			${sources.join('\n')}
