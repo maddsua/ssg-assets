@@ -26,5 +26,5 @@ export default (props: PictireProps) => {
 				style: props.imgStyle
 			})}
 		</picture>
-	`).replace(/[\s]{2,}/g, '');
+	`).replace(/\t+/g, ' ');
 };
