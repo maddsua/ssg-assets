@@ -15,5 +15,5 @@ export default (props: ImageProps) => {
 		style: styleToString(props.style)
 	};
 
-	return `<img ${composeAttributesHTML(attrList)}/>`;
+	return `<img ${composeAttributesHTML(attrList)} data-component-id="maddsua:ssgassets:img:html" />`;
 };
