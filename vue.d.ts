@@ -9,5 +9,6 @@ declare const enableLazyLoad: (root?: HTMLElement | Element) => void;
 
 export {
 	Img,
-	Picture
+	Picture,
+	enableLazyLoad
 }
