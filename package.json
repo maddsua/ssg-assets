@@ -43,7 +43,7 @@
 		"components/astro",
 		"components/react",
 		"components/vue",
-		"components/vue",
+		"components/html",
 		"*.d.ts"
 	],
 	"scripts": {
