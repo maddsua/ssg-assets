@@ -10,6 +10,6 @@ const size = getImageSize(props.sizes);
 
 <template>
 
-	<img :src="props.src" :alt="props.alt" :width="size?.width" :height="size?.height" :draggable="props.draggable === true ? 'true' : 'false'" :loading="props.lazy !== false ? 'lazy' : undefined" :class="props.class" :style="styleToString(props.style)" data-maddsua-component="vue:ssgassets:img" />
+	<img :src="props.src" :alt="props.alt" :width="size?.width" :height="size?.height" :draggable="props.draggable === true" :loading="props.lazy !== false ? 'lazy' : undefined" :class="props.class" :style="styleToString(props.style)" data-maddsua-component="vue:ssgassets:img" />
 
 </template>
