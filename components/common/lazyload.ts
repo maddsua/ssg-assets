@@ -1,4 +1,4 @@
-import { asyncSleep } from './timeouts';
+const asyncSleep = (timeout: number) => new Promise<void>(resolve => setTimeout(resolve, timeout));
 
 export default () => {
 
