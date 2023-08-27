@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import Img from './Img.vue';
-import { PictireProps, mapSources, adaptBaseImageUrl, styleToString } from '../components_shared';
+import { PictireProps, mapSources, adaptBaseImageUrl, styleToString } from '../common/setup';
 
 const props = defineProps<PictireProps>();
 

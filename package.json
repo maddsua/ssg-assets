@@ -39,9 +39,10 @@
 		"dist",
 		"package.json",
 		"package-lock.json",
-		"components/components_shared.ts",
+		"components/setup.ts",
 		"components/astro",
 		"components/react",
+		"components/vue",
 		"components/vue",
 		"*.d.ts"
 	],

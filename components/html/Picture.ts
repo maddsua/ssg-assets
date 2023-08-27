@@ -1,5 +1,5 @@
 import Img from './Img';
-import { PictireProps, mapSources, adaptBaseImageUrl, classToString, styleToString, attributeListToString } from '../components_shared';
+import { PictireProps, mapSources, adaptBaseImageUrl, classToString, styleToString, attributeListToString } from '../common/setup';
 
 /**
  * Advanced \<picture\> component
@@ -12,6 +12,8 @@ export default (props: PictireProps) => {
 		['class', classToString(props.class)],
 		['style', styleToString(props.style)]
 	];
+
+	console.log(attributeListToString(attrList))
 
 	return (`
 		<picture ${attributeListToString(attrList)}>

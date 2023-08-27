@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import Img from './Img.vue';
-import { ImageProps, getImageSize, styleToString } from '../components_shared';
+import { ImageProps, getImageSize, styleToString } from '../common/setup';
 
 const props = defineProps<ImageProps>();
 const size = getImageSize(props.sizes);
