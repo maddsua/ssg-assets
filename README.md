@@ -7,9 +7,13 @@ Oh and also it has Picture and Img components for Vue, Astro and React so you wo
 
 If you're using Netlify, be sure to enable netlify-plugin-cache to get the max speeed out of builds!
 
-## Config:
+## CLI
 
-Config interface says it all:
+After installing the package you'll be able to use ssga CLI tool. It's basically a cool-kids launcher for sharp (image conversion library). In orders to tweak the tool you can use command line arguments or `ssgassets.config.json` files places in project's root and/or assets root directory.
+
+### Config options are listed in this TypeScript interface
+
+(it's the actual interface the CLI uses, for real)
 
 ```typescript
 interface Config {
@@ -55,10 +59,12 @@ interface Config {
 }
 ```
 
-All of the mutable options can be used in cli like so:
+Drop this option into a json config file or use directly in CLI:
+
 ```bash
 ssga --inputDir=./content --outputDir=./www/content --formats=webp,avif,jpg
 ```
+Some options cannot be modified by user or a specific config load method (like a json file can't modify it's location, duh), the tool will tell you if your config can break it.
 
 # Frontend components
 
