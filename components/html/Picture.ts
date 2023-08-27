@@ -14,7 +14,7 @@ export default (props: PictireProps) => {
 	};
 
 	return (`
-		<picture ${composeAttributesHTML(attrList)} data-component-id="maddsua:ssgassets:picture:html" >
+		<picture ${composeAttributesHTML(attrList)} data-component-id="ssga:picture:html" >
 			${sources.join('\n')}
 			${Img({
 				src: adaptBaseImageUrl(props.src, props.adaptiveModes),
