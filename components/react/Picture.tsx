@@ -1,5 +1,5 @@
 import Img from "./Img.jsx";
-import { PictireProps, mapSources, adaptBaseImageUrl, classToString, styleToString } from '../components_shared';
+import { PictireProps, mapSources, adaptBaseImageUrl, classToString, styleToString } from '../common/setup';
 
 /**
  * Advanced \<picture\> component
@@ -9,7 +9,7 @@ export default (props: PictireProps) => {
 	const sources = mapSources(props.src, props.formats, props.adaptiveModes);
 
 	return (
-		<picture className={classToString(props.class)} style={styleToString(props.style)}>
+		<picture className={classToString(props.class)} style={styleToString(props.style)} data-component-id="ssga:picture:react">
 			{ sources.map(item => (
 				<source srcset={item.source} type={item.type} media={item.media as string | undefined} />
 			)) }

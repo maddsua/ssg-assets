@@ -1,7 +1,7 @@
 {
 	"private": false,
 	"name": "@maddsua/ssg-assets",
-	"version": "3.1.2",
+	"version": "3.2.0",
 	"type": "module",
 	"engines": {
 		"node": ">=16.4.0"
@@ -28,6 +28,10 @@
 		"./vue": {
 			"default": "./components/vue/index.ts",
 			"types": "./components/vue/index.ts"
+		},
+		"./html": {
+			"default": "./components/html/index.ts",
+			"types": "./components/html/index.ts"
 		}
 	},
 	"files": [
@@ -35,10 +39,11 @@
 		"dist",
 		"package.json",
 		"package-lock.json",
-		"components/components_shared.ts",
+		"components/common",
 		"components/astro",
 		"components/react",
 		"components/vue",
+		"components/html",
 		"*.d.ts"
 	],
 	"scripts": {
