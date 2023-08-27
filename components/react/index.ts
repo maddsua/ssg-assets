@@ -1,9 +1,11 @@
 import Picture from './Picture';
 import Img from './Img';
-import { init as lazyImgFadeIn } from './lazyimg';
+import lazyload from '../common/lazyload';
+
+const enableLazyLoad = (root?: HTMLElement | Element) => lazyload(root, 'ssga:img:react');
 
 export {
 	Picture,
 	Img,
-	lazyImgFadeIn
+	enableLazyLoad
 };
