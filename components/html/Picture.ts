@@ -1,5 +1,5 @@
 import Img from './Img';
-import { PictireProps, mapSources, adaptBaseImageUrl, classToString, styleToString } from '../components_shared';
+import { PictireProps, mapSources, adaptBaseImageUrl, classToString, styleToString, attributeListToString } from '../components_shared';
 
 /**
  * Advanced \<picture\> component
@@ -7,9 +7,14 @@ import { PictireProps, mapSources, adaptBaseImageUrl, classToString, styleToStri
 export default (props: PictireProps) => {
 
 	const sources = mapSources(props.src, props.formats, props.adaptiveModes).map(source => `<source srcset="${source.source}" type="image/${source.type}" media="${source.media}" />`) || [];
+
+	const attrList: [string, any][] = [
+		['class', classToString(props.class)],
+		['style', styleToString(props.style)]
+	];
 	
 	return (`
-		<picture>
+		<picture ${attributeListToString(attrList)}>
 			${sources.join('\n')}
 			${Img({
 				src: adaptBaseImageUrl(props.src, props.adaptiveModes),
