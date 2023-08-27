@@ -1,8 +1,11 @@
 const asyncSleep = (timeout: number) => new Promise<void>(resolve => setTimeout(resolve, timeout));
 
-export default () => {
+export default (root?: HTMLElement | Element | null, componentID?: string) => {
 
-	document.querySelectorAll<HTMLImageElement>('img[loading="lazy"][data-maddsua-component]').forEach(image => {
+	const lazyImages = (root || document).querySelectorAll<HTMLImageElement>('img[loading="lazy"]');
+	const attachToImages = componentID ? Array.from(lazyImages).filter(item => item.getAttribute('data-component-id') === componentID) : lazyImages;
+
+	attachToImages.forEach(image => {
 
 		if (image.complete) return;
 
