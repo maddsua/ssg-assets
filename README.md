@@ -1,11 +1,11 @@
 # ssg-assets
+
 Converts media assets for static websites, apps and so on.
+Makes a bunch of avif and webp's from jpeg's, png's and such.
 
-Makes a bunch of avif and webp files from jpeg's and png's.
+<img src="https://raw.githubusercontent.com/maddsua/ssg-assets/added-illustration/docs/illustration.webp">
 
-Oh and also it has Picture and Img components for Vue, Astro and React so you won't write all the source's HTML yourself!
-
-If you're using Netlify, be sure to enable netlify-plugin-cache to get the max speeed out of builds!
+\* If you're using Netlify, be sure to enable `netlify-plugin-cache` to get the max speeed out of builds!
 
 ## CLI
 
