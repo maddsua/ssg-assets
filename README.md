@@ -4,7 +4,7 @@ Converts media assets for static websites, apps and so on.
 
 Makes a bunch of avif and webp's from jpeg's, png's and such.
 
-<img src="https://raw.githubusercontent.com/maddsua/ssg-assets/added-illustration/docs/illustration.webp">
+<img src="https://raw.githubusercontent.com/maddsua/ssg-assets/added-illustration/docs/illustration.webp" alt="Image conversion illustration">
 
 \* If you're using Netlify, be sure to enable `netlify-plugin-cache` to get the max speeed out of builds!
 
