@@ -6,7 +6,7 @@ const props = Astro.props;
 const size = getImageSize(props.sizes);
 ---
 
-<img src={props.src} alt={props.alt} width={size?.width} height={size?.height} draggable={ props.draggable === true ? 'true' : 'false' } loading={ props.lazy !== false ? 'lazy' : undefined }  class={classToString(props.class)} style={styleToString(props.style)} data-maddsua-component="astro:ssgassets:img" />
+<img src={props.src} alt={props.alt} width={size?.width} height={size?.height} draggable={ props.draggable === true ? 'true' : 'false' } loading={ props.lazy !== false ? 'lazy' : undefined } class={classToString(props.class)} style={styleToString(props.style)} data-component-id="ssga:img:astro" />
 
 <script>
 
@@ -31,4 +31,3 @@ const size = getImageSize(props.sizes);
 	});
 
 </script>
-../setup../common/setup
