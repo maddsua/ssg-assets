@@ -28,6 +28,10 @@
 		"./vue": {
 			"default": "./components/vue/index.ts",
 			"types": "./components/vue/index.ts"
+		},
+		"./html": {
+			"default": "./components/html/index.ts",
+			"types": "./components/html/index.ts"
 		}
 	},
 	"files": [
