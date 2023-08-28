@@ -44,6 +44,7 @@
 		"components/react",
 		"components/vue",
 		"components/html",
+		"components/dom",
 		"*.d.ts"
 	],
 	"scripts": {
