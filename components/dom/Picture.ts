@@ -11,13 +11,13 @@ export default (props: PictireProps, DOMRoot?: Document) => {
 
 	
 	const pictureElement = root.createElement('picture');
-	
 	pictureElement.setAttribute('data-component-id', 'ssga:picture:dom');
 	
-	pictureElement.className = classToString(props.class) || '';
+	const classString = classToString(props.class);
+	classString && (pictureElement.className = classString);
 	
-	const styleString = styleToString(props.style)
-	styleString ? pictureElement.setAttribute('style', styleString) : undefined;
+	const styleString = styleToString(props.style);
+	styleString && pictureElement.setAttribute('style', styleString);
 
 	mapSources(props.src, props.formats, props.adaptiveModes).forEach(source => {
 		const sourceElement = root.createElement('source');
