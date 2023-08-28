@@ -8,20 +8,21 @@ export default (props: ImageProps, DOMRoot?: Document) => {
 	const size = getImageSize(props.sizes);
 
 	const imgElement = root.createElement('img');
-
 	imgElement.setAttribute('data-component-id', 'ssga:img:dom');
 
 	imgElement.src = props.src;
 	imgElement.alt = props.alt;
 	imgElement.draggable = props.draggable === true;
 	imgElement.loading = props.lazy !== false ? 'lazy' : 'eager';
-	imgElement.className = classToString(props.class) || '';
 
-	size?.width ? imgElement.width = size.width : undefined;
-	size?.height ? imgElement.height = size.height : undefined;
+	size?.width && (imgElement.width = size.width);
+	size?.height && (imgElement.height = size.height);
+
+	const classString = classToString(props.class);
+	classString && (imgElement.className = classString);
 
 	const styleString = styleToString(props.style)
-	styleString ? imgElement.setAttribute('style', styleString) : undefined;
+	styleString && imgElement.setAttribute('style', styleString);
 
 	return imgElement;
 };
