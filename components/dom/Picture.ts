@@ -8,7 +8,6 @@ export default (props: PictireProps, DOMRoot?: Document) => {
 
 	const root = typeof document === 'object' ? document : DOMRoot;
 	if (!root) throw new EvalError('document global object is not accessible in this runtime and you did not provide an alternative DOM root');
-
 	
 	const pictureElement = root.createElement('picture');
 	pictureElement.setAttribute('data-component-id', 'ssga:picture:dom');
