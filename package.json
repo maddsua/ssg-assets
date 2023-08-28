@@ -1,7 +1,7 @@
 {
 	"private": false,
 	"name": "@maddsua/ssg-assets",
-	"version": "3.2.0",
+	"version": "3.3.0",
 	"type": "module",
 	"engines": {
 		"node": ">=16.4.0"
@@ -32,6 +32,10 @@
 		"./html": {
 			"default": "./components/html/index.ts",
 			"types": "./components/html/index.ts"
+		},
+		"./dom": {
+			"default": "./components/dom/index.ts",
+			"types": "./components/dom/index.ts"
 		}
 	},
 	"files": [
@@ -44,6 +48,7 @@
 		"components/react",
 		"components/vue",
 		"components/html",
+		"components/dom",
 		"*.d.ts"
 	],
 	"scripts": {
