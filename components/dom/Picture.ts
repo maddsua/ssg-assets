@@ -35,7 +35,7 @@ export default (props: PictireProps, DOMRoot?: Document) => {
 		sizes: props.sizes,
 		class: props.imgClass,
 		style: props.imgStyle
-	});
+	}, DOMRoot);
 
 	pictureElement.appendChild(imgComponent);
 
