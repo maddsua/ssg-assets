@@ -32,6 +32,10 @@
 		"./html": {
 			"default": "./components/html/index.ts",
 			"types": "./components/html/index.ts"
+		},
+		"./dom": {
+			"default": "./components/dom/index.ts",
+			"types": "./components/dom/index.ts"
 		}
 	},
 	"files": [
