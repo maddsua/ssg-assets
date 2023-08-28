@@ -4,15 +4,29 @@ import { PictireProps, mapSources, adaptBaseImageUrl, classToString, styleToStri
 /**
  * Advanced \<picture\> component
  */
-export default (props: PictireProps) => {
+export default (props: PictireProps, DOMRoot?: Document) => {
 
-	const sources = mapSources(props.src, props.formats, props.adaptiveModes).map(source => `<source srcset="${source.source}" type="image/${source.type}" media="${source.media}" />`) || [];
+	const root = typeof document === 'object' ? document : DOMRoot;
+	if (!root) throw new EvalError('document global object is not accessible in this runtime and you did not provide an alternative DOM root');
 
-	const attrList = {
-		class: classToString(props.class),
-		style: styleToString(props.style),
-	};
+	
+	const pictureElement = root.createElement('picture');
+	
+	pictureElement.setAttribute('data-component-id', 'ssga:picture:dom');
+	
+	pictureElement.className = classToString(props.class) || '';
+	
+	const styleString = styleToString(props.style)
+	styleString ? pictureElement.setAttribute('style', styleString) : undefined;
 
+	mapSources(props.src, props.formats, props.adaptiveModes).forEach(source => {
+		const sourceElement = root.createElement('source');
+		sourceElement.srcset = source.source;
+		sourceElement.type = source.type;
+		source.media ? sourceElement.media = source.media : undefined;
+		pictureElement.appendChild(sourceElement);
+	})
+	
 	const imgComponent = Img({
 		src: adaptBaseImageUrl(props.src, props.adaptiveModes),
 		alt: props.alt,
@@ -23,10 +37,7 @@ export default (props: PictireProps) => {
 		style: props.imgStyle
 	});
 
-	return (`
-		<picture ${composeAttributesHTML(attrList)} data-component-id="ssga:picture:html" >
-			${sources.join('\n')}
-			${imgComponent}
-		</picture>
-	`).replace(/\t+/g, ' ');
+	pictureElement.appendChild(imgComponent);
+
+	return pictureElement;
 };
