@@ -13,7 +13,10 @@ export default (props: ImageProps, DOMRoot?: Document) => {
 	imgElement.src = props.src;
 	imgElement.alt = props.alt;
 	imgElement.draggable = props.draggable === true;
+
 	imgElement.loading = props.lazy !== false ? 'lazy' : 'eager';
+	//	redundancy for JSDOM, idk what's wrong
+	imgElement.setAttribute('loading', props.lazy !== false ? 'lazy' : 'eager');
 
 	size?.width && (imgElement.width = size.width);
 	size?.height && (imgElement.height = size.height);
