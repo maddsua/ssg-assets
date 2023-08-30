@@ -98,3 +98,17 @@ export type HTMLAttribStruct = Record<string, HTMLAttributeValue>;
 export const composeAttributesHTML = (attrList: HTMLAttribStruct) => Object.entries(attrList).filter(item => ['string', 'boolean', 'number'].some(typeid => typeid === typeof item[1])).map(([attr, value]) => `${attr}="${typeof value === 'string' ? value.replace(/\"/, '\"') : value}"`).join(' ');
 
 export const attributeListToString = (attrList: [string, any][]) => attrList.filter(([_attr, value]) => typeof value === 'string' || typeof value === 'boolean' || typeof value === 'boolean').map(([attr, value]) => `${attr}="${typeof value === 'string' ? value.replace(/\"/, '\"') : value}"`).join(' ');
+
+export const getDOMRoot = (customDOMRoot?: Document): Document => {
+
+	if (typeof document === 'undefined') {
+
+		if (!customDOMRoot) throw new EvalError('document global object is not accessible in this runtime and you did not provide an alternative DOM root');
+
+		return customDOMRoot;
+	}
+
+	if (customDOMRoot) console.warn('Yo dawg, it seems like you\'re running getDOMRoot() in a browser with a customDOMRoot specified. You probably don\'need it, the global document object will be used instead');
+
+	return document;
+};
