@@ -4,11 +4,11 @@ import { PictireProps, mapSources, adaptBaseImageUrl, classToString, styleToStri
 /**
  * Advanced \<picture\> component
  */
-export default (props: PictireProps, DOMRoot?: Document) => {
+export default (props: PictireProps, useDOMRoot?: Document) => {
 
-	const root = getDOMRoot(DOMRoot);
+	const { domRoot, isNativeDOM } = getDOMRoot(useDOMRoot);
 	
-	const pictureElement = root.createElement('picture');
+	const pictureElement = domRoot.createElement('picture');
 	pictureElement.setAttribute('data-component-id', 'ssga:picture:dom');
 	
 	const classString = classToString(props.class);
@@ -18,7 +18,7 @@ export default (props: PictireProps, DOMRoot?: Document) => {
 	styleString && pictureElement.setAttribute('style', styleString);
 
 	mapSources(props.src, props.formats, props.adaptiveModes).forEach(source => {
-		const sourceElement = root.createElement('source');
+		const sourceElement = domRoot.createElement('source');
 		sourceElement.srcset = source.source;
 		sourceElement.type = source.type;
 		source.media ? sourceElement.media = source.media : undefined;
@@ -33,7 +33,7 @@ export default (props: PictireProps, DOMRoot?: Document) => {
 		sizes: props.sizes,
 		class: props.imgClass,
 		style: props.imgStyle
-	}, DOMRoot);
+	}, useDOMRoot);
 
 	pictureElement.appendChild(imgComponent);
 
