@@ -1,13 +1,12 @@
 import Img from './Img';
-import { PictireProps, mapSources, adaptBaseImageUrl, classToString, styleToString, composeAttributesHTML } from '../common/setup';
+import { PictireProps, mapSources, adaptBaseImageUrl, classToString, styleToString, getDOMRoot } from '../common/setup';
 
 /**
  * Advanced \<picture\> component
  */
 export default (props: PictireProps, DOMRoot?: Document) => {
 
-	const root = typeof document === 'object' ? document : DOMRoot;
-	if (!root) throw new EvalError('document global object is not accessible in this runtime and you did not provide an alternative DOM root');
+	const root = getDOMRoot(DOMRoot);
 	
 	const pictureElement = root.createElement('picture');
 	pictureElement.setAttribute('data-component-id', 'ssga:picture:dom');
