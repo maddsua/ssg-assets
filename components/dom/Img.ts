@@ -1,9 +1,8 @@
-import { ImageProps, getImageSize, classToString, styleToString } from '../common/setup';
+import { ImageProps, getImageSize, classToString, styleToString, getDOMRoot } from '../common/setup';
 
 export default (props: ImageProps, DOMRoot?: Document) => {
 
-	const root = typeof document === 'object' ? document : DOMRoot;
-	if (!root) throw new EvalError('document global object is not accessible in this runtime and you did not provide an alternative DOM root');
+	const root = getDOMRoot(DOMRoot);
 
 	const size = getImageSize(props.sizes);
 
