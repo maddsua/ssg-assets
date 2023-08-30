@@ -99,16 +99,21 @@ export const composeAttributesHTML = (attrList: HTMLAttribStruct) => Object.entr
 
 export const attributeListToString = (attrList: [string, any][]) => attrList.filter(([_attr, value]) => typeof value === 'string' || typeof value === 'boolean' || typeof value === 'boolean').map(([attr, value]) => `${attr}="${typeof value === 'string' ? value.replace(/\"/, '\"') : value}"`).join(' ');
 
-export const getDOMRoot = (customDOMRoot?: Document): Document => {
+interface GetDOMRoot {
+	domRoot: Document;
+	isNativeDOM: boolean;
+};
+
+export const getDOMRoot = (customDOMRoot?: Document): GetDOMRoot => {
 
 	if (typeof document === 'undefined') {
 
 		if (!customDOMRoot) throw new EvalError('document global object is not accessible in this runtime and you did not provide an alternative DOM root');
 
-		return customDOMRoot;
+		return { domRoot: customDOMRoot, isNativeDOM: false };
 	}
 
 	if (customDOMRoot) console.warn('Yo dawg, it seems like you\'re running getDOMRoot() in a browser with a customDOMRoot specified. You probably don\'need it, the global document object will be used instead');
 
-	return document;
+	return { domRoot: document, isNativeDOM: true };
 };
