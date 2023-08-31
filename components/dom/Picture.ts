@@ -1,9 +1,6 @@
 import Img from './Img';
 import { PictireProps, mapSources, adaptBaseImageUrl, classToString, styleToString, getDOMRoot } from '../common/setup';
 
-/**
- * Advanced \<picture\> component
- */
 export default (props: PictireProps, useDOMRoot?: Document) => {
 
 	const { domRoot, isNativeDOM } = getDOMRoot(useDOMRoot);
