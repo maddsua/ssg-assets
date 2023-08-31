@@ -8,22 +8,26 @@ export default (props: PictireProps, useDOMRoot?: Document) => {
 
 	const { domRoot, isNativeDOM } = getDOMRoot(useDOMRoot);
 	
+	const classString = classToString(props.class);
+	const styleString = styleToString(props.style);
+
 	const pictureElement = domRoot.createElement('picture');
 	pictureElement.setAttribute('data-component-id', 'ssga:picture:dom');
-	
-	const classString = classToString(props.class);
-	classString && (pictureElement.className = classString);
-	
-	const styleString = styleToString(props.style);
 	styleString && pictureElement.setAttribute('style', styleString);
 
+	if (isNativeDOM) {
+		classString && (pictureElement.className = classString);
+	} else {
+		classString && pictureElement.setAttribute('class', classString);
+	}
+	
 	mapSources(props.src, props.formats, props.adaptiveModes).forEach(source => {
 		const sourceElement = domRoot.createElement('source');
 		sourceElement.srcset = source.source;
 		sourceElement.type = source.type;
 		source.media ? sourceElement.media = source.media : undefined;
 		pictureElement.appendChild(sourceElement);
-	})
+	});
 	
 	const imgComponent = Img({
 		src: adaptBaseImageUrl(props.src, props.adaptiveModes),
