@@ -12,9 +12,9 @@ export default (props: ImageProps, useDOMRoot?: Document) => {
 	imgElement.setAttribute('data-component-id', 'ssga:img:dom');
 	elementStyle && imgElement.setAttribute('style', elementStyle);
 
-	//	the diffrence is that for a browser DOM we want to have realtime ant *snappy* changes,
-	//	where for NodeJS DOM (JSDOM) and such implementations a better html reflection is more desirable
-	//	For instance: the "loading" attribute is not being reflected when setting it as image's property (JSDOM)
+	//	the diffrence is that for a browser DOM we want to have realtime and *snappy* changes,
+	//	while for NodeJS DOM (JSDOM) and other server implementations we'd like a better reflection in generated HTML code
+	//	For instance: the "loading" attribute is not being reflected in picture's "innerHTML" when set as img's property (JSDOM)
 	if (isNativeDOM) {
 
 		imgElement.src = props.src;
