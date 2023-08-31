@@ -120,12 +120,11 @@ export const getDOMRoot = (customDOMRoot?: Document): GetDOMRoot => {
 
 export const asyncSleep = (timeout: number) => new Promise<void>(resolve => setTimeout(resolve, timeout));
 
-export const revealLazyLoaded = (root?: HTMLElement | Element | null, componentID?: string) => {
+export const revealLazyLoaded = (root?: HTMLElement | Element | null) => {
 
 	const lazyImages = (root || document).querySelectorAll<HTMLImageElement>('img[loading="lazy"]');
-	const attachToImages = componentID ? Array.from(lazyImages).filter(item => item.getAttribute('data-component-id') === componentID) : lazyImages;
 
-	attachToImages.forEach(image => {
+	lazyImages.forEach(image => {
 
 		if (image.complete) return;
 
