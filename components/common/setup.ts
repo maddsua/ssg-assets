@@ -108,7 +108,7 @@ export const getDOMRoot = (customDOMRoot?: Document): GetDOMRoot => {
 
 	if (typeof document === 'undefined') {
 
-		if (!customDOMRoot) throw new EvalError('document global object is not accessible in this runtime and you did not provide an alternative DOM root');
+		if (!customDOMRoot) throw new Error('Looks like you\'re not running in the browser, so you need to provide a different Document (document root) object to the component. Or use the "html" version of the component to bypass this requirement');
 
 		return { domRoot: customDOMRoot, isNativeDOM: false };
 	}
