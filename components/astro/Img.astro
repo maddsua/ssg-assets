@@ -10,7 +10,7 @@ const size = getImageSize(props.sizes);
 
 <script>
 
-	import lazyload from '../common/lazyload';
-	lazyload(null, 'ssga:img:astro');
+	import { revealLazyLoaded } from '../index';
+	revealLazyLoaded(null, 'ssga:img:astro');
 
 </script>

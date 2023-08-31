@@ -57,7 +57,6 @@
 		"build": "run-s lint bundle",
 		"dev": "esbuild src/main.ts --outfile=bin/main.js --bundle --platform=node --format=esm --external:sharp --external:chalk --external:minimatch --watch",
 		"test": "node bin/main.js --verbose",
-		"test_components": "cd components && tsc --noemit",
 		"deploy": "npm publish --access=public"
 	},
 	"dependencies": {
@@ -67,10 +66,11 @@
 	},
 	"devDependencies": {
 		"@types/node": "^18.16.17",
-		"astro": "^2.7.0",
+		"astro": "^2.10.15",
 		"npm-run-all": "^4.1.5",
 		"preact": "^10.15.1",
-		"vue": "^3.3.4"
+		"vue": "^3.3.4",
+		"vue-tsc": "^1.8.8"
 	},
 	"description": "Converts media assets for your static website and provides handy components fro React, Astro and Vue",
 	"keywords": [

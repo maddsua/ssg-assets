@@ -6,7 +6,7 @@ on:
 
 jobs:
 
-  test_cli:
+  cli_check:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -17,9 +17,8 @@ jobs:
     - run: npm ci
     - run: npm run build
     - run: npm run test
-    - run: npm pack
 
-  tsc_components:
+  tsc_check:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -30,4 +29,27 @@ jobs:
     - run: npm ci
     - run: cd ./components
     - run: npx tsc
-    - run: npm pack
+
+  astro_check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 18
+        registry-url: https://registry.npmjs.org/
+    - run: npm ci
+    - run: cd ./components/astro
+    - run: npx astro check
+  
+  vue_check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 18
+        registry-url: https://registry.npmjs.org/
+    - run: npm ci
+    - run: cd ./components/vue
+    - run: npx vue-tsc index.ts Img.vue Picture.vue --noEmit
