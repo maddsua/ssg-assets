@@ -52,4 +52,5 @@ jobs:
         registry-url: https://registry.npmjs.org/
     - run: npm ci
     - run: cd ./components/vue
+    - run: ls
     - run: npx vue-tsc ./index.ts ./Img.vue ./Picture.vue --noEmit
