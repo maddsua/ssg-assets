@@ -1,7 +1,7 @@
 {
 	"verbose": false,
-	"inputDir": "tests/assets",
-	"outputDir": "tests/dist",
+	"inputDir": "tests/convert/assets",
+	"outputDir": "tests/convert/dist",
 	"passthrough": [
 		"*.webm"
 	]
