@@ -136,7 +136,10 @@ const printCliConfig = (config: Config) => {
 		//	sharp subroutine
 		await Promise.all(config.formats.map(async (format) => {
 
-			if (format === 'original') format = asset.format;
+			if (format === 'original') {
+				if (config.formats.some(item => item === asset.format)) return;
+				format = asset.format;
+			}
 
 			//	try getting from cache
 			const dest = asset.dest.replace(/\.[\d\w]+$/, `.${format}`);
