@@ -1,8 +1,8 @@
 import Picture from './Picture';
 import Img from './Img';
-import lazyload from '../common/lazyload';
+import { revealLazyLoaded } from '../index';
 
-const enableLazyLoad = (root?: HTMLElement | Element) => lazyload(root, 'ssga:img:dom');
+const enableLazyLoad = (root?: HTMLElement | Element) => revealLazyLoaded(root, 'ssga:img:dom');
 
 export {
 	Picture,
