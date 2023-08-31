@@ -7,7 +7,7 @@ export interface AdaptiveMode {
 	modifier: ModeModifier;
 };
 
-export type ImageFormats = 'jpg' | 'png' | 'gif' | 'webp' | 'avif';
+export type ImageFormats = 'jpg' | 'jpeg' | 'png' | 'gif' | 'webp' | 'avif';
 type ImageFormatsType = ImageFormats | ImageFormats[] | string | string[];
 type ImageSizesProp = number | number[];
 type ElementClass = string | string[] | Record<string, boolean>;
@@ -30,7 +30,7 @@ export interface PictireProps extends ImageProps {
 	imgStyle?: ElementStyle;
 };
 
-export const supportedFormats = [ 'avif', 'webp', 'png', 'jpg', 'gif' ];
+export const supportedFormats: ImageFormats[] = [ 'avif', 'webp', 'png', 'jpg', 'gif', 'jpeg' ];
 
 const applyUrlModifier = (src: string, modifier: ModeModifier) => modifier ? src.replace(/\..*$/, '') + modifier + src.match(/\..*$/)?.[0] : src;
 

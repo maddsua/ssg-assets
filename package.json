@@ -10,12 +10,12 @@
 		"ssgassets": "./bin/main.js",
 		"ssga": "./bin/main.js"
 	},
-	"main": "./dist/dummy.js",
-	"types": "./dist/dummy.d.ts",
+	"main": "./components/index.ts",
+	"types": "./components/index.ts",
 	"exports": {
 		".": {
-			"default": "./dist/dummy.js",
-			"types": "./dist/dummy.d.ts"
+			"default": "./components/index.ts",
+			"types": "./components/index.ts"
 		},
 		"./react": {
 			"default": "./components/react/index.ts",
@@ -40,7 +40,6 @@
 	},
 	"files": [
 		"bin",
-		"dist",
 		"package.json",
 		"package-lock.json",
 		"components/index.ts",
