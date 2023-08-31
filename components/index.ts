@@ -7,7 +7,7 @@ export interface AdaptiveMode {
 	modifier: ModeModifier;
 };
 
-export type ImageFormats = 'jpg' | 'png' | 'gif' | 'webp' | 'avif';
+export type ImageFormats = 'jpg' | 'jpeg' | 'png' | 'gif' | 'webp' | 'avif';
 type ImageFormatsType = ImageFormats | ImageFormats[] | string | string[];
 type ImageSizesProp = number | number[];
 type ElementClass = string | string[] | Record<string, boolean>;
@@ -30,7 +30,7 @@ export interface PictireProps extends ImageProps {
 	imgStyle?: ElementStyle;
 };
 
-export const supportedFormats = [ 'avif', 'webp', 'png', 'jpg' ];
+export const supportedFormats: ImageFormats[] = [ 'avif', 'webp', 'png', 'jpg', 'gif', 'jpeg' ];
 
 const applyUrlModifier = (src: string, modifier: ModeModifier) => modifier ? src.replace(/\..*$/, '') + modifier + src.match(/\..*$/)?.[0] : src;
 
@@ -116,4 +116,29 @@ export const getDOMRoot = (customDOMRoot?: Document): GetDOMRoot => {
 	if (customDOMRoot) console.warn('Yo dawg, it seems like you\'re running getDOMRoot() in a browser with a customDOMRoot specified. You probably don\'need it, the global document object will be used instead');
 
 	return { domRoot: document, isNativeDOM: true };
+};
+
+export const asyncSleep = (timeout: number) => new Promise<void>(resolve => setTimeout(resolve, timeout));
+
+export const revealLazyLoaded = (root?: HTMLElement | Element | null) => {
+
+	const lazyImages = (root || document).querySelectorAll<HTMLImageElement>('img[loading="lazy"]');
+
+	lazyImages.forEach(image => {
+
+		if (image.complete) return;
+
+		image.style.opacity = '0';
+		
+		image.onload = async () => {
+			
+			image.style.transition = `opacity 500ms ease`;
+			await asyncSleep(100);
+			image.style.opacity = '1';
+			
+			await asyncSleep(500);
+			image.style.transition = '';
+			image.style.opacity = '';
+		};
+	});
 };

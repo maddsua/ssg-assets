@@ -1,12 +1,12 @@
-//@ts-nocheck
+// @ts-nocheck
 import Img from './Img.vue';
+// @ts-nocheck
 import Picture from './Picture.vue';
-import lazyload from '../common/lazyload';
 
-const enableLazyLoad = (root?: HTMLElement | Element) => lazyload(root, 'ssga:img:vue');
+import { revealLazyLoaded } from '../index';
 
 export {
 	Img,
 	Picture,
-	enableLazyLoad
+	revealLazyLoaded
 };

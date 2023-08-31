@@ -1,10 +1,9 @@
 import Picture from './components/html/Picture';
 import Img from './components/html/Img';
-
-declare const enableLazyLoad: (root?: HTMLElement | Element) => void;
+import { revealLazyLoaded } from './components/index';
 
 export {
 	Picture,
 	Img,
-	enableLazyLoad
+	revealLazyLoaded
 }

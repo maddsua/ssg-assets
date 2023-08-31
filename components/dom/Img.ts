@@ -1,4 +1,4 @@
-import { ImageProps, getImageSize, classToString, styleToString, getDOMRoot } from '../common/setup';
+import { ImageProps, getImageSize, classToString, styleToString, getDOMRoot } from '../index';
 
 export default (props: ImageProps, useDOMRoot?: Document) => {
 

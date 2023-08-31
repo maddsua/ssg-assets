@@ -1,5 +1,5 @@
 import Img from "./Img.jsx";
-import { PictireProps, mapSources, adaptBaseImageUrl, classToString, styleToString } from '../common/setup';
+import { PictireProps, mapSources, adaptBaseImageUrl, classToString, styleToString } from '../index';
 
 /**
  * Advanced \<picture\> component

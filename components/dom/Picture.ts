@@ -1,5 +1,5 @@
 import Img from './Img';
-import { PictireProps, mapSources, adaptBaseImageUrl, classToString, styleToString, getDOMRoot } from '../common/setup';
+import { PictireProps, mapSources, adaptBaseImageUrl, classToString, styleToString, getDOMRoot } from '../index';
 
 export default (props: PictireProps, useDOMRoot?: Document) => {
 

@@ -1,4 +1,12 @@
-// @ts-ignore
-export { default as Img } from './Img.astro';
-// @ts-ignore
-export { default as Picture } from './Picture.astro';
+// @ts-nocheck
+import Picture from './Picture.astro';
+// @ts-nocheck
+import Img from './Img.astro';
+
+import { revealLazyLoaded } from '../index';
+
+export {
+	Picture,
+	Img,
+	revealLazyLoaded
+};
