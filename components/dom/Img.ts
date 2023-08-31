@@ -1,31 +1,40 @@
-import { ImageProps, getImageSize, classToString, styleToString } from '../common/setup';
+import { ImageProps, getImageSize, classToString, styleToString, getDOMRoot } from '../common/setup';
 
-export default (props: ImageProps, DOMRoot?: Document) => {
+export default (props: ImageProps, useDOMRoot?: Document) => {
 
-	const root = typeof document === 'object' ? document : DOMRoot;
-	if (!root) throw new EvalError('document global object is not accessible in this runtime and you did not provide an alternative DOM root');
+	const { domRoot, isNativeDOM } = getDOMRoot(useDOMRoot);
 
 	const size = getImageSize(props.sizes);
+	const elementClass = classToString(props.class);
+	const elementStyle = styleToString(props.style)
 
-	const imgElement = root.createElement('img');
+	const imgElement = domRoot.createElement('img');
 	imgElement.setAttribute('data-component-id', 'ssga:img:dom');
+	elementStyle && imgElement.setAttribute('style', elementStyle);
 
-	imgElement.src = props.src;
-	imgElement.alt = props.alt;
-	imgElement.draggable = props.draggable === true;
+	//	the diffrence is that for a browser DOM we want to have realtime and *snappy* changes,
+	//	while for NodeJS DOM (JSDOM) and other server implementations we'd like a better reflection in generated HTML code
+	//	For instance: the "loading" attribute is not being reflected in picture's "innerHTML" when set as img's property (JSDOM)
+	if (isNativeDOM) {
 
-	imgElement.loading = props.lazy !== false ? 'lazy' : 'eager';
-	//	redundancy for JSDOM, idk what's wrong
-	imgElement.setAttribute('loading', props.lazy !== false ? 'lazy' : 'eager');
+		imgElement.src = props.src;
+		imgElement.alt = props.alt;
+		imgElement.draggable = props.draggable === true;
+		imgElement.loading = props.lazy !== false ? 'lazy' : 'eager';
+		size?.width && (imgElement.width = size.width);
+		size?.height && (imgElement.height = size.height);
+		elementClass && (imgElement.className = elementClass);
 
-	size?.width && (imgElement.width = size.width);
-	size?.height && (imgElement.height = size.height);
+	} else {
 
-	const classString = classToString(props.class);
-	classString && (imgElement.className = classString);
-
-	const styleString = styleToString(props.style)
-	styleString && imgElement.setAttribute('style', styleString);
+		imgElement.setAttribute('src', props.src);
+		imgElement.setAttribute('alt', props.alt);
+		imgElement.setAttribute('draggable', props.draggable === true ? 'true' : 'false');
+		imgElement.setAttribute('loading', props.lazy !== false ? 'lazy' : 'eager');
+		size?.width && (imgElement.setAttribute('width', size.width.toString()));
+		size?.height && (imgElement.setAttribute('height', size.height.toString()));
+		elementClass && (imgElement.setAttribute('class', elementClass));
+	}
 
 	return imgElement;
 };

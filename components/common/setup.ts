@@ -98,3 +98,22 @@ export type HTMLAttribStruct = Record<string, HTMLAttributeValue>;
 export const composeAttributesHTML = (attrList: HTMLAttribStruct) => Object.entries(attrList).filter(item => ['string', 'boolean', 'number'].some(typeid => typeid === typeof item[1])).map(([attr, value]) => `${attr}="${typeof value === 'string' ? value.replace(/\"/, '\"') : value}"`).join(' ');
 
 export const attributeListToString = (attrList: [string, any][]) => attrList.filter(([_attr, value]) => typeof value === 'string' || typeof value === 'boolean' || typeof value === 'boolean').map(([attr, value]) => `${attr}="${typeof value === 'string' ? value.replace(/\"/, '\"') : value}"`).join(' ');
+
+interface GetDOMRoot {
+	domRoot: Document;
+	isNativeDOM: boolean;
+};
+
+export const getDOMRoot = (customDOMRoot?: Document): GetDOMRoot => {
+
+	if (typeof document === 'undefined') {
+
+		if (!customDOMRoot) throw new Error('Looks like you\'re not running in the browser, so you need to provide a different Document (document root) object to the component. Or use the "html" version of the component to bypass this requirement');
+
+		return { domRoot: customDOMRoot, isNativeDOM: false };
+	}
+
+	if (customDOMRoot) console.warn('Yo dawg, it seems like you\'re running getDOMRoot() in a browser with a customDOMRoot specified. You probably don\'need it, the global document object will be used instead');
+
+	return { domRoot: document, isNativeDOM: true };
+};
