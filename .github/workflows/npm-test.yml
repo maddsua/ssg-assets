@@ -39,8 +39,7 @@ jobs:
         node-version: 18
         registry-url: https://registry.npmjs.org/
     - run: npm ci
-    - run: cd ./components/astro
-    - run: npx astro check
+    - run: cd ./components/astro && npx astro check
   
   vue_check:
     runs-on: ubuntu-latest
@@ -51,6 +50,4 @@ jobs:
         node-version: 18
         registry-url: https://registry.npmjs.org/
     - run: npm ci
-    - run: cd ./components/vue
-    - run: ls
-    - run: npx vue-tsc ./index.ts ./Img.vue ./Picture.vue --noEmit
+    - run: cd ./components/vue &&npx vue-tsc ./index.ts ./Img.vue ./Picture.vue --noEmit
