@@ -1,4 +1,4 @@
-import { ImageProps, getImageSize, classToString, styleToString } from '../common/setup';
+import { ImageProps, getImageSize, classToString, styleToString } from '../index';
 
 export default (props: ImageProps) => {
 
