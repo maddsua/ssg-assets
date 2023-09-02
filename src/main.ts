@@ -115,7 +115,10 @@ const printCliConfig = (config: Config) => {
 	await Promise.all(assets.map(async (asset) => {
 
 		//	skip assets with no assigned action
-		if (!asset.action) return;
+		if (!asset.action) {
+			if (config.verbose) console.log(chalk.green('>>>'),  `Skipped [${asset.message || 'no action'}]:`, asset.source);
+			return;
+		}
 
 		//	create dest dir
 		const destDir = path.dirname(asset.dest);
