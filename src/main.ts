@@ -116,7 +116,7 @@ const printCliConfig = (config: Config) => {
 
 		//	skip assets with no assigned action
 		if (!asset.action) {
-			if (config.verbose) console.log(chalk.green('>>>'),  `Skipped [${asset.message || 'no action'}]:`, asset.source);
+			if (config.verbose) console.log(chalk.green(`>> Skipped`), chalk.cyanBright(`[${asset.message || 'no action'}]:`), asset.source);
 			return;
 		}
 
