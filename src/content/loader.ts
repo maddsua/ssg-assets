@@ -15,6 +15,7 @@ interface AssetListBaseItem {
 	cache: string;
 	slug: string;
 	hash: string;
+	message?: string;
 };
 
 interface AssetListSharpItem extends AssetListBaseItem {
@@ -52,36 +53,44 @@ const loadAllAssetFiles = (assetDir: string): string[] => {
 
 export const resolveAssets = async (config: Config): Promise<AssetsListItem[]> => {
 
-	let entries = loadAllAssetFiles(config.inputDir);
+	let allAvailableFiles = loadAllAssetFiles(config.inputDir);
 
-	config.include.forEach(item => entries = entries.filter(entry => minimatch(entry, item, {
-		matchBase: true,
-		nobrace: true,
-		noext: true,
-		nocase: true
-	})));
+	return await Promise.all(allAvailableFiles.map(async (assetPath): Promise<AssetsListItem> => {
 
-	config.exclude.forEach(item => entries = entries.filter(entry => !minimatch(entry, item, {
-		matchBase: true,
-		nobrace: true,
-		noext: true,
-		nocase: true
-	})));
-
-	return await Promise.all(entries.map(async (item): Promise<AssetsListItem> => {
-
-		const slug = item.replace(new RegExp('^' + config.inputDir + '/'), '');
-		const hash = await getFileHashSha256(item);
+		const slug = assetPath.replace(new RegExp('^' + config.inputDir + '/'), '');
+		const hash = await getFileHashSha256(assetPath);
 
 		const assetBaseData = {
-			source: item,
+			source: assetPath,
 			dest: normalizePath(config.outputDir + '/' + slug),
 			cache: normalizePath(config.cacheDir + '/' + hash),
 			slug,
 			hash: hash
 		};
 
-		const isPasstrough = config.passthrough.some(pattern => minimatch(item, pattern, {
+		const isNotIncluded = config.include.length && !config.include.some(includePattern => minimatch(assetPath, includePattern, {
+			matchBase: true,
+			nobrace: true,
+			noext: true,
+			nocase: true
+		}));
+		if (isNotIncluded) return Object.assign(assetBaseData, {
+			action: undefined,
+			message: 'not included'
+		} as const);
+
+		const isExcluded = config.exclude.some(excludePattern => minimatch(assetPath, excludePattern, {
+			matchBase: true,
+			nobrace: true,
+			noext: true,
+			nocase: true
+		}));
+		if (isExcluded) return Object.assign(assetBaseData, {
+			action: undefined,
+			message: 'excluded'
+		} as const);
+
+		const isPasstrough = config.passthrough.some(pattern => minimatch(assetPath, pattern, {
 			matchBase: true,
 			nobrace: true,
 			noext: true,
