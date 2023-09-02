@@ -109,6 +109,7 @@ export const resolveAssets = async (config: Config): Promise<AssetsListItem[]> =
 		return Object.assign(assetBaseData, {
 			action: undefined
 		} as const);
+
 	}));
 };
 
