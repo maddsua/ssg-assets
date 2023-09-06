@@ -80,7 +80,7 @@ export const mapSources = (baseImageSrc: string, formats?: ImageFormatsType, ada
 		media: mode.media ? `(${mode.media})` : undefined,
 		source: applyUrlModifier(baseImageSrc, mode.modifier, mode.baseModifier),
 		type: `image/${baseImageSrc.replace(expressions.allBeforeExtension, '')}`
-	}))
+	}));
 
 	return adaptiveAltFormats.concat(adaptiveBaseFormat);
 };
