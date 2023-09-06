@@ -32,8 +32,15 @@ const assertEqual = (a: any, b: any) => {
 
 	const outputSources = mapSources(input.url, undefined, input.adaptive);
 
-	//	fix this later, this is not right
-	assertEqual(outputSources, [{ media: undefined, source: '/cats/image.mobile.png', type: 'image/png' }]);
+	const expectSources = [
+		{
+			media: '(orientation: portrait)',
+			source: '/cats/image.mobile.png',
+			type: 'image/png'
+		}
+	];
+
+	assertEqual(outputSources, expectSources);
 
 })();
 
@@ -61,9 +68,14 @@ const assertEqual = (a: any, b: any) => {
 
 	const expectSources = [
 		{
-			media: undefined,
+			media: '(orientation: portrait)',
 			source: '/cats/image.mobile.webp',
 			type: 'image/webp'
+		},
+		{
+			media: '(orientation: portrait)',
+			source: '/cats/image.mobile.png',
+			type: 'image/png'
 		}
 	];
 
@@ -116,6 +128,58 @@ const assertEqual = (a: any, b: any) => {
 			media: '(orientation: portrait)',
 			source: '/cats/image.mobile.webp',
 			type: 'image/webp'
+		},
+		{
+			media: '(orientation: landscape)',
+			source: '/cats/image.png',
+			type: 'image/png'
+		},
+		{
+			media: '(orientation: portrait)',
+			source: '/cats/image.mobile.png',
+			type: 'image/png'
+		}
+	  ];
+
+	assertEqual(outputSources, expectSources);
+
+})();
+
+
+/**
+ * Test 4
+ * Generate source context and transform image src for:
+ * 	Single adaptive mode
+ * 	Single image format
+ * With:
+ * 	Replacing part of image file name
+ */
+(() => {
+
+	const input = {
+		url: '/bannners/base_name_default_modifier.jpg',
+		adaptive: [
+			{
+				media: 'orientation: portrait',
+				modifier: '_mobile',
+				baseModifier: '_default_modifier'
+			}
+		],
+		formats: ['webp']
+	}
+
+	const outputSources = mapSources(input.url, input.formats, input.adaptive);
+
+	const expectSources = [
+		{
+			media: '(orientation: portrait)',
+			source: '/bannners/base_name_mobile.webp',
+			type: 'image/webp'
+		},
+		{
+			media: "(orientation: portrait)",
+			source: "/bannners/base_name_mobile.jpg",
+			type: "image/jpg"
 		}
 	];
 
