@@ -63,13 +63,11 @@ export const mapSources = (baseImageSrc: string, formats?: ImageFormatsType, ada
 
 	if (!adaptiveModes?.length) return altFormatSources;
 
-	const mapAdaptiveModes = adaptiveModes.length > 1 ? adaptiveModes : [{ media: null, modifier: adaptiveModes[0].modifier }];
-
-	return altFormatSources.length ? mapAdaptiveModes.map(mode => altFormatSources.map(source => ({
+	return altFormatSources.length ? adaptiveModes.map(mode => altFormatSources.map(source => ({
 		media: mode.media ? `(${mode.media})` : undefined,
 		source: applyUrlModifier(source.source, mode.modifier),
 		type: source.type
-	}))).flat(1) : mapAdaptiveModes.map(mode => ({
+	}))).flat(1) : adaptiveModes.map(mode => ({
 		media: mode.media ? `(${mode.media})` : undefined,
 		source: applyUrlModifier(baseImageSrc, mode.modifier),
 		type: `image/${baseImageSrc.replace(expressions.allBeforeExtension, '')}`
