@@ -61,7 +61,7 @@ const allTests: (() => void)[] = [
 			}
 		];
 	
-		assertEqual(outputSources, expectSources);
+		assertEqual(expectSources, outputSources);
 	}),
 
 	/**
@@ -100,7 +100,7 @@ const allTests: (() => void)[] = [
 			}
 		];
 
-		assertEqual(outputSources, expectSources);
+		assertEqual(expectSources, outputSources);
 	}),
 
 	/**
@@ -158,7 +158,7 @@ const allTests: (() => void)[] = [
 			}
 		];
 
-		assertEqual(outputSources, expectSources);
+		assertEqual(expectSources, outputSources);
 	}),
 
 	/**
@@ -200,7 +200,7 @@ const allTests: (() => void)[] = [
 			}
 		];
 
-		assertEqual(outputSources, expectSources);
+		assertEqual(expectSources, outputSources);
 
 	}),
 
@@ -252,7 +252,7 @@ const allTests: (() => void)[] = [
 			}
 		];
 
-		assertEqual(outputSources, expectSources);
+		assertEqual(expectSources, outputSources);
 
 	})
 ];
