@@ -6,13 +6,11 @@
 		"typeRoots": [
 			"node_modules/@types"
 		],
-		"rootDir": "src/",
-		"outDir": "dist/",
+		"noEmit": true,
+		"sourceMap": false,
 		"moduleResolution": "node",
 		"allowSyntheticDefaultImports": true,
-		"declaration": true,
-		"sourceMap": false,
-		"noEmit": true,
+		"resolveJsonModule": true,
 		"strict": true,
 		"jsx": "preserve"
 	},
