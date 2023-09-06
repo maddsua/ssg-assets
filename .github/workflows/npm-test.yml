@@ -29,6 +29,15 @@ jobs:
     - run: npm ci
     - run: cd ./components && npx tsc
 
+  component_logic_check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: denoland/setup-deno@v1
+      with:
+        deno-version: "1.36.2"
+    - run: cd tests/components && deno task test
+
   astro_check:
     runs-on: ubuntu-latest
     steps:

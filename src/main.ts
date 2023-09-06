@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+import { version as appversion } from '../package.json';
+
 import { loadConfig } from './config/loader';
 import { resolveAssets } from './content/loader';
 
@@ -42,6 +44,8 @@ const printCliConfig = (config: Config) => {
 };
 
 ( async () => {
+
+	console.log(chalk.bgWhite.black(` SSG Assets CLI v${appversion} `), '\n');
 
 	const config = loadConfig();
 	
@@ -115,7 +119,10 @@ const printCliConfig = (config: Config) => {
 	await Promise.all(assets.map(async (asset) => {
 
 		//	skip assets with no assigned action
-		if (!asset.action) return;
+		if (!asset.action) {
+			if (config.verbose) console.log(chalk.green(`>> Skipped`), chalk.cyanBright(`[${asset.message || 'no action'}]:`), asset.source);
+			return;
+		}
 
 		//	create dest dir
 		const destDir = path.dirname(asset.dest);
