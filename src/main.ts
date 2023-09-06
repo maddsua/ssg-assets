@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+import { version as appversion } from '../package.json';
+
 import { loadConfig } from './config/loader';
 import { resolveAssets } from './content/loader';
 
@@ -42,6 +44,8 @@ const printCliConfig = (config: Config) => {
 };
 
 ( async () => {
+
+	console.log(chalk.bgWhite.black(` SSG Assets CLI v${appversion} `), '\n');
 
 	const config = loadConfig();
 	
