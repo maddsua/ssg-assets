@@ -35,7 +35,7 @@ export const supportedFormats: ImageFormats[] = [ 'avif', 'webp', 'png', 'jpg', 
 const applyUrlModifier = (src: string, modifier: ModeModifier) => modifier ? src.replace(/\..*$/, '') + modifier + src.match(/\..*$/)?.[0] : src;
 
 export const adaptBaseImageUrl = (src: string, adaptiveModes?: AdaptiveMode[]) => {
-	if (!adaptiveModes || adaptiveModes?.length < 2) return src;
+	if (!adaptiveModes?.length) return src;
 	return applyUrlModifier(src, adaptiveModes[0].modifier);
 };
 
@@ -50,13 +50,15 @@ export const mapSources = (src: string, formats?: ImageFormatsType, adaptiveMode
 		media: undefined as string | undefined
 	}));
 
-	if (adaptiveModes?.length === 1) adaptiveModes.push({ media: null, modifier: null });
-	
-	return adaptiveModes?.length ? adaptiveModes?.map(mode => sources.map(item => ({
+	if (!adaptiveModes?.length) return sources;
+
+	const mapAdaptiveModes = adaptiveModes.length > 1 ? adaptiveModes : [{ media: null, modifier: null }];
+
+	return mapAdaptiveModes.map(mode => sources.map(item => ({
 		media: mode.media ? `(${mode.media})` : undefined,
 		source: applyUrlModifier(item.source, mode.modifier),
 		type: item.type
-	}))).flat(1) : sources || [];
+	}))).flat(1);
 };
 
 export const getImageSize = (sizes?: ImageSizesProp) => sizes ? (typeof sizes === 'number' ? ({
