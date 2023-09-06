@@ -51,7 +51,7 @@ export const mapSources = (baseImageSrc: string, formats?: ImageFormatsType, ada
 	const imageAltFormats = supportedFormats.map(item_s => requestedFormats.find(item_r => item_s === item_r)).filter(item => !!item);
 	
 	const altFormatSources = imageAltFormats.map(format => ({
-		source: `${baseImageSrc.replace(/\.[\w\d]+/, '')}.${format}`,
+		source: `${baseImageSrc.replace(/\.[\w\d]+$/, '')}.${format}`,
 		type: `image/${format}`,
 		media: undefined
 	}));
