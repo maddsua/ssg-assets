@@ -21,7 +21,7 @@ import { mapSources, adaptBaseImageUrl } from '../../components/index.ts';
 	}
 
 	const outputSources = mapSources(input.url, input.formats, input.adaptive);
-	const outputImageSrc = adaptBaseImageUrl(input.url);
+	const outputImageSrc = adaptBaseImageUrl(input.url, input.adaptive);
 
 	console.log(outputSources)
 	console.log(outputImageSrc)
