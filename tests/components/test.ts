@@ -23,12 +23,14 @@ const allTests: (() => void)[] = [
 
 		const input = {
 			url: '/cats/image.png',
-			adaptive: [
-				{
-					'media': 'orientation: portrait',
-					'modifier': '.mobile'
-				}
-			]
+			adaptive: {
+				variants: [
+					{
+						'media': 'orientation: portrait',
+						'modifier': '.mobile'
+					}
+				]
+			}
 		}
 	
 		const outputSources = mapSources(input.url, undefined, input.adaptive);
@@ -54,12 +56,14 @@ const allTests: (() => void)[] = [
 
 		const input = {
 			url: '/cats/image.png',
-			adaptive: [
-				{
-					'media': 'orientation: portrait',
-					'modifier': '.mobile'
-				}
-			],
+			adaptive: {
+				variants: [
+					{
+						'media': 'orientation: portrait',
+						'modifier': '.mobile'
+					}
+				]
+			},
 			formats: ['webp']
 		}
 
@@ -91,16 +95,18 @@ const allTests: (() => void)[] = [
 
 		const input = {
 			url: '/cats/image.png',
-			adaptive: [
-				{
-					'media': 'orientation: landscape',
-					'modifier': null
-				},
-				{
-					'media': 'orientation: portrait',
-					'modifier': '.mobile'
-				}
-			],
+			adaptive: {
+				variants: [
+					{
+						'media': 'orientation: landscape',
+						'modifier': null
+					},
+					{
+						'media': 'orientation: portrait',
+						'modifier': '.mobile'
+					}
+				]
+			},
 			formats: ['webp', 'avif']
 		}
 
@@ -154,13 +160,16 @@ const allTests: (() => void)[] = [
 
 		const input = {
 			url: '/bannners/base_name_default_modifier.jpg',
-			adaptive: [
-				{
-					media: 'orientation: portrait',
-					modifier: '_mobile',
-					baseModifier: '_default_modifier'
-				}
-			],
+			adaptive: {
+				baseModifier: '_default_modifier',
+				variants: [
+					{
+						media: 'orientation: portrait',
+						modifier: '_mobile',
+
+					}
+				]
+			},
 			formats: ['webp']
 		}
 

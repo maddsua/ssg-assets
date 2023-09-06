@@ -6,7 +6,7 @@ import { PictireProps, mapSources, classToString, styleToString } from '../index
  */
 export default (props: PictireProps) => {
 
-	const sources = mapSources(props.src, props.formats, props.adaptiveModes);
+	const sources = mapSources(props.src, props.formats, props.adaptiveMode);
 
 	return (
 		<picture className={classToString(props.class)} style={styleToString(props.style)} data-component-id="ssga:picture:react">

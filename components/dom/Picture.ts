@@ -18,7 +18,7 @@ export default (props: PictireProps, useDOMRoot?: Document) => {
 		classString && pictureElement.setAttribute('class', classString);
 	}
 	
-	mapSources(props.src, props.formats, props.adaptiveModes).forEach(source => {
+	mapSources(props.src, props.formats, props.adaptiveMode).forEach(source => {
 		const sourceElement = domRoot.createElement('source');
 		sourceElement.srcset = source.source;
 		sourceElement.type = source.type;

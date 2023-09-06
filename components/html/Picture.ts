@@ -6,7 +6,7 @@ import { PictireProps, mapSources, classToString, styleToString, composeAttribut
  */
 export default (props: PictireProps) => {
 
-	const sources = mapSources(props.src, props.formats, props.adaptiveModes).map(source => `<source srcset="${source.source}" type="image/${source.type}" media="${source.media}" />`) || [];
+	const sources = mapSources(props.src, props.formats, props.adaptiveMode).map(source => `<source srcset="${source.source}" type="image/${source.type}" media="${source.media}" />`) || [];
 
 	const attrList = {
 		class: classToString(props.class),

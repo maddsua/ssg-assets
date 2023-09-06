@@ -4,7 +4,7 @@ import { PictireProps, mapSources, classToString, styleToString } from '../index
 
 export interface Props extends PictireProps {};
 const props = Astro.props;
-const sources = mapSources(props.src, props.formats, props.adaptiveModes);
+const sources = mapSources(props.src, props.formats, props.adaptiveMode);
 ---
 
 <picture class={classToString(props.class)} style={styleToString(props.style)} data-component-id="ssga:picture:astro">

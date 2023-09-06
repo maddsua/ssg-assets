@@ -3,10 +3,14 @@ type ModeModifier = string | null | undefined;
 type ReplaceBaseModifier = string | RegExp | undefined;
 type AdaptiveModeMediaQuery = string | null | undefined;
 
-export interface AdaptiveMode {
+export interface AdaptiveModeVariant {
 	media: AdaptiveModeMediaQuery;
 	modifier: ModeModifier;
+};
+
+export interface AdaptiveMode {
 	baseModifier?: ReplaceBaseModifier;
+	variants: AdaptiveModeVariant[];
 };
 
 export type ImageFormats = 'jpg' | 'jpeg' | 'png' | 'gif' | 'webp' | 'avif';
@@ -27,7 +31,7 @@ export interface ImageProps {
 
 export interface PictireProps extends ImageProps {
 	formats?: ImageFormatsType;
-	adaptiveModes?: AdaptiveMode[];
+	adaptiveMode?: AdaptiveMode;
 	imgClass?: ElementClass;
 	imgStyle?: ElementStyle;
 };
@@ -57,7 +61,7 @@ export interface SourceMapEntry {
 	media: string | undefined;
 };
 
-export const mapSources = (baseImageSrc: string, formats?: ImageFormatsType, adaptiveModes?: AdaptiveMode[]): SourceMapEntry[] => {
+export const mapSources = (baseImageSrc: string, formats?: ImageFormatsType, adaptiveMode?: AdaptiveMode): SourceMapEntry[] => {
 
 	const requestedFormats = formats ? (typeof formats === 'string') ? formats.split(',').map(item => item.trim().toLowerCase()) : formats : [];
 	const imageAltFormats = supportedFormats.map(item_s => requestedFormats.find(item_r => item_s === item_r)).filter(item => !!item);
@@ -68,17 +72,17 @@ export const mapSources = (baseImageSrc: string, formats?: ImageFormatsType, ada
 		media: undefined
 	}));
 
-	if (!adaptiveModes?.length) return altFormatSources;
+	if (!adaptiveMode?.variants?.length) return altFormatSources;
 
-	const adaptiveAltFormats = adaptiveModes.map(mode => altFormatSources.map(source => ({
+	const adaptiveAltFormats = adaptiveMode.variants.map(mode => altFormatSources.map(source => ({
 		media: mode.media ? `(${mode.media})` : undefined,
-		source: applyUrlModifier(source.source, mode.modifier, mode.baseModifier),
+		source: applyUrlModifier(source.source, mode.modifier, adaptiveMode.baseModifier),
 		type: source.type
 	}))).flat(1);
 
-	const adaptiveBaseFormat = adaptiveModes.map(mode => ({
+	const adaptiveBaseFormat = adaptiveMode.variants.map(mode => ({
 		media: mode.media ? `(${mode.media})` : undefined,
-		source: applyUrlModifier(baseImageSrc, mode.modifier, mode.baseModifier),
+		source: applyUrlModifier(baseImageSrc, mode.modifier, adaptiveMode.baseModifier),
 		type: `image/${baseImageSrc.replace(expressions.allBeforeExtension, '')}`
 	}));
 
