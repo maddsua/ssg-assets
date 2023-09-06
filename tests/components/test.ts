@@ -4,7 +4,34 @@
 //	This is not an automated test, it's used to verify image source generation,
 //	but that is not needed to be tested on each build
 
-import { mapSources, adaptBaseImageUrl, AdaptiveMode, ImageFormats } from '../../components/index.ts';
+import { mapSources, adaptBaseImageUrl } from '../../components/index.ts';
+
+
+(() => {
+
+	const input = {
+		url: '/cats/1.png',
+		adaptive: [
+			{
+				'media': 'orientation: portrait',
+				'modifier': '.mobile'
+			}
+		],
+		formats: ['webp']
+	}
+
+	const outputSources = mapSources(input.url, input.formats, input.adaptive);
+	const outputImageSrc = adaptBaseImageUrl(input.url);
+
+	console.log(outputSources)
+	console.log(outputImageSrc)
+
+})();
+
+
+/*
+
+
 
 const testData: Array<{
 	url: string;
@@ -57,3 +84,4 @@ const results = testData.map(item => ({
 }));
 
 console.log(results);
+*/
