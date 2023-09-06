@@ -32,7 +32,12 @@ export interface PictireProps extends ImageProps {
 
 export const supportedFormats: ImageFormats[] = [ 'avif', 'webp', 'png', 'jpg', 'jpeg', 'gif' ];
 
-const applyUrlModifier = (src: string, modifier: ModeModifier) => modifier ? src.replace(/\..*$/, '') + modifier + src.match(/\..*$/)?.[0] : src;
+const expressions = {
+	dotExtension: /\.[\w\d]+$/,
+	allBeforeExtension: /^.+\./
+};
+
+const applyUrlModifier = (src: string, modifier: ModeModifier) => modifier ? src.replace(expressions.dotExtension, '') + modifier + src.match(expressions.dotExtension)?.[0] : src;
 
 export const adaptBaseImageUrl = (src: string, adaptiveModes?: AdaptiveMode[]) => {
 	if (!adaptiveModes?.length) return src;
@@ -51,7 +56,7 @@ export const mapSources = (baseImageSrc: string, formats?: ImageFormatsType, ada
 	const imageAltFormats = supportedFormats.map(item_s => requestedFormats.find(item_r => item_s === item_r)).filter(item => !!item);
 	
 	const altFormatSources = imageAltFormats.map(format => ({
-		source: `${baseImageSrc.replace(/\.[\w\d]+$/, '')}.${format}`,
+		source: `${baseImageSrc.replace(expressions.dotExtension, '')}.${format}`,
 		type: `image/${format}`,
 		media: undefined
 	}));
@@ -67,7 +72,7 @@ export const mapSources = (baseImageSrc: string, formats?: ImageFormatsType, ada
 	}))).flat(1) : mapAdaptiveModes.map(mode => ({
 		media: mode.media ? `(${mode.media})` : undefined,
 		source: applyUrlModifier(baseImageSrc, mode.modifier),
-		type: `image/${baseImageSrc.replace(/^.+\./, '')}`
+		type: `image/${baseImageSrc.replace(expressions.allBeforeExtension, '')}`
 	}));
 };
 
