@@ -1,14 +1,32 @@
-//	This test should be run with Deno
-//	I'm to lazy to adapt this nonsence for nodeJS
-//
-//	This is not an automated test, it's used to verify image source generation,
-//	but that is not needed to be tested on each build
+
+import { diffCharacters } from "https://deno.land/x/diff@v0.3.5/mod.ts";
 
 import { mapSources } from '../../components/index.ts';
 
+const objectDiff = (textA: string, textB: string) => {
+	let diffResult = '';
+	for (const character of diffCharacters(textA, textB)) {
+		if (character.wasRemoved) {
+			diffResult += `\x1b[31m${character.character}\x1b[0m`;
+		} else if (character.wasAdded) {
+			diffResult += `\x1b[32m${character.character}\x1b[0m`;
+		} else {
+			diffResult += `\x1b[37m${character.character}\x1b[0m`;
+		}
+	}
+	return diffResult;
+};
+
 const assertEqual = (a: any, b: any) => {
-	if (JSON.stringify(a) === JSON.stringify(b)) return;
-	console.error('\r\nAssert arguments did not match:', '\r\nArgument A:', a, '\r\nArgument B:', b, '\r\n');
+
+	const textA = JSON.stringify(a, null, '\t');
+	const textB = JSON.stringify(b, null, '\t');
+
+	if (textA === textB) return;
+
+	console.error('\r\nAssert arguments did not match\r\n');
+	console.log('Object diff:', objectDiff(textA, textB), '\n\n');
+
 	throw new Error('Assertion failed');
 };
 
@@ -246,5 +264,6 @@ allTests.forEach((testCallback, index) => {
 	} catch (error) {
 		console.error(`Test ${index + 1} FAILED:`)
 		console.error(error);
+		Deno.exit(1);
 	}
 });

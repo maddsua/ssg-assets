@@ -1,0 +1,6 @@
+{
+  "version": "2",
+  "remote": {
+    "https://deno.land/x/diff@v0.3.5/mod.ts": "87329de713a1158720436eb2034a0a84f5146639241b6b0f15409d7077715193"
+  }
+}
