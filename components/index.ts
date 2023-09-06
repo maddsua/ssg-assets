@@ -86,7 +86,7 @@ export const mapSources = (baseImageSrc: string, formats?: ImageFormatsType, ada
 		type: `image/${baseImageSrc.replace(expressions.allBeforeExtension, '')}`
 	}));
 
-	return adaptiveAltFormats.concat(adaptiveBaseFormat);
+	return adaptiveAltFormats.concat(adaptiveBaseFormat).filter(item => item.source !== baseImageSrc);
 };
 
 export const getImageSize = (sizes?: ImageSizesProp) => sizes ? (typeof sizes === 'number' ? ({

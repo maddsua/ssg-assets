@@ -134,11 +134,6 @@ const allTests: (() => void)[] = [
 				type: 'image/webp'
 			},
 			{
-				media: '(orientation: landscape)',
-				source: '/cats/image.png',
-				type: 'image/png'
-			},
-			{
 				media: '(orientation: portrait)',
 				source: '/cats/image.mobile.png',
 				type: 'image/png'
@@ -166,7 +161,6 @@ const allTests: (() => void)[] = [
 					{
 						media: 'orientation: portrait',
 						modifier: '_mobile',
-
 					}
 				]
 			},
@@ -184,6 +178,58 @@ const allTests: (() => void)[] = [
 			{
 				media: "(orientation: portrait)",
 				source: "/bannners/base_name_mobile.jpg",
+				type: "image/jpg"
+			}
+		];
+
+		assertEqual(outputSources, expectSources);
+
+	}),
+
+	/**
+	 * Test 5
+	 * Generate source context and transform image src for:
+	 * 	Multiple adaptive modes
+	 * 	Multiple image formats
+	 * With:
+	 * 	Replacing part of image file name
+	 */
+	(() => {
+
+		const input = {
+			url: '/bannner/id/en_desktop.jpg',
+			adaptive: {
+				baseModifier: '_desktop',
+				variants: [
+					{
+						media: 'orientation: landscape',
+						modifier: '_desktop',
+					},
+					{
+						media: 'orientation: portrait',
+						modifier: '_mobile',
+					}
+				]
+			},
+			formats: ['webp']
+		}
+
+		const outputSources = mapSources(input.url, input.formats, input.adaptive);
+
+		const expectSources =  [
+			{
+				media: "(orientation: landscape)",
+				source: "/bannner/id/en_desktop.webp",
+				type: "image/webp"
+			},
+			{
+				media: "(orientation: portrait)",
+				source: "/bannner/id/en_mobile.webp",
+				type: "image/webp"
+			},
+			{
+				media: "(orientation: portrait)",
+				source: "/bannner/id/en_mobile.jpg",
 				type: "image/jpg"
 			}
 		];
