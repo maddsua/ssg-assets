@@ -52,7 +52,7 @@ export const mapSources = (src: string, formats?: ImageFormatsType, adaptiveMode
 
 	if (!adaptiveModes?.length) return sources;
 
-	const mapAdaptiveModes = adaptiveModes.length > 1 ? adaptiveModes : [{ media: null, modifier: null }];
+	const mapAdaptiveModes = adaptiveModes.length > 1 ? adaptiveModes : [{ media: null, modifier: adaptiveModes[0].modifier }];
 
 	return mapAdaptiveModes.map(mode => sources.map(item => ({
 		media: mode.media ? `(${mode.media})` : undefined,
