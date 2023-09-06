@@ -185,6 +185,11 @@ const allTests: (() => void)[] = [
 ];
 
 allTests.forEach((testCallback, index) => {
-	testCallback();
-	console.log(`Test ${index + 1} ok`);
+	try {
+		testCallback();
+		console.log(`Test ${index + 1} OK`);
+	} catch (error) {
+		console.error(`Test ${index + 1} FAILED:`)
+		console.error(error);
+	}
 });
