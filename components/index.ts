@@ -30,33 +30,50 @@ export interface PictireProps extends ImageProps {
 	imgStyle?: ElementStyle;
 };
 
-export const supportedFormats: ImageFormats[] = [ 'avif', 'webp', 'png', 'jpg', 'gif', 'jpeg' ];
+export const supportedFormats: ImageFormats[] = [ 'avif', 'webp', 'png', 'jpg', 'jpeg', 'gif' ];
 
-const applyUrlModifier = (src: string, modifier: ModeModifier) => modifier ? src.replace(/\..*$/, '') + modifier + src.match(/\..*$/)?.[0] : src;
+const expressions = {
+	dotExtension: /\.[\w\d]+$/,
+	allBeforeExtension: /^.+\./
+};
+
+const applyUrlModifier = (src: string, modifier: ModeModifier) => modifier ? src.replace(expressions.dotExtension, '') + modifier + src.match(expressions.dotExtension)?.[0] : src;
 
 export const adaptBaseImageUrl = (src: string, adaptiveModes?: AdaptiveMode[]) => {
-	if (!adaptiveModes || adaptiveModes?.length < 2) return src;
+	if (!adaptiveModes?.length) return src;
 	return applyUrlModifier(src, adaptiveModes[0].modifier);
 };
 
-export const mapSources = (src: string, formats?: ImageFormatsType, adaptiveModes?: AdaptiveMode[]) => {
+export interface SourceMapEntry {
+	source: string;
+	type: string;
+	media: string | undefined;
+};
 
-	const requestedFormats = formats ? (typeof formats === 'string') ? formats.split(',').map(item => item.trim()) : formats : [];
-	const imageAltFormats = requestedFormats.filter(format => supportedFormats.some(item => item.toLowerCase() === format));
+export const mapSources = (baseImageSrc: string, formats?: ImageFormatsType, adaptiveModes?: AdaptiveMode[]): SourceMapEntry[] => {
+
+	const requestedFormats = formats ? (typeof formats === 'string') ? formats.split(',').map(item => item.trim().toLowerCase()) : formats : [];
+	const imageAltFormats = supportedFormats.map(item_s => requestedFormats.find(item_r => item_s === item_r)).filter(item => !!item);
 	
-	const sources = imageAltFormats.map(format => ({
-		source: `${src.replace(/\.[\w\d]+/, '')}.${format}`,
+	const altFormatSources = imageAltFormats.map(format => ({
+		source: `${baseImageSrc.replace(expressions.dotExtension, '')}.${format}`,
 		type: `image/${format}`,
-		media: undefined as string | undefined
+		media: undefined
 	}));
 
-	if (adaptiveModes?.length === 1) adaptiveModes.push({ media: null, modifier: null });
-	
-	return adaptiveModes?.length ? adaptiveModes?.map(mode => sources.map(item => ({
+	if (!adaptiveModes?.length) return altFormatSources;
+
+	const mapAdaptiveModes = adaptiveModes.length > 1 ? adaptiveModes : [{ media: null, modifier: adaptiveModes[0].modifier }];
+
+	return altFormatSources.length ? mapAdaptiveModes.map(mode => altFormatSources.map(source => ({
 		media: mode.media ? `(${mode.media})` : undefined,
-		source: applyUrlModifier(item.source, mode.modifier),
-		type: item.type
-	}))).flat(1) : sources || [];
+		source: applyUrlModifier(source.source, mode.modifier),
+		type: source.type
+	}))).flat(1) : mapAdaptiveModes.map(mode => ({
+		media: mode.media ? `(${mode.media})` : undefined,
+		source: applyUrlModifier(baseImageSrc, mode.modifier),
+		type: `image/${baseImageSrc.replace(expressions.allBeforeExtension, '')}`
+	}));
 };
 
 export const getImageSize = (sizes?: ImageSizesProp) => sizes ? (typeof sizes === 'number' ? ({
