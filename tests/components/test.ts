@@ -4,7 +4,7 @@
 //	This is not an automated test, it's used to verify image source generation,
 //	but that is not needed to be tested on each build
 
-import { mapSources, adaptBaseImageUrl } from '../../components/index.ts';
+import { mapSources } from '../../components/index.ts';
 
 const assertEqual = (a: any, b: any) => {
 	if (JSON.stringify(a) === JSON.stringify(b)) return;
@@ -31,11 +31,9 @@ const assertEqual = (a: any, b: any) => {
 	}
 
 	const outputSources = mapSources(input.url, undefined, input.adaptive);
-	const outputImageSrc = adaptBaseImageUrl(input.url, input.adaptive);
 
 	//	fix this later, this is not right
-	assertEqual(outputSources, [{ media: undefined, source: "/cats/image.mobile.png", type: "image/png" }]);
-	assertEqual(outputImageSrc, '/cats/image.mobile.png');
+	assertEqual(outputSources, [{ media: undefined, source: '/cats/image.mobile.png', type: 'image/png' }]);
 
 })();
 
@@ -60,18 +58,16 @@ const assertEqual = (a: any, b: any) => {
 	}
 
 	const outputSources = mapSources(input.url, input.formats, input.adaptive);
-	const outputImageSrc = adaptBaseImageUrl(input.url, input.adaptive);
 
 	const expectSources = [
 		{
 			media: undefined,
-			source: "/cats/image.mobile.webp",
-			type: "image/webp"
+			source: '/cats/image.mobile.webp',
+			type: 'image/webp'
 		}
 	];
 
 	assertEqual(outputSources, expectSources);
-	assertEqual(outputImageSrc, '/cats/image.mobile.png');
 
 })();
 
@@ -99,32 +95,30 @@ const assertEqual = (a: any, b: any) => {
 	}
 
 	const outputSources = mapSources(input.url, input.formats, input.adaptive);
-	const outputImageSrc = adaptBaseImageUrl(input.url, input.adaptive);
 
 	const expectSources = [
 		{
-			media: "(orientation: landscape)",
-			source: "/cats/image.avif",
-			type: "image/avif"
+			media: '(orientation: landscape)',
+			source: '/cats/image.avif',
+			type: 'image/avif'
 		},
 		{
-			media: "(orientation: landscape)",
-			source: "/cats/image.webp",
-			type: "image/webp"
+			media: '(orientation: landscape)',
+			source: '/cats/image.webp',
+			type: 'image/webp'
 		},
 		{
-			media: "(orientation: portrait)",
-			source: "/cats/image.mobile.avif",
-			type: "image/avif"
+			media: '(orientation: portrait)',
+			source: '/cats/image.mobile.avif',
+			type: 'image/avif'
 		},
 		{
-			media: "(orientation: portrait)",
-			source: "/cats/image.mobile.webp",
-			type: "image/webp"
+			media: '(orientation: portrait)',
+			source: '/cats/image.mobile.webp',
+			type: 'image/webp'
 		}
 	];
 
 	assertEqual(outputSources, expectSources);
-	assertEqual(outputImageSrc, '/cats/image.png');
 
 })();

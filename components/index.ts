@@ -39,11 +39,6 @@ const expressions = {
 
 const applyUrlModifier = (src: string, modifier: ModeModifier) => modifier ? src.replace(expressions.dotExtension, '') + modifier + src.match(expressions.dotExtension)?.[0] : src;
 
-export const adaptBaseImageUrl = (src: string, adaptiveModes?: AdaptiveMode[]) => {
-	if (!adaptiveModes?.length) return src;
-	return applyUrlModifier(src, adaptiveModes[0].modifier);
-};
-
 export interface SourceMapEntry {
 	source: string;
 	type: string;

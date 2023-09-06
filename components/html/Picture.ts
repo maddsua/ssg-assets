@@ -1,5 +1,5 @@
 import Img from './Img';
-import { PictireProps, mapSources, adaptBaseImageUrl, classToString, styleToString, composeAttributesHTML } from '../index';
+import { PictireProps, mapSources, classToString, styleToString, composeAttributesHTML } from '../index';
 
 /**
  * Advanced \<picture\> component
@@ -14,7 +14,7 @@ export default (props: PictireProps) => {
 	};
 
 	const imgComponent = Img({
-		src: adaptBaseImageUrl(props.src, props.adaptiveModes),
+		src: props.src,
 		alt: props.alt,
 		draggable: props.draggable,
 		lazy: props.lazy,

@@ -1,6 +1,6 @@
 ---
 import Img from './Img.astro';
-import { PictireProps, mapSources, adaptBaseImageUrl, classToString, styleToString } from '../index';
+import { PictireProps, mapSources, classToString, styleToString } from '../index';
 
 export interface Props extends PictireProps {};
 const props = Astro.props;
@@ -13,6 +13,6 @@ const sources = mapSources(props.src, props.formats, props.adaptiveModes);
 		<source srcset={item.source} type={item.type} media={item.media} />
 	)) }
 
-	<Img src={adaptBaseImageUrl(props.src, props.adaptiveModes)} alt={props.alt} draggable={props.draggable} lazy={props.lazy} sizes={props.sizes} class={props.imgClass} style={props.imgStyle} />
+	<Img src={props.src} alt={props.alt} draggable={props.draggable} lazy={props.lazy} sizes={props.sizes} class={props.imgClass} style={props.imgStyle} />
 
 </picture>

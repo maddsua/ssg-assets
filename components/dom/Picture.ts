@@ -1,5 +1,5 @@
 import Img from './Img';
-import { PictireProps, mapSources, adaptBaseImageUrl, classToString, styleToString, getDOMRoot } from '../index';
+import { PictireProps, mapSources, classToString, styleToString, getDOMRoot } from '../index';
 
 export default (props: PictireProps, useDOMRoot?: Document) => {
 
@@ -27,7 +27,7 @@ export default (props: PictireProps, useDOMRoot?: Document) => {
 	});
 	
 	const imgComponent = Img({
-		src: adaptBaseImageUrl(props.src, props.adaptiveModes),
+		src: props.src,
 		alt: props.alt,
 		draggable: props.draggable,
 		lazy: props.lazy,
