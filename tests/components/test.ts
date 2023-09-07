@@ -35,7 +35,35 @@ const allTests: (() => void)[] = [
 
 	/**
 	 * Test 1
-	 * Generate source context and transform image src for:
+	 * Generate source context for:
+	 * 	Multiple alt formats
+	 */
+	(() => {
+
+		const input = {
+			url: '/cats/image.png',
+			formats: ['webp','avif']
+		};
+	
+		const outputSources = mapSources(input.url, input.formats, undefined);
+	
+		const expectSources = [
+			{
+				source: "/cats/image.avif",
+				type: "image/avif"
+			},
+			{
+				source: "/cats/image.webp",
+				type: "image/webp"
+			}
+		];
+	
+		assertEqual(expectSources, outputSources);
+	}),
+
+	/**
+	 * Test 2
+	 * Generate source context for:
 	 * 	Single adaptive mode
 	 */
 	(() => {
@@ -66,8 +94,8 @@ const allTests: (() => void)[] = [
 	}),
 
 	/**
-	 * Test 2
-	 * Generate source context and transform image src for:
+	 * Test 3
+	 * Generate source context for:
 	 * 	Single adaptive mode
 	 * 	Single image format
 	 */
@@ -109,8 +137,8 @@ const allTests: (() => void)[] = [
 	}),
 
 	/**
-	 * Test 3
-	 * Generate source context and transform image src for:
+	 * Test 4
+	 * Generate source context for:
 	 * 	Multiple adaptive mode
 	 * 	Multiple image format
 	 */
@@ -167,8 +195,8 @@ const allTests: (() => void)[] = [
 	}),
 
 	/**
-	 * Test 4
-	 * Generate source context and transform image src for:
+	 * Test 5
+	 * Generate source context for:
 	 * 	Single adaptive mode
 	 * 	Single image format
 	 * With:
@@ -214,8 +242,8 @@ const allTests: (() => void)[] = [
 	}),
 
 	/**
-	 * Test 5
-	 * Generate source context and transform image src for:
+	 * Test 6
+	 * Generate source context for:
 	 * 	Multiple adaptive modes
 	 * 	Multiple image formats
 	 * With:
@@ -266,8 +294,8 @@ const allTests: (() => void)[] = [
 	}),
 
 	/**
-	 * Test 6
-	 * Generate source context and transform image src for:
+	 * Test 7
+	 * Generate source context for:
 	 * 	Single adaptive mode
 	 * 	Multiple image formats
 	 * With:
