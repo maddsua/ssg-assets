@@ -68,25 +68,28 @@ export const mapSources = (baseImageSrc: string, formats?: ImageFormatsType, ada
 	
 	const altFormatSources = imageAltFormats.map(format => ({
 		source: `${baseImageSrc.replace(expressions.dotExtension, '')}.${format}`,
-		type: `image/${format}`,
-		media: undefined
+		type: `image/${format}`
 	}));
 
 	if (!adaptiveMode?.variants?.length) return altFormatSources;
 
-	const adaptiveAltFormats = altFormatSources.map(source => adaptiveMode.variants.map(variant => ({
+	const adaptiveVariants = adaptiveMode.variants.length > 1 ? adaptiveMode.variants : adaptiveMode.variants.concat({ media: undefined, modifier: undefined })
+	
+	const adaptiveAltFormats = altFormatSources.map(source => adaptiveVariants.map(variant => ({
 		media: variant.media ? `(${variant.media})` : undefined,
 		source: applyUrlModifier(source.source, variant.modifier, adaptiveMode.baseModifier),
 		type: source.type
 	}))).flat(1);
 
-	const adaptiveBaseFormat = adaptiveMode.variants.map(mode => ({
+	const adaptiveBaseFormat = adaptiveVariants.map(mode => ({
 		media: mode.media ? `(${mode.media})` : undefined,
 		source: applyUrlModifier(baseImageSrc, mode.modifier, adaptiveMode.baseModifier),
 		type: `image/${baseImageSrc.replace(expressions.allBeforeExtension, '')}`
 	}));
 
-	return adaptiveAltFormats.concat(adaptiveBaseFormat).filter(item => item.source !== baseImageSrc);
+	const mediaLessAdaptiveFormats = adaptiveMode.variants.length === 1 ? altFormatSources : [];
+
+	return [adaptiveAltFormats, adaptiveBaseFormat].flat(1).filter(item => item.source !== baseImageSrc);
 };
 
 export const getImageSize = (sizes?: ImageSizesProp) => sizes ? (typeof sizes === 'number' ? ({
