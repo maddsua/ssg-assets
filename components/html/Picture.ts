@@ -1,12 +1,12 @@
 import Img from './Img';
-import { PictireProps, mapSources, adaptBaseImageUrl, classToString, styleToString, composeAttributesHTML } from '../index';
+import { PictireProps, mapSources, classToString, styleToString, composeAttributesHTML } from '../index';
 
 /**
  * Advanced \<picture\> component
  */
 export default (props: PictireProps) => {
 
-	const sources = mapSources(props.src, props.formats, props.adaptiveModes).map(source => `<source srcset="${source.source}" type="image/${source.type}" media="${source.media}" />`) || [];
+	const sources = mapSources(props.src, props.formats, props.adaptiveMode).map(source => `<source srcset="${source.source}" type="image/${source.type}" media="${source.media}" />`) || [];
 
 	const attrList = {
 		class: classToString(props.class),
@@ -14,7 +14,7 @@ export default (props: PictireProps) => {
 	};
 
 	const imgComponent = Img({
-		src: adaptBaseImageUrl(props.src, props.adaptiveModes),
+		src: props.src,
 		alt: props.alt,
 		draggable: props.draggable,
 		lazy: props.lazy,
