@@ -73,21 +73,28 @@ export const mapSources = (baseImageSrc: string, formats?: ImageFormatsType, ada
 
 	if (!adaptiveMode?.variants?.length) return altFormatSources;
 
-	const adaptiveVariants = adaptiveMode.variants.length > 1 ? adaptiveMode.variants : adaptiveMode.variants.concat({ media: undefined, modifier: undefined })
+	//	Ensures that in the case then only a single adaptive variant is provided we won't lose the default image alt formats
+	const adaptiveVariants = adaptiveMode.variants.length > 1 ? adaptiveMode.variants : adaptiveMode.variants.concat({ media: undefined, modifier: undefined });
 	
+	//	Map alt formats (like webp, avif) to their adaptive modes (including leaving an empty media query option, it's important!)
 	const adaptiveAltFormats = altFormatSources.map(source => adaptiveVariants.map(variant => ({
 		media: variant.media ? `(${variant.media})` : undefined,
 		source: applyUrlModifier(source.source, variant.modifier, adaptiveMode.baseModifier),
 		type: source.type
 	}))).flat(1);
 
+	//	Map base image to it's adaptive modes. it will leave an option with identical URL to the base image,
+	//	a filter is used to remove this afterwards
 	const adaptiveBaseFormat = adaptiveVariants.map(mode => ({
 		media: mode.media ? `(${mode.media})` : undefined,
 		source: applyUrlModifier(baseImageSrc, mode.modifier, adaptiveMode.baseModifier),
 		type: `image/${baseImageSrc.replace(expressions.allBeforeExtension, '')}`
-	}));
+	})).filter(item => item.source !== baseImageSrc);
 
-	return [adaptiveAltFormats, adaptiveBaseFormat].flat(1).filter(item => item.source !== baseImageSrc).sort((prev, next) => {
+	//	Return a flattened array of all options, with media-less sourced at the end
+	//	This is important to keep them at the end, as a browser will pick the first option that matches
+	//	it's supported formats list. And we want all media-specific sources to be accessible
+	return [adaptiveAltFormats, adaptiveBaseFormat].flat(1).sort((prev, next) => {
 		if (!prev.media && next.media) return 1;
 		else if (prev.media && !next.media) return -1;
 		else return 0;
