@@ -58,7 +58,7 @@ const applyUrlModifier = (imageUrl: string, modifier: ModeModifier, baseModifier
 export interface SourceMapEntry {
 	source: string;
 	type: string;
-	media: string | undefined;
+	media?: string;
 };
 
 export const mapSources = (baseImageSrc: string, formats?: ImageFormatsType, adaptiveMode?: AdaptiveMode): SourceMapEntry[] => {
@@ -74,9 +74,9 @@ export const mapSources = (baseImageSrc: string, formats?: ImageFormatsType, ada
 
 	if (!adaptiveMode?.variants?.length) return altFormatSources;
 
-	const adaptiveAltFormats = adaptiveMode.variants.map(mode => altFormatSources.map(source => ({
-		media: mode.media ? `(${mode.media})` : undefined,
-		source: applyUrlModifier(source.source, mode.modifier, adaptiveMode.baseModifier),
+	const adaptiveAltFormats = altFormatSources.map(source => adaptiveMode.variants.map(variant => ({
+		media: variant.media ? `(${variant.media})` : undefined,
+		source: applyUrlModifier(source.source, variant.modifier, adaptiveMode.baseModifier),
 		type: source.type
 	}))).flat(1);
 

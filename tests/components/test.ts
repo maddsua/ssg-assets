@@ -25,6 +25,7 @@ const assertEqual = (a: any, b: any) => {
 	if (textA === textB) return;
 
 	console.error('\r\nAssert arguments did not match\r\n');
+	console.error('\r\nExpected:', a, '\r\nHave:', b, '\r\n');
 	console.log('Object diff:', objectDiff(textA, textB), '\n\n');
 
 	throw new Error('Assertion failed');
@@ -137,14 +138,14 @@ const allTests: (() => void)[] = [
 				type: 'image/avif'
 			},
 			{
-				media: '(orientation: landscape)',
-				source: '/cats/image.webp',
-				type: 'image/webp'
-			},
-			{
 				media: '(orientation: portrait)',
 				source: '/cats/image.mobile.avif',
 				type: 'image/avif'
+			},
+			{
+				media: '(orientation: landscape)',
+				source: '/cats/image.webp',
+				type: 'image/webp'
 			},
 			{
 				media: '(orientation: portrait)',
@@ -237,6 +238,53 @@ const allTests: (() => void)[] = [
 		const expectSources =  [
 			{
 				media: "(orientation: landscape)",
+				source: "/bannner/id/en_desktop.webp",
+				type: "image/webp"
+			},
+			{
+				media: "(orientation: portrait)",
+				source: "/bannner/id/en_mobile.webp",
+				type: "image/webp"
+			},
+			{
+				media: "(orientation: portrait)",
+				source: "/bannner/id/en_mobile.jpg",
+				type: "image/jpg"
+			}
+		];
+
+		assertEqual(expectSources, outputSources);
+
+	}),
+
+	/**
+	 * Test 6
+	 * Generate source context and transform image src for:
+	 * 	Single adaptive mode
+	 * 	Multiple image formats
+	 * With:
+	 * 	Replacing part of image file name
+	 */
+	(() => {
+
+		const input = {
+			url: '/bannner/id/en_desktop.jpg',
+			adaptive: {
+				baseModifier: '_desktop',
+				variants: [
+					{
+						media: 'orientation: portrait',
+						modifier: '_mobile',
+					}
+				]
+			},
+			formats: ['webp']
+		}
+
+		const outputSources = mapSources(input.url, input.formats, input.adaptive);
+
+		const expectSources =  [
+			{
 				source: "/bannner/id/en_desktop.webp",
 				type: "image/webp"
 			},
