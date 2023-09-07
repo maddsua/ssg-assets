@@ -1,5 +1,5 @@
 
-import { diffCharacters } from "https://deno.land/x/diff@v0.3.5/mod.ts";
+import { diffCharacters } from 'https://deno.land/x/diff@v0.3.5/mod.ts';
 
 import { mapSources } from '../../components/index.ts';
 
@@ -92,6 +92,10 @@ const allTests: (() => void)[] = [
 			{
 				media: '(orientation: portrait)',
 				source: '/cats/image.mobile.webp',
+				type: 'image/webp'
+			},
+			{
+				source: '/cats/image.webp',
 				type: 'image/webp'
 			},
 			{
@@ -195,9 +199,13 @@ const allTests: (() => void)[] = [
 				type: 'image/webp'
 			},
 			{
-				media: "(orientation: portrait)",
-				source: "/bannners/base_name_mobile.jpg",
-				type: "image/jpg"
+				source: '/bannners/base_name_default_modifier.webp',
+				type: 'image/webp'
+			},
+			{
+				media: '(orientation: portrait)',
+				source: '/bannners/base_name_mobile.jpg',
+				type: 'image/jpg'
 			}
 		];
 
@@ -237,19 +245,19 @@ const allTests: (() => void)[] = [
 
 		const expectSources =  [
 			{
-				media: "(orientation: landscape)",
-				source: "/bannner/id/en_desktop.webp",
-				type: "image/webp"
+				media: '(orientation: landscape)',
+				source: '/bannner/id/en_desktop.webp',
+				type: 'image/webp'
 			},
 			{
-				media: "(orientation: portrait)",
-				source: "/bannner/id/en_mobile.webp",
-				type: "image/webp"
+				media: '(orientation: portrait)',
+				source: '/bannner/id/en_mobile.webp',
+				type: 'image/webp'
 			},
 			{
-				media: "(orientation: portrait)",
-				source: "/bannner/id/en_mobile.jpg",
-				type: "image/jpg"
+				media: '(orientation: portrait)',
+				source: '/bannner/id/en_mobile.jpg',
+				type: 'image/jpg'
 			}
 		];
 
@@ -285,18 +293,19 @@ const allTests: (() => void)[] = [
 
 		const expectSources =  [
 			{
-				source: "/bannner/id/en_desktop.webp",
-				type: "image/webp"
+				media: '(orientation: portrait)',
+				source: '/bannner/id/en_mobile.webp',
+				type: 'image/webp'
 			},
 			{
-				media: "(orientation: portrait)",
-				source: "/bannner/id/en_mobile.webp",
-				type: "image/webp"
+				media: undefined,
+				source: '/bannner/id/en_desktop.webp',
+				type: 'image/webp'
 			},
 			{
-				media: "(orientation: portrait)",
-				source: "/bannner/id/en_mobile.jpg",
-				type: "image/jpg"
+				media: '(orientation: portrait)',
+				source: '/bannner/id/en_mobile.jpg',
+				type: 'image/jpg'
 			}
 		];
 
