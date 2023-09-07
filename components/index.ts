@@ -88,8 +88,8 @@ export const mapSources = (baseImageSrc: string, formats?: ImageFormatsType, ada
 	}));
 
 	return [adaptiveAltFormats, adaptiveBaseFormat].flat(1).filter(item => item.source !== baseImageSrc).sort((prev, next) => {
-		if (prev.media === undefined && next.media !== undefined) return 1;
-		else if (prev.media !== undefined && next.media === undefined) return -1;
+		if (!prev.media && next.media) return 1;
+		else if (prev.media && !next.media) return -1;
 		else return 0;
 	});
 };
