@@ -95,13 +95,13 @@ const allTests: (() => void)[] = [
 				type: 'image/webp'
 			},
 			{
-				source: '/cats/image.webp',
-				type: 'image/webp'
-			},
-			{
 				media: '(orientation: portrait)',
 				source: '/cats/image.mobile.png',
 				type: 'image/png'
+			},
+			{
+				source: '/cats/image.webp',
+				type: 'image/webp'
 			}
 		];
 
@@ -199,13 +199,13 @@ const allTests: (() => void)[] = [
 				type: 'image/webp'
 			},
 			{
-				source: '/bannners/base_name_default_modifier.webp',
-				type: 'image/webp'
-			},
-			{
 				media: '(orientation: portrait)',
 				source: '/bannners/base_name_mobile.jpg',
 				type: 'image/jpg'
+			},
+			{
+				source: '/bannners/base_name_default_modifier.webp',
+				type: 'image/webp'
 			}
 		];
 
@@ -286,7 +286,7 @@ const allTests: (() => void)[] = [
 					}
 				]
 			},
-			formats: ['webp']
+			formats: ['webp', 'avif']
 		}
 
 		const outputSources = mapSources(input.url, input.formats, input.adaptive);
@@ -294,20 +294,30 @@ const allTests: (() => void)[] = [
 		const expectSources =  [
 			{
 				media: '(orientation: portrait)',
-				source: '/bannner/id/en_mobile.webp',
-				type: 'image/webp'
+				source: '/bannner/id/en_mobile.avif',
+				type: 'image/avif'
 			},
 			{
-				media: undefined,
-				source: '/bannner/id/en_desktop.webp',
+				media: '(orientation: portrait)',
+				source: '/bannner/id/en_mobile.webp',
 				type: 'image/webp'
 			},
 			{
 				media: '(orientation: portrait)',
 				source: '/bannner/id/en_mobile.jpg',
 				type: 'image/jpg'
+			},
+			{
+				media: undefined,
+				source: '/bannner/id/en_desktop.avif',
+				type: 'image/avif'
+			},
+			{
+				media: undefined,
+				source: '/bannner/id/en_desktop.webp',
+				type: 'image/webp'
 			}
-		];
+		  ];
 
 		assertEqual(expectSources, outputSources);
 

@@ -87,9 +87,11 @@ export const mapSources = (baseImageSrc: string, formats?: ImageFormatsType, ada
 		type: `image/${baseImageSrc.replace(expressions.allBeforeExtension, '')}`
 	}));
 
-	const mediaLessAdaptiveFormats = adaptiveMode.variants.length === 1 ? altFormatSources : [];
-
-	return [adaptiveAltFormats, adaptiveBaseFormat].flat(1).filter(item => item.source !== baseImageSrc);
+	return [adaptiveAltFormats, adaptiveBaseFormat].flat(1).filter(item => item.source !== baseImageSrc).sort((prev, next) => {
+		if (prev.media === undefined && next.media !== undefined) return 1;
+		else if (prev.media !== undefined && next.media === undefined) return -1;
+		else return 0;
+	});
 };
 
 export const getImageSize = (sizes?: ImageSizesProp) => sizes ? (typeof sizes === 'number' ? ({
