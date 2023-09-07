@@ -78,16 +78,16 @@ export const mapSources = (baseImageSrc: string, formats?: ImageFormatsType, ada
 	
 	//	Map alt formats (like webp, avif) to their adaptive modes (including leaving an empty media query option, it's important!)
 	const adaptiveAltFormats = altFormatSources.map(source => adaptiveVariants.map(variant => ({
-		media: variant.media ? `(${variant.media})` : undefined,
+		media: variant.media ? variant.media : undefined,
 		source: applyUrlModifier(source.source, variant.modifier, adaptiveMode.baseModifier),
 		type: source.type
 	}))).flat(1);
 
 	//	Map base image to it's adaptive modes. it will leave an option with identical URL to the base image,
 	//	a filter is used to remove this afterwards
-	const adaptiveBaseFormat = adaptiveVariants.map(mode => ({
-		media: mode.media ? `(${mode.media})` : undefined,
-		source: applyUrlModifier(baseImageSrc, mode.modifier, adaptiveMode.baseModifier),
+	const adaptiveBaseFormat = adaptiveVariants.map(variant => ({
+		media: variant.media ? variant.media : undefined,
+		source: applyUrlModifier(baseImageSrc, variant.modifier, adaptiveMode.baseModifier),
 		type: `image/${baseImageSrc.replace(expressions.allBeforeExtension, '')}`
 	})).filter(item => item.source !== baseImageSrc);
 

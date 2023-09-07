@@ -73,7 +73,7 @@ const allTests: (() => void)[] = [
 			adaptive: {
 				variants: [
 					{
-						'media': 'orientation: portrait',
+						'media': '(orientation: portrait)',
 						'modifier': '.mobile'
 					}
 				]
@@ -106,7 +106,7 @@ const allTests: (() => void)[] = [
 			adaptive: {
 				variants: [
 					{
-						'media': 'orientation: portrait',
+						'media': '(orientation: portrait)',
 						'modifier': '.mobile'
 					}
 				]
@@ -149,11 +149,11 @@ const allTests: (() => void)[] = [
 			adaptive: {
 				variants: [
 					{
-						'media': 'orientation: landscape',
+						'media': '(orientation: landscape)',
 						'modifier': null
 					},
 					{
-						'media': 'orientation: portrait',
+						'media': '(orientation: portrait)',
 						'modifier': '.mobile'
 					}
 				]
@@ -210,7 +210,7 @@ const allTests: (() => void)[] = [
 				baseModifier: '_default_modifier',
 				variants: [
 					{
-						media: 'orientation: portrait',
+						media: '(orientation: portrait)',
 						modifier: '_mobile',
 					}
 				]
@@ -257,11 +257,11 @@ const allTests: (() => void)[] = [
 				baseModifier: '_desktop',
 				variants: [
 					{
-						media: 'orientation: landscape',
+						media: '(orientation: landscape)',
 						modifier: '_desktop',
 					},
 					{
-						media: 'orientation: portrait',
+						media: '(orientation: portrait)',
 						modifier: '_mobile',
 					}
 				]
@@ -309,7 +309,7 @@ const allTests: (() => void)[] = [
 				baseModifier: '_desktop',
 				variants: [
 					{
-						media: 'orientation: portrait',
+						media: '(orientation: portrait)',
 						modifier: '_mobile',
 					}
 				]
@@ -367,15 +367,15 @@ const allTests: (() => void)[] = [
 				baseModifier: '_desktop',
 				variants: [
 					{
-						media: 'orientation: landscape',
+						media: '(orientation: landscape)',
 						modifier: '_desktop',
 					},
 					{
-						media: 'orientation: portrait',
+						media: '(orientation: portrait)',
 						modifier: '_mobile',
 					},
 					{
-						media: 'max-width: 720px',
+						media: '(max-width: 720px)',
 						modifier: '_tablet',
 					}
 				]
