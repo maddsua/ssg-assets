@@ -15,5 +15,5 @@ export default (props: ImageProps) => {
 		style: styleToString(props.style)
 	};
 
-	return `<img ${composeAttributesHTML(attrList)} data-component-id="ssga:img:html" />`;
+	return `<img ${composeAttributesHTML(attrList)} data-ssga-id="img:html" />`;
 };

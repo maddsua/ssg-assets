@@ -24,7 +24,7 @@ export default (props: PictireProps) => {
 	});
 
 	return (`
-		<picture ${composeAttributesHTML(attrList)} data-component-id="ssga:picture:html" >
+		<picture ${composeAttributesHTML(attrList)} data-ssga-id="picture:html" >
 			${sources.join('\n')}
 			${imgComponent}
 		</picture>
