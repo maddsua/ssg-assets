@@ -1,8 +1,8 @@
-# ssg-assets
+# Image optimization tool for static websites, apps and so on
 
-Converts media assets for static websites, apps and so on.
+## Convert images to modern formats, with blackjack and caching included. Yeah, right, that's some ISR-like performance gains for your avif's and web's.
 
-Makes a bunch of avif and webp's from jpeg's, png's and such.
+Makes a bunch of avif's and webp's from jpeg's, png's and such.
 
 <img src="https://raw.githubusercontent.com/maddsua/ssg-assets/main/docs/illustration.webp" alt="Image conversion illustration">
 
