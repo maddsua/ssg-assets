@@ -2,6 +2,7 @@
 	"verbose": false,
 	"inputDir": "convert/assets",
 	"outputDir": "convert/dist",
+	"cacheDir": "@/.cache",
 	"exclude": [
 		"**/vector/*.svg"
 	]

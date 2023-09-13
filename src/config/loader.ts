@@ -108,7 +108,7 @@ export const loadAppConfig = () => {
 		const allKeys = Object.keys(configObjectFile);
 
 		if (allKeys.length !== validatedEntries.length) {
-			const errorsList = allKeys.filter(item => !validatedEntries.some(item1 => item === item1)).map(item => `Option "${item}" is not supported`);
+			const errorsList = allKeys.filter(key => !validatedEntries.some(validKey => key === validKey)).map(item => `Option "${item}" is not supported`);
 			throw new Error(`Config file contains unsupported options:\n\t${errorsList.join('\n\t')}`)
 		}
 
@@ -120,30 +120,32 @@ export const loadAppConfig = () => {
 	} else if (configObjectCli?.configFile)
 		throw new Error(`Config file was not found at: "${configObjectCli.configFile}"`);
 
-	const finalConfig = mergeConfigSources(defaultConfig, configObjectFile, configObjectCli) as ConfigSchema;
+	const mergedConfig = mergeConfigSources(defaultConfig, configObjectFile, configObjectCli) as ConfigSchema;
 
 	//	detect unknown formats
-	const unknownFormas = finalConfig.formats.filter(item => !outputOption.some(item1 => item === item1));
+	const unknownFormas = mergedConfig.formats.filter(format => !outputOption.some(option => format === option));
 	if (unknownFormas.length) {
 		const errorsList = unknownFormas.map(item => `Unknown output format "${item}"`);
 		throw new Error(`Unsupported output formats:\n\t${errorsList.join('\n\t')}`)
 	}
 
 	//	ensure that we don't write output to the source directory
-	if (finalConfig.inputDir.startsWith(finalConfig.outputDir) || finalConfig.outputDir.startsWith(finalConfig.inputDir))
+	if (mergedConfig.inputDir.startsWith(mergedConfig.outputDir) || mergedConfig.outputDir.startsWith(mergedConfig.inputDir))
 		throw new Error('Input and output directories must not contain each other');
 
 	//	adjust cache dir path relative to input dir
 	if (!(configObjectCli.cacheDir || configObjectFile.cacheDir))
-		finalConfig.cacheDir = path.join(finalConfig.inputDir, './.cache');
+		mergedConfig.cacheDir = path.join(mergedConfig.inputDir, './.cache');
 
 	//	normalize paths
 	const pathProps = ['inputDir', 'outputDir', 'cacheDir'] as (keyof ConfigSchema)[];
-	const pathPropsNormalizedEntries = pathProps.map(item => ([
-		item,
-		normalizePath(finalConfig[item] as string)
-	]));
-	Object.assign(finalConfig, Object.fromEntries(pathPropsNormalizedEntries));
+	const pathPropsNormalizedEntries = pathProps.map(item => {
+		const pathProp = mergedConfig[item] as string;
+		//	change "@/..." path to cwd-relative
+		const resolvedPath = pathProp.replace(/^\@[\\\/]/, '');
+		return [item, normalizePath(resolvedPath)];
+	});
+	Object.assign(mergedConfig, Object.fromEntries(pathPropsNormalizedEntries));
 
-	return finalConfig;
+	return mergedConfig;
 };
