@@ -1,5 +1,5 @@
 {
-	"verbose": false,
+	"verbose": true,
 	"inputDir": "convert/assets",
 	"outputDir": "convert/dist",
 	"cacheDir": "@/.cache",
