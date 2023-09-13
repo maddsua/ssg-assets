@@ -63,4 +63,7 @@ jobs:
         node-version: 18
         registry-url: https://registry.npmjs.org/
     - run: npm ci
-    - run: npx vue-tsc ./index.ts ./Img.vue ./Picture.vue --noEmit
+    - name: Check Vue components
+      run: |
+        cd components/vue
+        npx vue-tsc ./index.ts --noEmit
