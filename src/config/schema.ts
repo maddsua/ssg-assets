@@ -8,7 +8,6 @@ export const configSchema = z.object({
 	formats: z.array(z.string()),
 	exclude: z.array(z.string()),
 	include: z.array(z.string()),
-	passthrough: z.array(z.string()),
 	inputDir: z.string(),
 	outputDir: z.string(),
 	quality: z.record(z.string(), z.number()),

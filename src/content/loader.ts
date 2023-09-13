@@ -90,16 +90,6 @@ export const resolveAssets = async (config: ConfigSchema): Promise<AssetsListIte
 			message: 'excluded'
 		} as const);
 
-		const isPasstrough = config.passthrough.some(pattern => minimatch(assetPath, pattern, {
-			matchBase: true,
-			nobrace: true,
-			noext: true,
-			nocase: true
-		}));
-		if (isPasstrough) return Object.assign(assetBaseData, {
-			action: 'copy'
-		} as const);
-
 		const imageAssetFormat = imageFormat.find(item => slug.endsWith(item));
 		if (imageAssetFormat) return Object.assign(assetBaseData, {
 			action: 'sharp',
@@ -107,7 +97,7 @@ export const resolveAssets = async (config: ConfigSchema): Promise<AssetsListIte
 		} as const);
 		
 		return Object.assign(assetBaseData, {
-			action: undefined
+			action: 'copy'
 		} as const);
 
 	}));

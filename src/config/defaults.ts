@@ -11,7 +11,6 @@ export const defaultConfig: ConfigSchema = {
 	cacheDir: './assets/.cache',
 	exclude: [],
 	include: [],
-	passthrough: [],
 	quality: {
 		avif: 85,
 		webp: 85,
