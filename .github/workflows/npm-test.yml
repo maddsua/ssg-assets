@@ -15,8 +15,8 @@ jobs:
         node-version: 18
         registry-url: https://registry.npmjs.org/
     - run: npm ci
-    - run: test:cli:build
-    - run: test:cli
+    - run: npm run test:cli:build
+    - run: npm run test:cli
     - run: npm run build
     - run: npm run test
 
