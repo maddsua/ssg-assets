@@ -7,6 +7,7 @@ on:
 jobs:
 
   cli_check:
+    name: Check CLI tool
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -15,12 +16,10 @@ jobs:
         node-version: 18
         registry-url: https://registry.npmjs.org/
     - run: npm ci
-    - name: Run CLI internal test
-      run: |
+    - run: |
         npm run test:cli:build
         npm run test:cli
-    - name: Run conversion test
-      run: |
+    - run: |
         npm run build
         npm run test
 
@@ -32,8 +31,7 @@ jobs:
     - uses: denoland/setup-deno@v1
       with:
         deno-version: "1.36.2"
-    - name: Check component logic
-      run: |
+    - run: |
         cd tests/components
         deno task test
 
@@ -48,8 +46,7 @@ jobs:
         node-version: 18
         registry-url: https://registry.npmjs.org/
     - run: npm ci
-    - name: Type check React, DOM and HTML components
-      run: |
+    - run: |
         cd components
         npx tsc --noemit
 
@@ -64,8 +61,7 @@ jobs:
         node-version: 18
         registry-url: https://registry.npmjs.org/
     - run: npm ci
-    - name: Type check Astro components
-      run: |
+    - run: |
         cd components/astro
         npx astro check
   
@@ -80,7 +76,6 @@ jobs:
         node-version: 18
         registry-url: https://registry.npmjs.org/
     - run: npm ci
-    - name: Type check Vue components
-      run: |
+    - run: |
         cd components/vue
         npx vue-tsc ./index.ts --noEmit
