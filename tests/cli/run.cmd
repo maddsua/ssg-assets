@@ -1,0 +1,1 @@
+esbuild index.ts --bundle --platform=node --external:zod --format=esm --outfile=index.mjs && node index.mjs --inputDir=testdir

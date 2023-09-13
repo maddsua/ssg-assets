@@ -1,6 +1,6 @@
-import { imageFormat } from '../formats';
-import type { ImageFormat } from '../formats';
-import type { Config } from '../config/schema';
+import { imageFormat } from '../config/formats';
+import type { ImageFormat } from '../config/formats';
+import type { ConfigSchema } from '../config/schema';
 import { getFileHashSha256 } from './hash';
 
 import { normalizePath } from './paths';
@@ -51,7 +51,7 @@ const loadAllAssetFiles = (assetDir: string): string[] => {
 	return result.map(item => item.replace(/[\\\/]+/g, '/'));
 };
 
-export const resolveAssets = async (config: Config): Promise<AssetsListItem[]> => {
+export const resolveAssets = async (config: ConfigSchema): Promise<AssetsListItem[]> => {
 
 	let allAvailableFiles = loadAllAssetFiles(config.inputDir);
 

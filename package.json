@@ -56,12 +56,15 @@
 		"build": "run-s lint bundle",
 		"dev": "esbuild src/main.ts --outfile=bin/main.js --bundle --platform=node --format=esm --external:sharp --external:chalk --external:minimatch --watch",
 		"test": "node bin/main.js --verbose",
+		"test:cli": "node ./temp/cli-test.mjs",
+		"test:cli:build": "esbuild ./tests/cli/index.ts --bundle --platform=node --external:zod --format=esm --outfile=./temp/cli-test.mjs",
 		"deploy": "npm publish --access=public"
 	},
 	"dependencies": {
 		"chalk": "^5.3.0",
 		"minimatch": "^9.0.3",
-		"sharp": "^0.32.4"
+		"sharp": "^0.32.4",
+		"zod": "^3.22.2"
 	},
 	"devDependencies": {
 		"@types/node": "^18.16.17",

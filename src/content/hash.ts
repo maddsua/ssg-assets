@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { createHash } from 'crypto';
 
-export const getFileHashSha256 = async (filepath: string, verbose?: boolean): Promise<string> => new Promise(async (resolve, reject) => {
+export const getFileHashSha256 = async (filepath: string): Promise<string> => new Promise(async (resolve, reject) => {
 
 	try {
 
