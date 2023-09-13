@@ -53,6 +53,9 @@ jobs:
   
   vue_check:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./components/vue
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-node@v3
@@ -60,4 +63,4 @@ jobs:
         node-version: 18
         registry-url: https://registry.npmjs.org/
     - run: npm ci
-    - run: cd ./components/vue && npx vue-tsc ./index.ts ./Img.vue ./Picture.vue --noEmit
+    - run: npx vue-tsc ./index.ts ./Img.vue ./Picture.vue --noEmit
