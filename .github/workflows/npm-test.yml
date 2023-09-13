@@ -24,7 +24,22 @@ jobs:
         npm run build
         npm run test
 
+  component_logic_check:
+    name: Check shared component logic
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: denoland/setup-deno@v1
+      with:
+        deno-version: "1.36.2"
+    - name: Check component logic
+      run: |
+        cd tests/components
+        deno task test
+
   component_tsc_check:
+    name: Type check React, DOM and HTML components
+    needs: component_logic_check
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -38,19 +53,9 @@ jobs:
         cd components
         npx tsc --noemit
 
-  component_logic_check:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - uses: denoland/setup-deno@v1
-      with:
-        deno-version: "1.36.2"
-    - name: Check component logic
-      run: |
-        cd tests/components
-        deno task test
-
   astro_check:
+    name: Type check Astro components
+    needs: component_logic_check
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -65,6 +70,8 @@ jobs:
         npx astro check
   
   vue_check:
+    name: Type check Vue components
+    needs: component_logic_check
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
