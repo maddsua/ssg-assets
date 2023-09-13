@@ -1,8 +1,0 @@
-{
-	"verbose": false,
-	"inputDir": "tests/convert/assets",
-	"outputDir": "tests/convert/dist",
-	"passthrough": [
-		"*.webm"
-	]
-}

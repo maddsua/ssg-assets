@@ -7,7 +7,7 @@ const props = Astro.props;
 const sources = mapSources(props.src, props.formats, props.adaptiveMode);
 ---
 
-<picture class={classToString(props.class)} style={styleToString(props.style)} data-component-id="ssga:picture:astro">
+<picture class={classToString(props.class)} style={styleToString(props.style)} data-ssga-id="picture:astro">
 
 	{ sources.map(item => (
 		<source srcset={item.source} type={item.type} media={item.media} />

@@ -1,13 +1,16 @@
-import { Config } from './schema';
+import type { ConfigSchema } from './schema';
 
-export const defaultConfig: Partial<Config> = {
-	config: 'ssgassets.config.json',
+export const defaultConfig: ConfigSchema = {
+	configFile: './ssgassets.config.json',
 	verbose: false,
 	noCache: false,
+	resetCache: false,
 	formats: ['original', 'webp', 'avif'],
+	inputDir: './assets',
+	outputDir: './public/assets',
+	cacheDir: './assets/.cache',
 	exclude: [],
 	include: [],
-	passthrough: [],
 	quality: {
 		avif: 85,
 		webp: 85,

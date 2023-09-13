@@ -9,7 +9,7 @@ export default (props: ImageProps, useDOMRoot?: Document) => {
 	const elementStyle = styleToString(props.style)
 
 	const imgElement = domRoot.createElement('img');
-	imgElement.setAttribute('data-component-id', 'ssga:img:dom');
+	imgElement.setAttribute('data-ssga-id', 'img:dom');
 	elementStyle && imgElement.setAttribute('style', elementStyle);
 
 	//	the diffrence is that for a browser DOM we want to have realtime and *snappy* changes,

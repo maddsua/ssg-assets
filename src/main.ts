@@ -2,12 +2,12 @@
 
 import { version as appversion } from '../package.json';
 
-import { loadConfig } from './config/loader';
+import { loadAppConfig } from './config/loader';
 import { resolveAssets } from './content/loader';
 
 import { getCachedAssets, CachedAsset } from './content/cache';
 
-import { Config } from './config/schema';
+import { type ConfigSchema } from '../src/config/schema';
 
 import fs from 'fs';
 
@@ -15,16 +15,13 @@ import sharp from 'sharp';
 import chalk from 'chalk';
 import path from 'path';
 
-const printCliConfig = (config: Config) => {
+const printCliConfig = (config: ConfigSchema) => {
 
 	console.log('\r');
 	console.log(chalk.bgWhite.black(' Current config: '));
 	console.log('----');
-
-	const configFilesList = [config.config && 'project', config.assetConfig && 'asset dir'];
 	
 	const temp = {
-		'Config files': configFilesList.length ? configFilesList.join(', ') : 'none',
 		'Cache': config.noCache ? 'disabled' : 'enabled',
 		'Load from': `"${config.inputDir}"`,
 		'Save to': `"${config.outputDir}"`,
@@ -47,7 +44,7 @@ const printCliConfig = (config: Config) => {
 
 	console.log(chalk.bgWhite.black(` SSG Assets CLI v${appversion} `), '\n');
 
-	const config = loadConfig();
+	const config = loadAppConfig();
 	
 	if (config.verbose) {
 		console.log('Verbose mode enabled. Tool is extra talkative now.');

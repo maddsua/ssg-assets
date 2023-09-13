@@ -9,7 +9,7 @@ export default (props: PictireProps, useDOMRoot?: Document) => {
 	const styleString = styleToString(props.style);
 
 	const pictureElement = domRoot.createElement('picture');
-	pictureElement.setAttribute('data-component-id', 'ssga:picture:dom');
+	pictureElement.setAttribute('data-ssga-id', 'picture:dom');
 	styleString && pictureElement.setAttribute('style', styleString);
 
 	if (isNativeDOM) {
