@@ -40,27 +40,6 @@ const mergeConfigSources = (...args: IndexableObject[]) => {
 	return merged;
 };
 
-const fixRelativeGlob = (pattern: string) => {
-
-	if (/\*\.[\d\w]+$/.test(pattern)) {
-
-		return '**/' + pattern.slice(pattern.lastIndexOf('*'));
-
-	} else if (!pattern.includes('*')) {
-
-		try {
-			if (!fs.existsSync(pattern)) return pattern;
-			if (!fs.statSync(pattern).isDirectory()) return pattern;
-		} catch (_error) {
-			return pattern;
-		}
-	
-		return pattern + ( pattern.endsWith('/') ? '*': '/*');
-	}
-
-	return pattern;
-};
-
 export const loadAppConfig = () => {
 
 	const cliOptionArguments = process.argv.slice(2).filter(item => /^\-\-[\d\w\_\-]+(=[\d\w\_\-\,\.\*\\\/]+)?$/.test(item));
@@ -154,22 +133,17 @@ export const loadAppConfig = () => {
 	if (finalConfig.inputDir.startsWith(finalConfig.outputDir) || finalConfig.outputDir.startsWith(finalConfig.inputDir))
 		throw new Error('Input and output directories must not contain each other');
 
-	//	adjust cache dir path
+	//	adjust cache dir path relative to input dir
 	if (!(configObjectCli.cacheDir || configObjectFile.cacheDir))
 		finalConfig.cacheDir = path.join(finalConfig.inputDir, './.cache');
 
-	//	normaliza paths
+	//	normalize paths
 	const pathProps = ['inputDir', 'outputDir', 'cacheDir'] as (keyof ConfigSchema)[];
 	const pathPropsNormalizedEntries = pathProps.map(item => ([
 		item,
 		normalizePath(finalConfig[item] as string)
 	]));
 	Object.assign(finalConfig, Object.fromEntries(pathPropsNormalizedEntries));
-
-	//	fix globs
-	const globPatternProps = ['exclude', 'include', 'passthrough'] as (keyof ConfigSchema)[];
-	const globPatternPropsNormalized = globPatternProps.map(item => ([ item, (finalConfig[item] as string[]).map(item => fixRelativeGlob(item))]));
-	Object.assign(finalConfig, Object.fromEntries(globPatternPropsNormalized));
 
 	return finalConfig;
 };

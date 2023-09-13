@@ -4,5 +4,8 @@
 	"outputDir": "convert/dist",
 	"passthrough": [
 		"*.webm"
+	],
+	"exclude": [
+		"**/vector/*.svg"
 	]
 }
