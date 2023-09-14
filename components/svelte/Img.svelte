@@ -1,6 +1,6 @@
 <script lang="ts">
 
-	import { ImageProps, getImageSize, classToString, styleToString } from '../index';
+	import { type ImageProps, getImageSize, classToString, styleToString } from '../index.js';
 
 	export let src: ImageProps['src'];
 	export let alt: ImageProps['alt'];

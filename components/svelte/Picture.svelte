@@ -1,7 +1,7 @@
 <script lang="ts">
 
 	import Img from './Img.svelte';
-	import { PictireProps, mapSources, classToString, styleToString } from '../index';
+	import { type PictireProps, mapSources, classToString, styleToString } from '../index';
 
 	export let src: PictireProps['src'];
 	export let alt: PictireProps['alt'];
