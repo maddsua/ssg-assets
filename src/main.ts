@@ -44,7 +44,7 @@ const printCliConfig = (config: ConfigSchema) => {
 
 	console.log(chalk.bgWhite.black(` SSG Assets CLI v${appversion} `), '\n');
 
-	const config = loadAppConfig();
+	const config = await loadAppConfig();
 	
 	if (config.verbose) {
 		console.log('Verbose mode enabled. Tool is extra talkative now.');
