@@ -42,26 +42,23 @@ const mergeConfigSources = (...args: IndexableObject[]) => {
 	return merged;
 };
 
-const importConfigModule = (moduleContentRaw: string) => {
-	//	this way too easy
-	//	is this the benefit of big bundle size?
-	//	I mean esbuild is cool and all, but I only use it at like 20% of it's capabilities
+const importConfigModule = async (moduleContentRaw: string) => {
 
 	//	transform ts into plain js
 	const moduleJsContent = esbuild.transformSync(moduleContentRaw, {
-		loader: 'ts'
+		loader: 'ts',
+		format: 'esm'
 	});
 
-	//	replace default export with return statement
-	const prepdContents = moduleJsContent.code.replace(/export\s+default\s+/ig, 'return ');
+	//	import dynamic module
+	const moduleImportString = `data:text/javascript;base64,${btoa(moduleJsContent.code)}`;
+	const moduleImported = (await import(moduleImportString))?.default;
+	if (!moduleImported) throw new Error('Config module does not contain default export');
 
-	//	evaluation function
-	const configFunction = new Function(prepdContents);
-
-	return configFunction();
+	return moduleImported;
 };
 
-export const loadAppConfig = () => {
+export const loadAppConfig = async () => {
 
 	const cliOptionArguments = process.argv.slice(2).filter(item => /^\-\-[\d\w\_\-]+(=[\d\w\_\-\,\.\*\\\/]+)?$/.test(item));
 	const caselessOptionMap = Object.fromEntries(Object.keys(configSchema.shape).map(item => ([item.toLowerCase(), item]))) as Record<string, keyof ConfigSchema>;
@@ -127,7 +124,7 @@ export const loadAppConfig = () => {
 			}
 		} else if (['.ts','.mts','.js','.mjs'].some(ext => path.extname(configFilePath) === ext)) {
 			try {
-				configObjectFile = importConfigModule(configFileContents);
+				configObjectFile = await importConfigModule(configFileContents);
 			} catch (error) {
 				throw new Error(`Could not load config file module: ${configFilePath}:\n${error}`);
 			}
