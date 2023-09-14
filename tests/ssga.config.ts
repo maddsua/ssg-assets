@@ -1,4 +1,4 @@
-import { Config } from '../src/config/schema';
+import type { Config } from '../src/config/schema';
 
 const config: Config = {
 	verbose: true,
