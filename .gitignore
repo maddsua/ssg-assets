@@ -6,10 +6,6 @@ node_modules
 bin
 **/dist/*
 
-# but not these
-!dist/dummy.js
-!dist/dummy.d.ts
-
 # temp rubbish
 temp
 tests/result
