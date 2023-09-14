@@ -42,6 +42,19 @@
 			"types": "./components/svelte/index.ts"
 		}
 	},
+	"files": [
+		"bin",
+		"index.ts",
+		"*.d.ts",
+		"components/index.ts",
+		"components/astro",
+		"components/react",
+		"components/vue",
+		"components/html",
+		"components/dom",
+		"components/svelte",
+		"package.json"
+	],
 	"scripts": {
 		"lint": "tsc",
 		"bundle": "esbuild src/main.ts --outfile=bin/main.js --bundle --platform=node --format=esm --external:sharp --external:chalk --external:minimatch --external:zod --external:esbuild",
