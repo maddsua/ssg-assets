@@ -45,7 +45,7 @@ const mergeConfigSources = (...args: IndexableObject[]) => {
 const importConfigModule = async (moduleContentRaw: string) => {
 
 	//	transform ts into plain js
-	const moduleJsContent = esbuild.transformSync(moduleContentRaw, {
+	const moduleJsContent = await esbuild.transform(moduleContentRaw, {
 		loader: 'ts',
 		format: 'esm'
 	});
