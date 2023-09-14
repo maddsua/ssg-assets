@@ -10,12 +10,12 @@
 		"ssgassets": "./bin/main.js",
 		"ssga": "./bin/main.js"
 	},
-	"main": "./components/index.ts",
-	"types": "./components/index.ts",
+	"main": "./index.ts",
+	"types": "./index.ts",
 	"exports": {
 		".": {
-			"default": "./components/index.ts",
-			"types": "./components/index.ts"
+			"default": "./index.ts",
+			"types": "./index.ts"
 		},
 		"./react": {
 			"default": "./components/react/index.ts",
@@ -40,15 +40,15 @@
 	},
 	"files": [
 		"bin",
-		"package.json",
-		"package-lock.json",
+		"index.ts",
+		"*.d.ts",
 		"components/index.ts",
 		"components/astro",
 		"components/react",
 		"components/vue",
 		"components/html",
 		"components/dom",
-		"*.d.ts"
+		"package.json"
 	],
 	"scripts": {
 		"lint": "tsc",
