@@ -1,12 +1,14 @@
 import process from 'process';
 import fs from 'fs';
 import path from 'path';
-import { configSchema, ConfigSchema } from './schema';
+
 import { ZodString, ZodBoolean, ZodNumber, ZodArray } from 'zod';
+import esbuild from 'esbuild';
+
+import { configSchema, ConfigSchema } from './schema';
 import { defaultConfig } from './defaults';
 import { outputOption } from './formats';
 import { normalizePath } from '../content/paths';
-import esbuild from 'esbuild';
 
 interface CliOptionsEntry {
 	value: [string, number | boolean | string | string[]];
