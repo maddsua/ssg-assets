@@ -36,6 +36,10 @@
 		"./dom": {
 			"default": "./components/dom/index.ts",
 			"types": "./components/dom/index.ts"
+		},
+		"./svelte": {
+			"default": "./components/svelte/index.ts",
+			"types": "./components/svelte/index.ts"
 		}
 	},
 	"files": [
