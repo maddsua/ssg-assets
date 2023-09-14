@@ -14,6 +14,9 @@ tests/result
 *.avif
 *.webp
 
-# medi cache
+# media cache
 **/.cache
 **/.cache.json
+
+# deno stuff
+**/deno.lock
