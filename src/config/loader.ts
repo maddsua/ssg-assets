@@ -1,8 +1,11 @@
 import process from 'process';
 import fs from 'fs';
 import path from 'path';
-import { configSchema, ConfigSchema } from './schema';
+
 import { ZodString, ZodBoolean, ZodNumber, ZodArray } from 'zod';
+import esbuild from 'esbuild';
+
+import { configSchema, ConfigSchema } from './schema';
 import { defaultConfig } from './defaults';
 import { outputOption } from './formats';
 import { normalizePath } from '../content/paths';
@@ -40,7 +43,25 @@ const mergeConfigSources = (...args: IndexableObject[]) => {
 	return merged;
 };
 
-export const loadAppConfig = () => {
+const importConfigModule = async (moduleContentRaw: string) => {
+
+	//	transform ts into plain js
+	const moduleJsContent = await esbuild.transform(moduleContentRaw, {
+		loader: 'ts',
+		format: 'esm'
+	});
+
+	//	import dynamic module
+	const moduleImportString = `data:text/javascript;base64,${btoa(moduleJsContent.code)}`;
+	const moduleImported = await import(moduleImportString);
+	const moduleExportStatements = ['default','config'];
+	const moduleConfig = moduleExportStatements.map(item => moduleImported[item]).find(item => typeof item === 'object');
+	if (!moduleConfig) throw new Error('Config module does not contain default export');
+
+	return moduleConfig;
+};
+
+export const loadAppConfig = async () => {
 
 	const cliOptionArguments = process.argv.slice(2).filter(item => /^\-\-[\d\w\_\-]+(=[\d\w\_\-\,\.\*\\\/]+)?$/.test(item));
 	const caselessOptionMap = Object.fromEntries(Object.keys(configSchema.shape).map(item => ([item.toLowerCase(), item]))) as Record<string, keyof ConfigSchema>;
@@ -91,11 +112,27 @@ export const loadAppConfig = () => {
 
 	if (fs.existsSync(configFilePath)) {
 
+		let configFileContents: string | null;
+
 		try {
-			const configFileContents = fs.readFileSync(configFilePath).toString();
-			configObjectFile = JSON.parse(configFileContents) as Partial<ConfigSchema>;
-		} catch (error) {
-			throw new Error(`Could not parse config file contents: ${configFilePath}: file does not appear to be a valid JSON`);
+			configFileContents = fs.readFileSync(configFilePath).toString();
+		} catch (_error) {
+			throw new Error(`Could not read config file: "${configFilePath}"`);
+		}
+		if (path.extname(configFilePath) === '.json') {
+			try {
+				configObjectFile = JSON.parse(configFileContents) as Partial<ConfigSchema>;
+			} catch (_error) {
+				throw new Error(`Could not parse config file contents: ${configFilePath}: file does not appear to be a valid JSON`);
+			}
+		} else if (['.ts','.mts','.js','.mjs'].some(ext => path.extname(configFilePath) === ext)) {
+			try {
+				configObjectFile = await importConfigModule(configFileContents);
+			} catch (error) {
+				throw new Error(`Could not load config file module: ${configFilePath}:\n${error}`);
+			}
+		} else {
+			throw new Error(`Unknown config file extension: ${configFilePath}`);
 		}
 
 		const configFileSchemaValidation = configSchema.partial().safeParse(configObjectFile);
@@ -117,8 +154,9 @@ export const loadAppConfig = () => {
 		const adaptedProps = propsToRelative.map(key => ([key, configObjectFile[key]])).filter(([_key, value]) => !!value).map(([key, value]) => ([key, path.join(path.dirname(configFilePath), value as string)]));
 		Object.assign(configObjectFile, Object.fromEntries(adaptedProps));
 
-	} else if (configObjectCli?.configFile)
+	} else if (configObjectCli?.configFile) {
 		throw new Error(`Config file was not found at: "${configObjectCli.configFile}"`);
+	}
 
 	const mergedConfig = mergeConfigSources(defaultConfig, configObjectFile, configObjectCli) as ConfigSchema;
 
