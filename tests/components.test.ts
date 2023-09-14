@@ -1,7 +1,7 @@
 
 import { diffCharacters } from 'https://deno.land/x/diff@v0.3.5/mod.ts';
 
-import { mapSources } from '../../components/index.ts';
+import { mapSources } from '../components/index.ts';
 
 const objectDiff = (textA: string, textB: string) => {
 	let diffResult = '';
@@ -436,9 +436,9 @@ const allTests: (() => void)[] = [
 allTests.forEach((testCallback, index) => {
 	try {
 		testCallback();
-		console.log(`Test ${index + 1} OK`);
+		console.log(`✅ Test ${index + 1}`);
 	} catch (error) {
-		console.error(`Test ${index + 1} FAILED:`)
+		console.error(`❌ Test ${index + 1}:`)
 		console.error(error);
 		Deno.exit(1);
 	}

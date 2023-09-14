@@ -45,8 +45,8 @@ jobs:
       with:
         deno-version: "1.36.2"
     - run: |
-        cd tests/components
-        deno task test
+        cd tests
+        deno task test_components
 
   component_tsc_check:
     name: Type check React, DOM and HTML components

@@ -1,0 +1,8 @@
+{
+	"verbose": true,
+	"inputDir": "./assets",
+	"outputDir": "./dist",
+	"exclude": [
+		"**/vector/*.svg"
+	]
+}

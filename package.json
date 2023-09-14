@@ -60,9 +60,9 @@
 		"bundle": "esbuild src/main.ts --outfile=bin/main.js --bundle --platform=node --format=esm --external:sharp --external:chalk --external:minimatch --external:zod --external:esbuild",
 		"build": "run-s lint bundle",
 		"dev": "esbuild src/main.ts --outfile=bin/main.js --bundle --platform=node --format=esm --external:sharp --external:chalk --external:minimatch --external:zod --external:esbuild --watch",
-		"test": "node bin/main.js --verbose --configFile=./tests/ssgassets.config.json",
-		"test:cli": "node ./temp/cli-test.mjs --configFile=./tests/ssga.config.ts",
-		"test:cli:build": "esbuild ./tests/cli/test.ts --bundle --platform=node --format=esm --external:sharp --external:chalk --external:minimatch --external:zod --external:esbuild --outfile=./temp/cli-test.mjs",
+		"test": "node bin/main.js --verbose --configFile=./tests/convert/ssgassets.config.json",
+		"test:cli": "node ./temp/cli-test.mjs --configFile=./tests/convert/ssga.config.ts",
+		"test:cli:build": "esbuild ./tests/cli.test.ts --bundle --platform=node --format=esm --external:sharp --external:chalk --external:minimatch --external:zod --external:esbuild --outfile=./temp/cli-test.mjs",
 		"deploy": "npm publish --access=public"
 	},
 	"dependencies": {
