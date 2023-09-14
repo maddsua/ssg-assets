@@ -16,8 +16,8 @@ jobs:
       with:
         deno-version: "1.36.2"
     - run: |
-        cd tests/builds
-        deno run --allow-read inclusion.ts
+        cd tests
+        deno task test_predeploy
 
   deploy_package:
     runs-on: ubuntu-latest

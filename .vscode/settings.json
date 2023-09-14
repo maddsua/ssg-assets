@@ -3,7 +3,7 @@
 	"deno.lint": false,
 	"deno.enablePaths": [
 		"tests/components",
-		"tests/builds"
+		"tests/predeploy.test.ts",
 	],
 	"typescript.tsdk": "node_modules\\typescript\\lib"
 }

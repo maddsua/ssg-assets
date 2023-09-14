@@ -1,0 +1,5 @@
+{
+	"tasks": {
+		"test_predeploy": "deno run --allow-read predeploy.test.ts"
+	}
+}
