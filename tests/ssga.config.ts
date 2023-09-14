@@ -1,6 +1,6 @@
-import { ConfigSchema } from '../src/config/schema';
+import { Config } from '../src/config/schema';
 
-const config: Partial<ConfigSchema> = {
+const config: Config = {
 	include: [
 		'jpg'
 	],
