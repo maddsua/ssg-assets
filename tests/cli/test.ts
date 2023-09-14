@@ -2,7 +2,7 @@ import { loadAppConfig } from '../../src/config/loader';
 
 import { resolveAssets } from '../../src/content/loader';
 
-let appConfig = loadAppConfig();
+let appConfig = await loadAppConfig();
 console.log(appConfig);
 
 const assets = await resolveAssets(appConfig);
