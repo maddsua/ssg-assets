@@ -19,7 +19,7 @@
 		"dist",
 		"components",
 		"tests/components",
-		"tests/builts",
+		"tests/builds",
 		"*.d.ts"
 	]
 }
