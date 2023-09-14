@@ -52,10 +52,12 @@ const importConfigModule = async (moduleContentRaw: string) => {
 
 	//	import dynamic module
 	const moduleImportString = `data:text/javascript;base64,${btoa(moduleJsContent.code)}`;
-	const moduleImported = (await import(moduleImportString))?.default;
-	if (!moduleImported) throw new Error('Config module does not contain default export');
+	const moduleImported = await import(moduleImportString);
+	const moduleExportStatements = ['default','config'];
+	const moduleConfig = moduleExportStatements.map(item => moduleImported[item]).find(item => typeof item === 'object');
+	if (!moduleConfig) throw new Error('Config module does not contain default export');
 
-	return moduleImported;
+	return moduleConfig;
 };
 
 export const loadAppConfig = async () => {
