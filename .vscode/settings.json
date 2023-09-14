@@ -2,7 +2,8 @@
 	"deno.enable": true,
 	"deno.lint": false,
 	"deno.enablePaths": [
-		"tests/components"
+		"tests/components",
+		"tests/builts"
 	],
 	"typescript.tsdk": "node_modules\\typescript\\lib"
 }
