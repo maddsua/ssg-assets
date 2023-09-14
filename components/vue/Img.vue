@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import { ImageProps, getImageSize, styleToString } from '../index';
+import { type ImageProps, getImageSize, styleToString } from '../index';
 
 const props = defineProps<ImageProps>();
 const size = getImageSize(props.sizes);

@@ -1,5 +1,5 @@
 import Img from './Img';
-import { PictireProps, mapSources, classToString, styleToString, composeAttributesHTML } from '../index';
+import { type PictireProps, mapSources, classToString, styleToString, composeAttributesHTML } from '../index';
 
 /**
  * Advanced \<picture\> component
