@@ -7,7 +7,6 @@ import { defaultConfig } from './defaults';
 import { outputOption } from './formats';
 import { normalizePath } from '../content/paths';
 import esbuild from 'esbuild';
-//import { getConfigDefaultExport } from './esmStaticLoader';
 
 interface CliOptionsEntry {
 	value: [string, number | boolean | string | string[]];
