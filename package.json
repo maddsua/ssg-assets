@@ -1,7 +1,7 @@
 {
 	"private": false,
 	"name": "@maddsua/ssg-assets",
-	"version": "3.9.0",
+	"version": "3.9.1",
 	"type": "module",
 	"engines": {
 		"node": ">=16.4.0"
@@ -52,6 +52,7 @@
 		"components/vue",
 		"components/html",
 		"components/dom",
+		"components/svelte",
 		"package.json"
 	],
 	"scripts": {
