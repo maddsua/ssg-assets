@@ -22,7 +22,7 @@
 			"types": "./components/react/index.ts"
 		},
 		"./astro": {
-			"default": "./components/astro/index.js",
+			"default": "./components/astro/index.ts",
 			"types": "./components/astro/index.ts"
 		},
 		"./vue": {
