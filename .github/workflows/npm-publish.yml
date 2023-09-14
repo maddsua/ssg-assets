@@ -7,6 +7,18 @@ on:
 
 jobs:
 
+  check_deploy_config:
+    name: Check deploy configuration
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: denoland/setup-deno@v1
+      with:
+        deno-version: "1.36.2"
+    - run: |
+        cd tests/builds
+        deno run --allow-read inclusion.ts
+
   deploy_package:
     runs-on: ubuntu-latest
     steps:
