@@ -171,7 +171,7 @@ export const revealLazyLoaded = (root?: HTMLElement | Element | null) => {
 		if (image.complete) return;
 
 		image.style.opacity = '0';
-		
+
 		image.onload = async () => {
 			
 			image.style.transition = `opacity 500ms ease`;
