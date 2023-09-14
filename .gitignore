@@ -6,10 +6,6 @@ node_modules
 bin
 **/dist/*
 
-# but not these
-!dist/dummy.js
-!dist/dummy.d.ts
-
 # temp rubbish
 temp
 tests/result
@@ -18,6 +14,9 @@ tests/result
 *.avif
 *.webp
 
-# medi cache
+# media cache
 **/.cache
 **/.cache.json
+
+# deno stuff
+**/deno.lock

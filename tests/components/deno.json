@@ -1,5 +1,0 @@
-{
-	"tasks": {
-		"test": "deno run test.ts"
-	}
-}

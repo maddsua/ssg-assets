@@ -1,6 +1,5 @@
-import { loadAppConfig } from '../../src/config/loader';
-
-import { resolveAssets } from '../../src/content/loader';
+import { loadAppConfig } from '../src/config/loader';
+import { resolveAssets } from '../src/content/loader';
 
 let appConfig = await loadAppConfig();
 console.log(appConfig);

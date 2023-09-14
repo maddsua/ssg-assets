@@ -1,9 +1,9 @@
-import type { Config } from '../index';
+import type { Config } from '../../index';
 
 const config: Config = {
 	verbose: true,
-	inputDir: 'convert/assets',
-	outputDir: 'convert/dist',
+	inputDir: './assets',
+	outputDir: './dist',
 	exclude: [
 		'**/vector/*.svg'
 	]

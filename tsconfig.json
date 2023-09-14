@@ -18,7 +18,8 @@
 		"node_modules",
 		"dist",
 		"components",
-		"tests",
+		"tests/components.test.ts",
+		"tests/predeploy.test.ts",
 		"*.d.ts"
 	]
 }
