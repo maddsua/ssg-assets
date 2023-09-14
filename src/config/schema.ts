@@ -18,5 +18,3 @@ export const configSchema = z.object({
 export interface ConfigSchema extends z.infer<typeof configSchema> {
 	formats: OutputOption[];
 };
-
-export type Config = Partial<ConfigSchema>;
