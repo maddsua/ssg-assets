@@ -6,7 +6,8 @@ import { ZodString, ZodBoolean, ZodNumber, ZodArray } from 'zod';
 import { defaultConfig } from './defaults';
 import { outputOption } from './formats';
 import { normalizePath } from '../content/paths';
-import { getConfigDefaultExport } from './esmStaticLoader';
+import esbuild from 'esbuild';
+//import { getConfigDefaultExport } from './esmStaticLoader';
 
 interface CliOptionsEntry {
 	value: [string, number | boolean | string | string[]];
@@ -39,6 +40,25 @@ const mergeConfigSources = (...args: IndexableObject[]) => {
 	}
 
 	return merged;
+};
+
+const importConfigModule = (moduleContentRaw: string) => {
+	//	this way too easy
+	//	is this the benefit of big bundle size?
+	//	I mean esbuild is cool and all, but I only use it at like 20% of it's capabilities
+
+	//	transform ts into plain js
+	const moduleJsContent = esbuild.transformSync(moduleContentRaw, {
+		loader: 'ts'
+	});
+
+	//	replace default export with return statement
+	const prepdContents = moduleJsContent.code.replace(/export\s+default\s+/ig, 'return ');
+
+	//	evaluation function
+	const configFunction = new Function(prepdContents);
+
+	return configFunction();
 };
 
 export const loadAppConfig = () => {
@@ -107,7 +127,7 @@ export const loadAppConfig = () => {
 			}
 		} else if (['.ts','.mts','.js','.mjs'].some(ext => path.extname(configFilePath) === ext)) {
 			try {
-				configObjectFile = getConfigDefaultExport(configFileContents);
+				configObjectFile = importConfigModule(configFileContents);
 			} catch (error) {
 				throw new Error(`Could not load config file module: ${configFilePath}:\n${error}`);
 			}
