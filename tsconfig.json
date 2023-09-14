@@ -18,7 +18,8 @@
 		"node_modules",
 		"dist",
 		"components",
-		"tests",
+		"tests/components",
+		"tests/builts",
 		"*.d.ts"
 	]
 }
