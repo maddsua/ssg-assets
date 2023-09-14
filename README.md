@@ -74,7 +74,9 @@ Having multiple image formats is fun, but placing all the source tags for a pict
 - Vue
 - React/Preact
 - Astro
+- Svelte
 - HTML (renders directly to HTML text, intended for server use)
+- DOM (JS-native functions, creates HTMLElements that can be inserted into actual DOM)
 
 Don't try to import package's root directly, instead import the subpath for the framework you're using.
 
