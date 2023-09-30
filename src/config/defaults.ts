@@ -1,7 +1,16 @@
 import type { ConfigSchema } from './schema';
 
+export const configFileNames = [
+	'./ssgassets.config.json',
+	'./ssgassets.config.js',
+	'./ssgassets.config.ts',
+	'./ssga.config.json',
+	'./ssga.config.js',
+	'./ssga.config.ts'
+];
+
 export const defaultConfig: ConfigSchema = {
-	configFile: './ssgassets.config.json',
+	configFile: null,
 	verbose: false,
 	noCache: false,
 	resetCache: false,

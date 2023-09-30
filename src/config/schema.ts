@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { OutputOption } from './formats';
 
 export const configSchema = z.object({
-	configFile: z.string(),
+	configFile: z.string().or(z.null()),
 	cacheDir: z.string(),
 	verbose: z.boolean(),
 	formats: z.array(z.string()),

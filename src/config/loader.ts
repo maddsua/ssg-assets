@@ -6,7 +6,7 @@ import { ZodString, ZodBoolean, ZodNumber, ZodArray } from 'zod';
 import esbuild from 'esbuild';
 
 import { configSchema, ConfigSchema } from './schema';
-import { defaultConfig } from './defaults';
+import { defaultConfig, configFileNames } from './defaults';
 import { outputOption } from './formats';
 import { normalizePath } from '../content/paths';
 
@@ -107,10 +107,10 @@ export const loadAppConfig = async () => {
 
 	const configObjectCli: Partial<ConfigSchema> = Object.fromEntries(cliOptionsEntries.map(item => item.value));
 
-	const configFilePath = configObjectCli?.configFile || defaultConfig.configFile;
+	const configFilePath = configObjectCli?.configFile || configFileNames.find(item => fs.existsSync(item)) || null;
 	let configObjectFile: Partial<ConfigSchema> = {};
 
-	if (fs.existsSync(configFilePath)) {
+	if (configFilePath) {
 
 		let configFileContents: string | null;
 
@@ -119,18 +119,23 @@ export const loadAppConfig = async () => {
 		} catch (_error) {
 			throw new Error(`Could not read config file: "${configFilePath}"`);
 		}
+
 		if (path.extname(configFilePath) === '.json') {
+
 			try {
 				configObjectFile = JSON.parse(configFileContents) as Partial<ConfigSchema>;
 			} catch (_error) {
 				throw new Error(`Could not parse config file contents: ${configFilePath}: file does not appear to be a valid JSON`);
 			}
+
 		} else if (['.ts','.mts','.js','.mjs'].some(ext => path.extname(configFilePath) === ext)) {
+
 			try {
 				configObjectFile = await importConfigModule(configFileContents);
 			} catch (error) {
 				throw new Error(`Could not load config file module: ${configFilePath}:\n${error}`);
 			}
+
 		} else {
 			throw new Error(`Unknown config file extension: ${configFilePath}`);
 		}
