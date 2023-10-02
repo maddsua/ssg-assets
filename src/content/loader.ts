@@ -76,20 +76,21 @@ export const resolveAssets = async (config: ConfigSchema): Promise<AssetsListIte
 		};
 
 		const assetPathForMatching = assetPath.replace(config.inputDir, '');
+		const matchGlobOrRegexp = (pattern: string | RegExp) => pattern instanceof RegExp ? pattern.test(assetPathForMatching) : minimatch(assetPathForMatching, pattern, matcherSettings);
 
-		const isNotIncluded = config.include.length && !config.include.some(pattern => minimatch(assetPathForMatching, pattern, matcherSettings));
+		const isNotIncluded = config.include.length && !config.include.some(pattern => matchGlobOrRegexp(pattern));
 		if (isNotIncluded) return Object.assign(assetBaseData, {
 			action: undefined,
 			message: 'not included'
 		} as const);
 
-		const isExcluded = config.exclude.some(pattern => minimatch(assetPathForMatching, pattern, matcherSettings));
+		const isExcluded = config.exclude.some(pattern => matchGlobOrRegexp(pattern));
 		if (isExcluded) return Object.assign(assetBaseData, {
 			action: undefined,
 			message: 'excluded'
 		} as const);
 
-		const isPassthrough = config.passthrough.some(pattern => minimatch(assetPathForMatching, pattern, matcherSettings));
+		const isPassthrough = config.passthrough.some(pattern => matchGlobOrRegexp(pattern));
 
 		const imageAssetFormat = imageFormat.find(item => slug.endsWith(item));
 		if (!isPassthrough && imageAssetFormat) return Object.assign(assetBaseData, {
