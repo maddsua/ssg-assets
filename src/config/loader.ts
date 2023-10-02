@@ -75,11 +75,11 @@ const parseCLIArguments = (args: string[]) => {
 				case 'number': {
 					let temp = parseInt(arg_value);
 					return isNaN(temp) ? new Error('Failed to parse number') : temp;
-				};
+				}
 
 				case 'boolean': {
 					return text?.trim()?.toLowerCase() === 'true' || true;
-				};
+				}
 
 				default: return text;
 			};
@@ -89,12 +89,12 @@ const parseCLIArguments = (args: string[]) => {
 
 			case 'primitive': {
 				return [optionName, parsePrimitive(arg_value, optionCtx.dataType)];
-			};
+			}
 
 			case 'array': {
 				let temp = arg_value.split(',');
 				return [optionName, temp.map(item => parsePrimitive(item, optionCtx.dataType))];
-			};
+			}
 
 			default: return new Error('Unsupported CLI option type');
 		};
@@ -127,32 +127,30 @@ export const loadAppConfig = async () => {
 		}
 
 		if (path.extname(configFilePath) === '.json') {
-
 			try {
 				configObjectFile = JSON.parse(configFileContents) as Partial<ConfigSchema>;
 			} catch (_error) {
 				throw new Error(`Could not parse config file contents: ${configFilePath}: file does not appear to be a valid JSON`);
 			}
-
-		} else if (['.ts','.mts','.js','.mjs'].some(ext => path.extname(configFilePath) === ext)) {
-
+		}
+		else if (['.ts','.mts','.js','.mjs'].some(ext => path.extname(configFilePath) === ext)) {
 			try {
 				configObjectFile = await importConfigModule(configFileContents);
 			} catch (error) {
 				throw new Error(`Could not load config file module: ${configFilePath}:\n${error}`);
 			}
-
-		} else {
+		}
+		else {
 			throw new Error(`Unknown config file extension: ${configFilePath}`);
 		}
 
-		const configFileSchemaValidation = configSchema.partial().safeParse(configObjectFile);
-		if (configFileSchemaValidation.success === false) {
-			const errorsList = configFileSchemaValidation.error.errors.map(item => `${item.message} on option(s): ${item.path.map(item => `"${item}"`).join(', ')}`);
+		const zodValidated = configSchema.partial().safeParse(configObjectFile);
+		if (zodValidated.success === false) {
+			const errorsList = zodValidated.error.errors.map(item => `${item.message} on option(s): ${item.path.map(item => `"${item}"`).join(', ')}`);
 			throw new Error(`Config file parsing errors:\n\t${errorsList.join('\n\t')}`);
 		}
 
-		const validatedEntries = Object.keys(configFileSchemaValidation.data);
+		const validatedEntries = Object.keys(zodValidated.data);
 		const allKeys = Object.keys(configObjectFile);
 
 		if (allKeys.length !== validatedEntries.length) {
@@ -165,7 +163,8 @@ export const loadAppConfig = async () => {
 		const adaptedProps = propsToRelative.map(key => ([key, configObjectFile[key]])).filter(([_key, value]) => !!value).map(([key, value]) => ([key, path.join(path.dirname(configFilePath), value as string)]));
 		Object.assign(configObjectFile, Object.fromEntries(adaptedProps));
 
-	} else if (configObjectCli?.configFile) {
+	}
+	else if (configObjectCli?.configFile) {
 		throw new Error(`Config file was not found at: "${configObjectCli.configFile}"`);
 	}
 
