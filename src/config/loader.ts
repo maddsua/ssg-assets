@@ -70,29 +70,32 @@ const parseCLIArguments = (args: string[]) => {
 		const optionCtx = cliOptionsSchema[optionName as keyof typeof cliOptionsSchema] as CliOptionCtx;
 
 		const parsePrimitive = (text: string, type: 'string' | 'number' | 'boolean') => {
+
 			switch (type) {
-				case 'number':
+
+				case 'number': {
 					let temp = parseInt(arg_value);
 					return isNaN(temp) ? new Error('Failed to parse number') : temp;
-				break;
+				}
 
-				case 'boolean':
+				case 'boolean': {
 					return text?.trim()?.toLowerCase() === 'true' || true;
-				break;
+				}
 
 				default: return text;
-			}
+			};
 		};
 
 		switch (optionCtx.type) {
-			case 'primitive':
-				return [optionName, parsePrimitive(arg_value, optionCtx.dataType)];
-			break;
 
-			case 'array':
+			case 'primitive': {
+				return [optionName, parsePrimitive(arg_value, optionCtx.dataType)];
+			}
+
+			case 'array': {
 				let temp = arg_value.split(',');
 				return [optionName, temp.map(item => parsePrimitive(item, optionCtx.dataType))];
-			break;
+			}
 
 			default: return new Error('Unsupported CLI option type');
 		};
