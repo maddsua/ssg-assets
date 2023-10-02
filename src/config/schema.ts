@@ -19,3 +19,56 @@ export const configSchema = z.object({
 export interface ConfigSchema extends z.infer<typeof configSchema> {
 	formats: OutputOption[];
 };
+
+export interface CliOptionCtx {
+	type: 'primitive' | 'array';
+	dataType: 'string' | 'number' | 'boolean';
+};
+
+//	this is stupid, but it's simpler than trying to get it right with Zod
+export const cliOptionsSchema: Partial<Record<keyof ConfigSchema, CliOptionCtx>> = {
+	configFile: {
+		type: 'primitive',
+		dataType: 'string'
+	},
+	cacheDir: {
+		type: 'primitive',
+		dataType: 'string'
+	},
+	inputDir: {
+		type: 'primitive',
+		dataType: 'string'
+	},
+	outputDir: {
+		type: 'primitive',
+		dataType: 'string'
+	},
+	verbose: {
+		type: 'primitive',
+		dataType: 'boolean'
+	},
+	noCache: {
+		type: 'primitive',
+		dataType: 'boolean'
+	},
+	resetCache: {
+		type: 'primitive',
+		dataType: 'boolean'
+	},
+	formats: {
+		type: 'array',
+		dataType: 'string'
+	},
+	exclude: {
+		type: 'array',
+		dataType: 'string'
+	},
+	include: {
+		type: 'array',
+		dataType: 'string'
+	},
+	passthrough: {
+		type: 'array',
+		dataType: 'string'
+	}
+};

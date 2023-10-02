@@ -5,16 +5,12 @@ import path from 'path';
 import { ZodString, ZodBoolean, ZodNumber, ZodArray } from 'zod';
 import esbuild from 'esbuild';
 
-import { configSchema, ConfigSchema } from './schema';
+import { configSchema, type ConfigSchema, cliOptionsSchema, type CliOptionCtx } from './schema';
 import { defaultConfig, configFileNames } from './defaults';
 import { outputOption } from './formats';
 import { normalizePath } from '../content/paths';
 
-interface CliOptionsEntry {
-	value: [string, number | boolean | string | string[]];
-	error?: Error;
-};
-
+type CLIOptionEntry = [string, number | boolean | string | string[]];
 type IndexableObject = Record<string, any>;
 
 const mergeConfigSources = (...args: IndexableObject[]) => {
@@ -61,46 +57,60 @@ const importConfigModule = async (moduleContentRaw: string) => {
 	return moduleConfig;
 };
 
+const parseCLiArguments = (args: string[]) => {
+
+	const caselessOptionMap = Object.fromEntries(Object.keys(cliOptionsSchema).map(item => ([item.toLowerCase(), item]))) as Record<string, keyof CliOptionCtx>;
+	const configSchemaKeys = Object.keys(configSchema.shape).map(item => item.toLowerCase());
+
+	return args.map(argument => {
+
+		const [arg_key, arg_value] = argument.slice(2).split('=');
+		const optionName = caselessOptionMap[arg_key.toLowerCase()];
+		if (!optionName) return new Error(configSchemaKeys.find(item => item === optionName) ? `Option ${optionName} cannot be set from CLI. Use config file instead` : `Argument was not recognized: ${arg_key} (${argument})`);
+	
+		const optionCtx = cliOptionsSchema[optionName as keyof typeof cliOptionsSchema] as CliOptionCtx;
+
+		const parsePrimitive = (text: string, type: 'string' | 'number' | 'boolean') => {
+			switch (type) {
+				case 'number':
+					let temp = parseInt(arg_value);
+					return isNaN(temp) ? new Error('Failed to parse number') : temp;
+				break;
+
+				case 'boolean':
+					return text?.trim()?.toLowerCase() === 'true' || true;
+				break;
+			
+				default: return text;
+			}
+		};
+
+		switch (optionCtx.type) {
+			case 'primitive':
+				return [optionName, parsePrimitive(arg_value, optionCtx.dataType)];
+			break;
+
+			case 'array':
+				let temp = arg_value.split(',');
+				return [optionName, temp.map(item => parsePrimitive(item, optionCtx.dataType))];
+			break;
+		
+			default: return new Error('Unsupported CLI option type');
+		};
+	});
+};
+
 export const loadAppConfig = async () => {
 
 	const cliOptionArguments = process.argv.slice(2).filter(item => /^\-\-[\d\w\_\-]+(=[\d\w\_\-\,\.\*\\\/]+)?$/.test(item));
-	const caselessOptionMap = Object.fromEntries(Object.keys(configSchema.shape).map(item => ([item.toLowerCase(), item]))) as Record<string, keyof ConfigSchema>;
 
-	const cliOptionsEntries = cliOptionArguments.map(item => {
+	const cliOptionsEntries = parseCLiArguments(cliOptionArguments);
 
-		const [arg_key, arg_value] = item.slice(2).split('=');
-		const optionName = caselessOptionMap[arg_key.toLowerCase()];
-		if (!optionName) return { error: new Error(`Argument was not recognized: ${arg_key} (${item})`) };
-
-		const optionSchema = configSchema.shape[optionName as keyof typeof configSchema.shape];
-		let optionValue: string | number | boolean | string[] = arg_value;
-
-		if (optionSchema instanceof ZodBoolean) {
-			optionValue = arg_value !== 'false';
-		}
-		else if (optionSchema instanceof ZodNumber) {
-			let temp = parseInt(arg_value);
-			if (!isNaN(temp)) optionValue = temp;
-		}
-		else if (optionSchema instanceof ZodString) {
-			optionValue = arg_value;
-		}
-		else if (optionSchema instanceof ZodArray) {
-			if (!(optionSchema.element instanceof ZodString))
-				return new Error(`Cannot assign option: ${arg_key}: only string, number and string array type options can be set from CLI`);
-			optionValue = arg_value.split(',');
-		}		
-		else return { error: new Error(`Argument type could not be determined for: ${arg_key}`) };
-
-		return { value: [optionName, optionValue] };
-
-	}) as CliOptionsEntry[];
-
-	const parsingErrors = cliOptionsEntries.filter(item => 'error' in item);
+	const parsingErrors = cliOptionsEntries.filter(item => item instanceof Error);
 	if (parsingErrors.length)
-		throw new Error(`CLI argument parsing failed:\n\t${parsingErrors.map(item => item!.error!.message).join('\n\t')}`);
+		throw new Error(`CLI argument parsing failed:\n\t${parsingErrors.map(item => (item as Error).message).join('\n\t')}`);
 
-	const configObjectCli: Partial<ConfigSchema> = Object.fromEntries(cliOptionsEntries.map(item => item.value));
+	const configObjectCli: Partial<ConfigSchema> = Object.fromEntries(cliOptionsEntries.map(item => item as CLIOptionEntry));
 
 	const configFilePath = configObjectCli?.configFile || configFileNames.find(item => fs.existsSync(item)) || null;
 	let configObjectFile: Partial<ConfigSchema> = {};
