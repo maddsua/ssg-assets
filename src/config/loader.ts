@@ -181,14 +181,14 @@ export const loadAppConfig = async () => {
 		mergedConfig.cacheDir = path.join(mergedConfig.inputDir, './.cache');
 
 	//	normalize paths
+	//	holy shit this is just hard to read
 	const pathProps = ['inputDir', 'outputDir', 'cacheDir'] as (keyof ConfigSchema)[];
-	const pathPropsNormalizedEntries = pathProps.map(item => {
+	Object.assign(mergedConfig, Object.fromEntries(pathProps.map(item => {
 		const pathProp = mergedConfig[item] as string;
 		//	change "@/..." path to cwd-relative
 		const resolvedPath = pathProp.replace(/^\@[\\\/]/, '');
 		return [item, normalizePath(resolvedPath)];
-	});
-	Object.assign(mergedConfig, Object.fromEntries(pathPropsNormalizedEntries));
+	})));
 
 	return mergedConfig;
 };
