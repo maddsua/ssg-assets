@@ -76,11 +76,11 @@ const parseCLIArguments = (args: string[]) => {
 				case 'number': {
 					let temp = parseInt(arg_value);
 					return isNaN(temp) ? new Error('Failed to parse number') : temp;
-				}
+				};
 
 				case 'boolean': {
 					return text?.trim()?.toLowerCase() === 'true' || true;
-				}
+				};
 
 				default: return text;
 			};
@@ -90,12 +90,12 @@ const parseCLIArguments = (args: string[]) => {
 
 			case 'primitive': {
 				return [optionName, parsePrimitive(arg_value, optionCtx.dataType)];
-			}
+			};
 
 			case 'array': {
 				let temp = arg_value.split(',');
 				return [optionName, temp.map(item => parsePrimitive(item, optionCtx.dataType))];
-			}
+			};
 
 			default: return new Error('Unsupported CLI option type');
 		};
