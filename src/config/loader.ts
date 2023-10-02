@@ -76,26 +76,21 @@ export const loadAppConfig = async () => {
 		let optionValue: string | number | boolean | string[] = arg_value;
 
 		if (optionSchema instanceof ZodBoolean) {
-
 			optionValue = arg_value !== 'false';
-
-		} else if (optionSchema instanceof ZodNumber) {
-
+		}
+		else if (optionSchema instanceof ZodNumber) {
 			let temp = parseInt(arg_value);
 			if (!isNaN(temp)) optionValue = temp;
-
-		} else if (optionSchema instanceof ZodString) {
-
+		}
+		else if (optionSchema instanceof ZodString) {
 			optionValue = arg_value;
-
-		} else if (optionSchema instanceof ZodArray) {
-
+		}
+		else if (optionSchema instanceof ZodArray) {
 			if (!(optionSchema.element instanceof ZodString))
 				return new Error(`Cannot assign option: ${arg_key}: only string, number and string array type options can be set from CLI`);
-
 			optionValue = arg_value.split(',');
-
-		} else return { error: new Error(`Argument type could not be determined for: ${arg_key}`) };
+		}		
+		else return { error: new Error(`Argument type could not be determined for: ${arg_key}`) };
 
 		return { value: [optionName, optionValue] };
 
