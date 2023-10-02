@@ -24,10 +24,9 @@ const mergeConfigSources = (...args: IndexableObject[]) => {
 			const propSourceIsArray = typeof source[key] === 'object' && Array.isArray(source[key]);
 			const propIsPrimitive = ['string','number','boolean'].some(item => typeof source[key] === item);
 
-			if (propIsAbsentOnTarget || propSourceIsArray || propIsPrimitive) {
-				target[key] = source[key];
-				continue;
-			} else deepMerge(target[key], source[key]);
+			//	it's in javascript, who the fuck cares?
+			const shouldAssign = (propIsAbsentOnTarget || propSourceIsArray || propIsPrimitive);
+			shouldAssign ? (target[key] = source[key]) : deepMerge(target[key], source[key]);
 		}
 	};
 
