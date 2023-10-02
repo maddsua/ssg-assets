@@ -2,7 +2,6 @@ import process from 'process';
 import fs from 'fs';
 import path from 'path';
 
-import { ZodString, ZodBoolean, ZodNumber, ZodArray } from 'zod';
 import esbuild from 'esbuild';
 
 import { configSchema, type ConfigSchema, cliOptionsSchema, type CliOptionCtx } from './schema';
@@ -57,7 +56,7 @@ const importConfigModule = async (moduleContentRaw: string) => {
 	return moduleConfig;
 };
 
-const parseCLiArguments = (args: string[]) => {
+const parseCLIArguments = (args: string[]) => {
 
 	const caselessOptionMap = Object.fromEntries(Object.keys(cliOptionsSchema).map(item => ([item.toLowerCase(), item]))) as Record<string, keyof CliOptionCtx>;
 	const configSchemaKeys = Object.keys(configSchema.shape).map(item => item.toLowerCase());
@@ -80,7 +79,7 @@ const parseCLiArguments = (args: string[]) => {
 				case 'boolean':
 					return text?.trim()?.toLowerCase() === 'true' || true;
 				break;
-			
+
 				default: return text;
 			}
 		};
@@ -94,7 +93,7 @@ const parseCLiArguments = (args: string[]) => {
 				let temp = arg_value.split(',');
 				return [optionName, temp.map(item => parsePrimitive(item, optionCtx.dataType))];
 			break;
-		
+
 			default: return new Error('Unsupported CLI option type');
 		};
 	});
@@ -104,7 +103,7 @@ export const loadAppConfig = async () => {
 
 	const cliOptionArguments = process.argv.slice(2).filter(item => /^\-\-[\d\w\_\-]+(=[\d\w\_\-\,\.\*\\\/]+)?$/.test(item));
 
-	const cliOptionsEntries = parseCLiArguments(cliOptionArguments);
+	const cliOptionsEntries = parseCLIArguments(cliOptionArguments);
 
 	const parsingErrors = cliOptionsEntries.filter(item => item instanceof Error);
 	if (parsingErrors.length)
