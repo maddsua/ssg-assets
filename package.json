@@ -1,7 +1,7 @@
 {
 	"private": false,
 	"name": "@maddsua/ssg-assets",
-	"version": "3.11.0",
+	"version": "3.11.1",
 	"type": "module",
 	"engines": {
 		"node": ">=16.4.0"
@@ -16,6 +16,10 @@
 		".": {
 			"default": "./index.ts",
 			"types": "./index.ts"
+		},
+		"./components": {
+			"default": "./components/index.ts",
+			"types": "./components/index.ts"
 		},
 		"./react": {
 			"default": "./components/react/index.ts",
