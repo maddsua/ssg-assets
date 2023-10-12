@@ -433,7 +433,7 @@ const allTests: (() => void)[] = [
 	}),
 
 	/**
-	 * Test 8
+	 * Test 9
 	 * Generate source context for:
 	 * 	Multiple adaptive mode
 	 * 	Multiple image formats
@@ -514,7 +514,7 @@ const allTests: (() => void)[] = [
 	}),
 
 	/**
-	 * Test 9
+	 * Test 10
 	 * Generate source context for:
 	 * 	Multiple alt formats
 	 * Chech that url search params are preserved
@@ -543,7 +543,7 @@ const allTests: (() => void)[] = [
 	}),
 
 	/**
-	 * Test 9
+	 * Test 11
 	 * Generate source context for:
 	 * 	Multiple alt formats
 	 * Chech that url search params are preserved on global URL paths
