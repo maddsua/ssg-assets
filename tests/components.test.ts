@@ -538,7 +538,36 @@ const allTests: (() => void)[] = [
 				type: 'image/webp'
 			}
 		];
+
+		assertEqual(expectSources, outputSources);
+	}),
+
+	/**
+	 * Test 9
+	 * Generate source context for:
+	 * 	Multiple alt formats
+	 * Chech that url search params are preserved on global URL paths
+	 */
+	(() => {
+
+		const input = {
+			url: 'https://example.com/cats/image.png?hash=yuefm',
+			formats: ['webp','avif']
+		};
 	
+		const outputSources = mapSources(input.url, input.formats, undefined);
+	
+		const expectSources = [
+			{
+				source: 'https://example.com/cats/image.avif?hash=yuefm',
+				type: 'image/avif'
+			},
+			{
+				source: 'https://example.com/cats/image.webp?hash=yuefm',
+				type: 'image/webp'
+			}
+		];
+
 		assertEqual(expectSources, outputSources);
 	}),
 ];
