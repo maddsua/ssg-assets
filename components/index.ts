@@ -72,10 +72,8 @@ export const mapSources = (baseImageSrc: string, formats?: ImageFormatsType, ada
 	const makeSourceUrl = (sourceFormat: string) => {
 
 		if (baseImgUrl) {
-
 			const sourceURL = new URL(baseImgUrl);
 			sourceURL.pathname = `${baseImgUrl.pathname.replace(expressions.dotExtension, '')}.${sourceFormat}`;
-
 			return isGlobalURL ? sourceURL.href : `${sourceURL.pathname}${sourceURL.search}`;
 		}
 
