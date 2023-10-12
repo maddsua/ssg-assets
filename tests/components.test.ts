@@ -432,7 +432,7 @@ const allTests: (() => void)[] = [
 
 	}),
 
-		/**
+	/**
 	 * Test 8
 	 * Generate source context for:
 	 * 	Multiple adaptive mode
