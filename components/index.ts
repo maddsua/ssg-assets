@@ -64,10 +64,26 @@ export interface SourceMapEntry {
 export const mapSources = (baseImageSrc: string, formats?: ImageFormatsType, adaptiveMode?: AdaptiveMode): SourceMapEntry[] => {
 
 	const requestedFormats = formats ? (typeof formats === 'string') ? formats.split(',').map(item => item.trim().toLowerCase()) : formats : [];
-	const imageAltFormats = supportedFormats.map(item_s => requestedFormats.find(item_r => item_s === item_r)).filter(item => !!item);
-	
+	const imageAltFormats = supportedFormats.map(item_s => requestedFormats.find(item_r => item_s === item_r)).filter(item => !!item) as string[];
+
+	const isGlobalURL = baseImageSrc.startsWith('http');
+	const baseImgUrl: URL | null = baseImageSrc.includes('?') ? ( isGlobalURL ? new URL(baseImageSrc) : new URL(baseImageSrc, 'https://example.com')) : null;
+
+	const makeSourceUrl = (sourceFormat: string) => {
+
+		if (baseImgUrl) {
+
+			const sourceURL = new URL(baseImgUrl);
+			sourceURL.pathname = `${baseImgUrl.pathname.replace(expressions.dotExtension, '')}.${sourceFormat}`;
+
+			return isGlobalURL ? sourceURL.href : `${sourceURL.pathname}${sourceURL.search}`;
+		}
+
+		return `${baseImageSrc.replace(expressions.dotExtension, '')}.${sourceFormat}`;
+	};
+
 	const altFormatSources = imageAltFormats.map(format => ({
-		source: `${baseImageSrc.replace(expressions.dotExtension, '')}.${format}`,
+		source: makeSourceUrl(format),
 		type: `image/${format}`
 	}));
 
