@@ -430,7 +430,146 @@ const allTests: (() => void)[] = [
 
 		assertEqual(expectSources, outputSources);
 
-	})
+	}),
+
+	/**
+	 * Test 9
+	 * Generate source context for:
+	 * 	Multiple adaptive mode
+	 * 	Multiple image formats
+	 * With:
+	 * 	Replacing part of image file name
+	 */
+	(() => {
+
+		const input = {
+			url: '/bannner/id/en_desktop.jpg',
+			adaptive: {
+				baseModifier: '_desktop',
+				variants: [
+					{
+						media: '(orientation: landscape)',
+						modifier: '_desktop',
+					},
+					{
+						media: '(orientation: portrait)',
+						modifier: '_mobile',
+					},
+					{
+						media: '(max-width: 720px)',
+						modifier: '_tablet',
+					}
+				]
+			},
+			formats: ['webp', 'avif']
+		}
+
+		const outputSources = mapSources(input.url, input.formats, input.adaptive);
+
+		const expectSources =  [
+			{
+				media: '(orientation: landscape)',
+				source: '/bannner/id/en_desktop.avif',
+				type: 'image/avif'
+			},
+			{
+				media: '(orientation: portrait)',
+				source: '/bannner/id/en_mobile.avif',
+				type: 'image/avif'
+			},
+			{
+				media: '(max-width: 720px)',
+				source: '/bannner/id/en_tablet.avif',
+				type: 'image/avif'
+			},
+			{
+				media: '(orientation: landscape)',
+				source: '/bannner/id/en_desktop.webp',
+				type: 'image/webp'
+			},
+			{
+				media: '(orientation: portrait)',
+				source: '/bannner/id/en_mobile.webp',
+				type: 'image/webp'
+			},
+			{
+				media: '(max-width: 720px)',
+				source: '/bannner/id/en_tablet.webp',
+				type: 'image/webp'
+			},
+			{
+				media: '(orientation: portrait)',
+				source: '/bannner/id/en_mobile.jpg',
+				type: 'image/jpg'
+			},
+			{
+				media: '(max-width: 720px)',
+				source: '/bannner/id/en_tablet.jpg',
+				type: 'image/jpg'
+			}
+		];
+
+		assertEqual(expectSources, outputSources);
+
+	}),
+
+	/**
+	 * Test 10
+	 * Generate source context for:
+	 * 	Multiple alt formats
+	 * Chech that url search params are preserved
+	 */
+	(() => {
+
+		const input = {
+			url: '/cats/image.png?hash=yuefm',
+			formats: ['webp','avif']
+		};
+	
+		const outputSources = mapSources(input.url, input.formats, undefined);
+	
+		const expectSources = [
+			{
+				source: '/cats/image.avif?hash=yuefm',
+				type: 'image/avif'
+			},
+			{
+				source: '/cats/image.webp?hash=yuefm',
+				type: 'image/webp'
+			}
+		];
+
+		assertEqual(expectSources, outputSources);
+	}),
+
+	/**
+	 * Test 11
+	 * Generate source context for:
+	 * 	Multiple alt formats
+	 * Chech that url search params are preserved on global URL paths
+	 */
+	(() => {
+
+		const input = {
+			url: 'https://example.com/cats/image.png?hash=yuefm',
+			formats: ['webp','avif']
+		};
+	
+		const outputSources = mapSources(input.url, input.formats, undefined);
+	
+		const expectSources = [
+			{
+				source: 'https://example.com/cats/image.avif?hash=yuefm',
+				type: 'image/avif'
+			},
+			{
+				source: 'https://example.com/cats/image.webp?hash=yuefm',
+				type: 'image/webp'
+			}
+		];
+
+		assertEqual(expectSources, outputSources);
+	}),
 ];
 
 allTests.forEach((testCallback, index) => {
