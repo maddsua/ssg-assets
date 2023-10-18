@@ -8,7 +8,7 @@ export interface CachedAsset {
 export const getCachedAssets = (cacheDir: string): CachedAsset[] => {
 
 	if (!fs.existsSync(cacheDir))
-		fs.mkdirSync(cacheDir);
+		fs.mkdirSync(cacheDir, { recursive: true });
 
 	const cached = fs.readdirSync(cacheDir);
 
@@ -16,4 +16,4 @@ export const getCachedAssets = (cacheDir: string): CachedAsset[] => {
 		file: cacheDir + '/' + item,
 		hash: item.replace(/\..+$/, '')
 	}));
-}
+};
