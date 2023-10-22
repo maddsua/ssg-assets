@@ -4,11 +4,11 @@
 
 	export let src: ImageProps['src'];
 	export let alt: ImageProps['alt'];
-	export let classList: ImageProps['class'];
-	export let style: ImageProps['style'];
-	export let lazy: ImageProps['lazy'];
-	export let sizes: ImageProps['sizes'];
-	export let draggable: ImageProps['draggable'];
+	export let classList: ImageProps['class'] = undefined;
+	export let style: ImageProps['style'] = undefined;
+	export let lazy: ImageProps['lazy'] = undefined;
+	export let sizes: ImageProps['sizes'] = undefined;
+	export let draggable: ImageProps['draggable'] = undefined;
 
 	const size = getImageSize(sizes);
 
