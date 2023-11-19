@@ -152,8 +152,6 @@ export type HTMLAttribStruct = Record<string, HTMLAttributeValue>;
 
 export const composeAttributesHTML = (attrList: HTMLAttribStruct) => Object.entries(attrList).filter(item => ['string', 'boolean', 'number'].some(typeid => typeid === typeof item[1])).map(([attr, value]) => `${attr}="${typeof value === 'string' ? value.replace(/\"/, '\"') : value}"`).join(' ');
 
-export const attributeListToString = (attrList: [string, any][]) => attrList.filter(([_attr, value]) => typeof value === 'string' || typeof value === 'boolean' || typeof value === 'boolean').map(([attr, value]) => `${attr}="${typeof value === 'string' ? value.replace(/\"/, '\"') : value}"`).join(' ');
-
 interface GetDOMRoot {
 	domRoot: Document;
 	isNativeDOM: boolean;
@@ -173,11 +171,11 @@ export const getDOMRoot = (customDOMRoot?: Document): GetDOMRoot => {
 	return { domRoot: document, isNativeDOM: true };
 };
 
-export const asyncSleep = (timeout: number) => new Promise<void>(resolve => setTimeout(resolve, timeout));
-
 export const revealLazyLoaded = (root?: HTMLElement | Element | null) => {
 
 	const lazyImages = (root || document).querySelectorAll<HTMLImageElement>('img[loading="lazy"]');
+
+	const asyncSleep = (timeout: number) => new Promise<void>(resolve => setTimeout(resolve, timeout));
 
 	lazyImages.forEach(image => {
 
