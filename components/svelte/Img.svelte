@@ -1,6 +1,6 @@
 <script lang="ts">
 
-	import { type ImageProps, getImageSize, classToString, styleToString } from '../index.js';
+	import { type ImageProps, getImageSize, classToString, styleToString, applyImageSrc } from '../index.js';
 
 	export let src: ImageProps['src'];
 	export let alt: ImageProps['alt'];
@@ -14,4 +14,13 @@
 
 </script>
 
-<img src={src} alt={alt} width={size?.width} height={size?.height} draggable={ draggable === true ? 'true' : 'false' } loading={ lazy !== false ? 'lazy' : undefined } class={classToString(classList)} style={styleToString(style)} data-ssga-id="img:svelte" />
+<img src={applyImageSrc(src)}
+	alt={alt}
+	width={size?.width}
+	height={size?.height}
+	draggable={ draggable === true ? 'true' : 'false' }
+	loading={ lazy !== false ? 'lazy' : undefined }
+	class={classToString(classList)}
+	style={styleToString(style)}
+	data-ssga-id="img:svelte"
+/>

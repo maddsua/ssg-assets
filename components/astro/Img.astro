@@ -1,9 +1,18 @@
 ---
-import { type ImageProps, getImageSize, classToString, styleToString } from '../index';
+import { type ImageProps, getImageSize, classToString, styleToString, applyImageSrc } from '../index';
 
 export interface Props extends ImageProps {};
 const props = Astro.props;
 const size = getImageSize(props.sizes);
 ---
 
-<img src={props.src} alt={props.alt} width={size?.width} height={size?.height} draggable={ props.draggable === true ? 'true' : 'false' } loading={ props.lazy !== false ? 'lazy' : undefined } class={classToString(props.class)} style={styleToString(props.style)}data-ssga-id="img:astro" />
+<img src={applyImageSrc(props.src)}
+	alt={props.alt}
+	width={size?.width}
+	height={size?.height}
+	draggable={ props.draggable === true ? 'true' : 'false' }
+	loading={ props.lazy !== false ? 'lazy' : undefined }
+	class={classToString(props.class)}
+	style={styleToString(props.style)}
+	data-ssga-id="img:astro"
+/>

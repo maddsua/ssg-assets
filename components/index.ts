@@ -1,4 +1,13 @@
 
+/**
+ * This text literal should be replaced by the bundler
+ * in case u want to force static hosting cache invalidated on new deploy
+ */
+const ssgaDeployHashLiteral = `__SSGA_DEPLOY_CACHE_HASH__`;
+const assetsVersionQuery = ssgaDeployHashLiteral.startsWith('_') ? '' : `?w=${ssgaDeployHashLiteral}`;
+
+export const applyImageSrc = (assetSrc: string) => (!assetSrc.includes('?') && assetsVersionQuery) ? assetSrc + assetsVersionQuery : assetSrc;
+
 type ModeModifier = string | null | undefined;
 type ReplaceBaseModifier = string | RegExp | undefined;
 type AdaptiveModeMediaQuery = string | null | undefined;
@@ -67,9 +76,10 @@ export const mapSources = (baseImageSrc: string, formats?: ImageFormatsType, ada
 	const imageAltFormats = supportedFormats.map(item_s => requestedFormats.find(item_r => item_s === item_r)).filter(item => !!item) as string[];
 
 	const queryParamsStart = baseImageSrc.indexOf('?');
+	const hasQueryParams = queryParamsStart !== -1;
 
-	const urlNoSearch = queryParamsStart === -1 ? baseImageSrc : baseImageSrc.slice(0, queryParamsStart);
-	const queryParams = queryParamsStart !== -1 ? baseImageSrc.slice(queryParamsStart) : '';
+	const urlNoSearch = hasQueryParams ? baseImageSrc.slice(0, queryParamsStart) : baseImageSrc;
+	const queryParams = hasQueryParams ? baseImageSrc.slice(queryParamsStart) : assetsVersionQuery;
 
 	const altFormatSources = imageAltFormats.map(format => ({
 		source: `${urlNoSearch.replace(expressions.dotExtension, '')}.${format}${queryParams}`,
@@ -144,8 +154,6 @@ export type HTMLAttribStruct = Record<string, HTMLAttributeValue>;
 
 export const composeAttributesHTML = (attrList: HTMLAttribStruct) => Object.entries(attrList).filter(item => ['string', 'boolean', 'number'].some(typeid => typeid === typeof item[1])).map(([attr, value]) => `${attr}="${typeof value === 'string' ? value.replace(/\"/, '\"') : value}"`).join(' ');
 
-export const attributeListToString = (attrList: [string, any][]) => attrList.filter(([_attr, value]) => typeof value === 'string' || typeof value === 'boolean' || typeof value === 'boolean').map(([attr, value]) => `${attr}="${typeof value === 'string' ? value.replace(/\"/, '\"') : value}"`).join(' ');
-
 interface GetDOMRoot {
 	domRoot: Document;
 	isNativeDOM: boolean;
@@ -165,11 +173,11 @@ export const getDOMRoot = (customDOMRoot?: Document): GetDOMRoot => {
 	return { domRoot: document, isNativeDOM: true };
 };
 
-export const asyncSleep = (timeout: number) => new Promise<void>(resolve => setTimeout(resolve, timeout));
-
 export const revealLazyLoaded = (root?: HTMLElement | Element | null) => {
 
 	const lazyImages = (root || document).querySelectorAll<HTMLImageElement>('img[loading="lazy"]');
+
+	const asyncSleep = (timeout: number) => new Promise<void>(resolve => setTimeout(resolve, timeout));
 
 	lazyImages.forEach(image => {
 
