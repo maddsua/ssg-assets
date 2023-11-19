@@ -87,7 +87,23 @@ For instance, this is how you import a Picture component for Vue:
 import { Picture } from '@maddsua/ssg-assets/vue';
 ```
 
-### If stuff does not work
+## Cache invalidation for static hostings
+
+There are cases where you'd want browser to reset it's image cache but a hosting provider does not allow you to do it easily.
+The easy solution here is to change image's url search params so that on each deploy it will change and force browser to re-download image.
+
+In order to activate this feature make sure that your bundler replaces this string literal `__SSGA_DEPLOY_CACHE_HASH__` with a unique deploy identifier. Or just a random string.
+Here's an example how it's done with Vite when deploying from GitLab:
+
+```js
+...
+define: {
+  __SSGA_DEPLOY_CACHE_HASH__: process.env['CI_COMMIT_SHA']?.slice(0, 8)
+}
+...
+```
+
+## If stuff does not work
 
 Your bundler/compiler may choke on this, so try using this config line for Webpack:
 
