@@ -66,22 +66,13 @@ export const mapSources = (baseImageSrc: string, formats?: ImageFormatsType, ada
 	const requestedFormats = formats ? (typeof formats === 'string') ? formats.split(',').map(item => item.trim().toLowerCase()) : formats : [];
 	const imageAltFormats = supportedFormats.map(item_s => requestedFormats.find(item_r => item_s === item_r)).filter(item => !!item) as string[];
 
-	const isGlobalURL = baseImageSrc.startsWith('http');
-	const baseImgUrl: URL | null = baseImageSrc.includes('?') ? ( isGlobalURL ? new URL(baseImageSrc) : new URL(baseImageSrc, 'https://example.com')) : null;
+	const queryParamsStart = baseImageSrc.indexOf('?');
 
-	const makeSourceUrl = (sourceFormat: string) => {
-
-		if (baseImgUrl) {
-			const sourceURL = new URL(baseImgUrl);
-			sourceURL.pathname = `${baseImgUrl.pathname.replace(expressions.dotExtension, '')}.${sourceFormat}`;
-			return isGlobalURL ? sourceURL.href : `${sourceURL.pathname}${sourceURL.search}`;
-		}
-
-		return `${baseImageSrc.replace(expressions.dotExtension, '')}.${sourceFormat}`;
-	};
+	const urlNoSearch = queryParamsStart === -1 ? baseImageSrc : baseImageSrc.slice(0, queryParamsStart);
+	const queryParams = queryParamsStart !== -1 ? baseImageSrc.slice(queryParamsStart) : '';
 
 	const altFormatSources = imageAltFormats.map(format => ({
-		source: makeSourceUrl(format),
+		source: `${urlNoSearch.replace(expressions.dotExtension, '')}.${format}${queryParams}`,
 		type: `image/${format}`
 	}));
 
