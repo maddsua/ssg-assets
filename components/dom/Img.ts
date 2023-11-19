@@ -1,4 +1,4 @@
-import { type ImageProps, getImageSize, classToString, styleToString, getDOMRoot } from '../index';
+import { type ImageProps, getImageSize, classToString, styleToString, getDOMRoot, applyImageSrc } from '../index';
 
 export default (props: ImageProps, useDOMRoot?: Document) => {
 
@@ -17,7 +17,7 @@ export default (props: ImageProps, useDOMRoot?: Document) => {
 	//	For instance: the "loading" attribute is not being reflected in picture's "innerHTML" when set as img's property (JSDOM)
 	if (isNativeDOM) {
 
-		imgElement.src = props.src;
+		imgElement.src = applyImageSrc(props.src);
 		imgElement.alt = props.alt;
 		imgElement.draggable = props.draggable === true;
 		imgElement.loading = props.lazy !== false ? 'lazy' : 'eager';
@@ -27,7 +27,7 @@ export default (props: ImageProps, useDOMRoot?: Document) => {
 
 	} else {
 
-		imgElement.setAttribute('src', props.src);
+		imgElement.setAttribute('src', applyImageSrc(props.src));
 		imgElement.setAttribute('alt', props.alt);
 		imgElement.setAttribute('draggable', props.draggable === true ? 'true' : 'false');
 		imgElement.setAttribute('loading', props.lazy !== false ? 'lazy' : 'eager');
