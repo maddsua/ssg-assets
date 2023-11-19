@@ -89,11 +89,11 @@ import { Picture } from '@maddsua/ssg-assets/vue';
 
 ## Cache invalidation for static hostings
 
-There are cases where you'd want browser to reset it's image cache but a hosting provider does not allow you to do it easily.
-The easy solution here is to change image's url search params so that on each deploy it will change and force browser to re-download image.
+There are cases where you'd want browser to reset it's image cache but a hosting provider does not provide an easy way to do it.
+The solution here is to change image's url search params so that on each deploy it will be different thus forcing browser to re-download assets.
 
-In order to activate this feature make sure that your bundler replaces this string literal `__SSGA_DEPLOY_CACHE_HASH__` with a unique deploy identifier. Or just a random string.
-Here's an example how it's done with Vite when deploying from GitLab:
+In order to activate this feature make sure that your bundler replaces string literal `__SSGA_DEPLOY_CACHE_HASH__` with a unique deploy identifier. Or a random string.
+Here's an example how it's done using Vite when deploying from GitLab:
 
 ```js
 ...
@@ -108,14 +108,16 @@ define: {
 Your bundler/compiler may choke on this, so try using this config line for Webpack:
 
 ```js
+...
 transpilePackages: ['@maddsua/ssg-assets']
+...
 ```
 or this one for Vite:
 
 ```js
-vite: {
-    ssr: {
-        noExternal: '@maddsua/ssg-assets'
-    }
+...
+ssr: {
+  noExternal: '@maddsua/ssg-assets'
 }
+...
 ```
