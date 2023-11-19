@@ -3,8 +3,10 @@
  * This text literal should be replaced by the bundler
  * in case u want to force static hosting cache invalidated on new deploy
  */
-const ssgaDeployCacheLiteral = `__SSGA_DEPLOY_CACHE_HASH__`;
-const deployCacheHash = ssgaDeployCacheLiteral.startsWith('_') ? undefined : ssgaDeployCacheLiteral;
+const ssgaDeployHashLiteral = `__SSGA_DEPLOY_CACHE_HASH__`;
+const assetsVersionQuery = ssgaDeployHashLiteral.startsWith('_') ? '' : `?w=${ssgaDeployHashLiteral}`;
+
+export const applyImageSrc = (assetSrc: string) => (!assetSrc.includes('?') && assetsVersionQuery) ? assetSrc + assetsVersionQuery : assetSrc;
 
 type ModeModifier = string | null | undefined;
 type ReplaceBaseModifier = string | RegExp | undefined;
@@ -77,7 +79,7 @@ export const mapSources = (baseImageSrc: string, formats?: ImageFormatsType, ada
 	const hasQueryParams = queryParamsStart !== -1;
 
 	const urlNoSearch = hasQueryParams ? baseImageSrc.slice(0, queryParamsStart) : baseImageSrc;
-	const queryParams = hasQueryParams ? baseImageSrc.slice(queryParamsStart) : (`?w=${deployCacheHash}` || '');
+	const queryParams = hasQueryParams ? baseImageSrc.slice(queryParamsStart) : assetsVersionQuery;
 
 	const altFormatSources = imageAltFormats.map(format => ({
 		source: `${urlNoSearch.replace(expressions.dotExtension, '')}.${format}${queryParams}`,
