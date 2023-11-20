@@ -3,8 +3,8 @@
  * This text literal should be replaced by the bundler
  * in case u want to force static hosting cache invalidated on new deploy
  */
-const ssgaDeployHashLiteral = `__SSGA_DEPLOY_CACHE_HASH__`;
-const assetsVersionQuery = ssgaDeployHashLiteral.startsWith('_') ? '' : `?w=${ssgaDeployHashLiteral}`;
+const deployHashLiteral = `__SSGA_DEPLOY_CACHE_HASH__`;
+const assetsVersionQuery = deployHashLiteral.startsWith('_') ? '' : `?w=${deployHashLiteral.replace(/[^\w\-\_]+/g, '')}`;
 
 export const applyImageSrc = (assetSrc: string) => (!assetSrc.includes('?') && assetsVersionQuery) ? assetSrc + assetsVersionQuery : assetSrc;
 
