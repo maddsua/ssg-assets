@@ -47,20 +47,21 @@ export interface PictireProps extends ImageProps {
 
 export const supportedFormats: ImageFormats[] = [ 'avif', 'webp', 'png', 'jpg', 'jpeg', 'gif' ];
 
-const expressions = {
-	dotExtension: /\.[\w\d]+$/,
-	allBeforeExtension: /^.+\./
+const filePathNoExtension = (filepath: string) => {
+	const dotPosition = filepath.lastIndexOf('.');
+	if (dotPosition === -1) return filepath;
+	return filepath.slice(0, dotPosition);
+};
+
+const getPathExtension = (filepath: string) => {
+	const dotPosition = filepath.lastIndexOf('.');
+	if (dotPosition === -1) return '';
+	return filepath.slice(dotPosition + 1);
 };
 
 const applyUrlModifier = (imageUrl: string, modifier: ModeModifier, baseModifier: ReplaceBaseModifier) => {
-
 	if (!modifier) return imageUrl;
-
-	const fileNameNoExtension = imageUrl.replace(expressions.dotExtension, '');
-	const fileDotExtension = imageUrl.replace(expressions.allBeforeExtension, '');
-
-	if (!baseModifier) return `${fileNameNoExtension}${modifier}.${fileDotExtension}`;
-
+	if (!baseModifier) return `${filePathNoExtension(imageUrl)}${modifier}.${getPathExtension(imageUrl)}`;
 	return imageUrl.replace(baseModifier, modifier);
 };
 
@@ -82,7 +83,7 @@ export const mapSources = (baseImageSrc: string, formats?: ImageFormatsType, ada
 	const queryParams = hasQueryParams ? baseImageSrc.slice(queryParamsStart) : assetsVersionQuery;
 
 	const altFormatSources = imageAltFormats.map(format => ({
-		source: `${urlNoSearch.replace(expressions.dotExtension, '')}.${format}${queryParams}`,
+		source: `${filePathNoExtension(urlNoSearch)}.${format}${queryParams}`,
 		type: `image/${format}`
 	}));
 
@@ -103,7 +104,7 @@ export const mapSources = (baseImageSrc: string, formats?: ImageFormatsType, ada
 	const adaptiveBaseFormat = adaptiveVariants.map(variant => ({
 		media: variant.media ? variant.media : undefined,
 		source: applyUrlModifier(baseImageSrc, variant.modifier, adaptiveMode.baseModifier),
-		type: `image/${baseImageSrc.replace(expressions.allBeforeExtension, '')}`
+		type: `image/${getPathExtension(baseImageSrc)}`
 	})).filter(item => item.source !== baseImageSrc);
 
 	//	Return a flattened array of all options, with media-less sourced at the end
