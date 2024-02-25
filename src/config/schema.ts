@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { OutputOption } from './formats';
+import type { OutputOption } from './formats';
 
 export const configSchema = z.object({
 	configFile: z.string().or(z.null()),
