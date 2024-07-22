@@ -1,0 +1,18 @@
+name: Test PR changes
+
+on:
+  pull_request:
+    branches: ['main']
+
+jobs:
+   test_pkg:
+    name: Test package
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: denoland/setup-deno@v1
+      with:
+        deno-version: "1.36.2"
+    - run: |
+        cd tests
+        deno task test_predeploy
