@@ -53,17 +53,25 @@ const printCliConfig = (config: ConfigSchema) => {
 
 	console.log('Hashing assets...');
 
+	const hashingStarted = new Date().getTime();
+
 	const assets = await resolveAssets(config);
 	let cached: CachedAsset[] | null = null;
 
-	if (!assets.length) throw new Error('No assets were located');
-	if (config.verbose) console.log('Found', assets.length, 'asset sources\n');
+	if (!assets.length) {
+		throw new Error('No assets were located');
+	}
+
+	if (config.verbose) {
+		console.log('Found', assets.length, 'assets');
+	}
 
 	if (!config.noCache) {
 
 		cached = getCachedAssets(config.cacheDir);
 
-		const nukePath = (pathname: string) => fs.statSync(pathname).isDirectory() ? fs.rmdirSync(pathname, { recursive: true }) : fs.rmSync(pathname);
+		const nukePath = (pathname: string) => fs.statSync(pathname).isDirectory() ?
+			fs.rmdirSync(pathname, { recursive: true }) : fs.rmSync(pathname);
 
 		if (!config.resetCache) {
 
@@ -82,8 +90,11 @@ const printCliConfig = (config: ConfigSchema) => {
 
 	} else {
 
-		if (config.resetCache) console.warn(chalk.yellow('noCache and resetCache flags cannot be used at the same time. Just saying.', '\n'));
-		console.log(chalk.bgWhite.black(' Cache disabled '), '\n');
+		if (config.resetCache) {
+			console.warn(chalk.yellow('noCache and resetCache flags cannot be used at the same time. Just saying.', '\n'));
+		}
+
+		console.log('\n', chalk.bgWhite.black(' Cache disabled '), '\n');
 	}
 
 	const stats = {
@@ -104,32 +115,47 @@ const printCliConfig = (config: ConfigSchema) => {
 			return;
 		}
 		
-		if (config.verbose) console.log(chalk.green('Not changed:'), destpath);
+		if (config.verbose) {
+			console.log(chalk.green('Not changed:'), destpath);
+		}
+
 		stats.notChanged++;
 		
 		resolve(true);
 		
 	})().catch((_error) => resolve(false)));
 	
+
+	console.log(chalk.green('Index ready in'), new Date().getTime() - hashingStarted, chalk.green('ms'));
 	console.log('\r');
+
+	const transformsStarted = new Date().getTime();
 
 	await Promise.all(assets.map(async (asset) => {
 
 		//	skip assets with no assigned action
 		if (!asset.action) {
-			if (config.verbose) console.log(chalk.green(`>> Skipped`), chalk.cyanBright(`[${asset.message || 'no action'}]:`), asset.source);
+
+			if (config.verbose) {
+				console.log(chalk.green(`>> Skipped`), chalk.cyanBright(`[${asset.message || 'no action'}]:`), asset.source);
+			}
+
 			return;
 		}
 
 		//	create dest dir
 		const destDir = path.dirname(asset.dest);
-		if (!fs.existsSync(destDir))
+		if (!fs.existsSync(destDir)) {
 			fs.mkdirSync(destDir, { recursive: true });
+		}
 
 		//	asset passtrough
 		if (asset.action === 'copy') {
 
-			if (await skipIfNotChanged(asset.source, asset.dest)) return;
+			if (await skipIfNotChanged(asset.source, asset.dest)) {
+				return;
+			}
+
 			fs.copyFileSync(asset.source, asset.dest);
 			stats.copied++;
 
@@ -141,16 +167,24 @@ const printCliConfig = (config: ConfigSchema) => {
 		await Promise.all(config.formats.map(async (format) => {
 
 			if (format === 'original') {
-				if (config.formats.some(item => item === asset.format)) return;
+
+				if (config.formats.some(item => item === asset.format)) {
+					return;
+				}
+
 				format = asset.format;
 			}
 
 			//	try getting from cache
 			const dest = asset.dest.replace(/\.[\d\w]+$/, `.${format}`);
 			const cacheItem = asset.cache + `.${format}`;
+
 			if (!config.noCache && fs.existsSync(cacheItem)) {
 
-				if (await skipIfNotChanged(cacheItem, dest)) return;
+				if (await skipIfNotChanged(cacheItem, dest)) {
+					return;
+				}
+
 				fs.copyFileSync(cacheItem, dest);
 				stats.cacheHits++;
 				
@@ -163,7 +197,9 @@ const printCliConfig = (config: ConfigSchema) => {
 			await sharp(asset.source).toFormat(format, { quality: outputQuality }).toFile(dest);
 
 			stats.sharpConverted++;
-			if (!config.noCache) fs.copyFileSync(dest, cacheItem);
+			if (!config.noCache) {
+				fs.copyFileSync(dest, cacheItem);
+			}
 
 			console.log(chalk.green(`Converted${config.noCache ? '' : ' and cached'}:`), dest);
 			
@@ -172,17 +208,34 @@ const printCliConfig = (config: ConfigSchema) => {
 	}));
 
 	if (Object.values(stats).some(item => item > 0)) {
+
 		console.log('\r');
-		if (stats.sharpConverted) console.log('Converted:', stats.sharpConverted, 'images');
-		if (stats.cacheHits) console.log('Cache hits:', stats.cacheHits);
-		if (stats.copied) console.log('Copied:', stats.copied, 'assets');
-		if (stats.notChanged) console.log('Verified:', stats.notChanged, 'assets');
+
+		if (stats.sharpConverted) {
+			console.log('Transformed:', stats.sharpConverted, 'images');
+		}
+
+		if (stats.cacheHits) {
+			console.log('Cache hits:', stats.cacheHits);
+		}
+
+		if (stats.copied) {
+			console.log('Copied:', stats.copied, 'assets');
+		}
+
+		if (stats.notChanged) {
+			console.log('Verified:', stats.notChanged, 'assets');
+		}
+
+		console.log(chalk.green('Completed in'), new Date().getTime() - transformsStarted, chalk.green('ms'));
 	}
 
 	console.log(chalk.bgGreen.black('\n Processing done. \n'));
 
 })().catch((error: Error | any) => {
-	if (error instanceof Error) console.error(chalk.red(`❌ Asset processing terminated:\n-> ${error.message}`))
-		else console.error(chalk.red(`❌  Asset processing terminated:\nUnhandled exception:`), error);
+
+	const errorMessage = error instanceof Error ? `-> ${error.message}` : `Unhandled exception: ${error}`;
+	console.error(chalk.red(`❌ Asset processing terminated:\n`), errorMessage);
+
 	process.exit(1);
 });
