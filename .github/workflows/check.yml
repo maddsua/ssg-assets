@@ -5,7 +5,7 @@ on:
     branches: ['main']
 
 jobs:
-   test_pkg:
+   test-pkg:
     name: Test package
     runs-on: ubuntu-latest
     steps:

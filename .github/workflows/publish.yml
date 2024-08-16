@@ -7,7 +7,7 @@ on:
 
 jobs:
 
-  test_pkg:
+  test-pkg:
     name: Test package
     runs-on: ubuntu-latest
     steps:
@@ -19,9 +19,9 @@ jobs:
         cd tests
         deno task test_predeploy
 
-  deploy_package_npm:
+  publish-npmjs:
     runs-on: ubuntu-latest
-    needs: test_pkg
+    needs: test-pkg
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
@@ -32,11 +32,11 @@ jobs:
     - run: npm run build
     - run: npm publish --access public
       env:
-        NODE_AUTH_TOKEN: ${{secrets.NPM_PUBLISH}}
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-  deploy_package_github:
+  publish-gh:
     runs-on: ubuntu-latest
-    needs: test_pkg
+    needs: test-pkg
     permissions:
       packages: write
     steps:
@@ -49,4 +49,4 @@ jobs:
     - run: npm run build
     - run: npm publish --access public
       env:
-        NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
