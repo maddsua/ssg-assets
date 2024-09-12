@@ -4,7 +4,7 @@ const config: Config = {
 	verbose: true,
 	inputDir: './assets',
 	outputDir: './dist',
-	exclude: [
+	skip: [
 		'**/vector/*.svg'
 	]
 }
