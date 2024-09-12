@@ -10,62 +10,45 @@ Makes a bunch of avif's and webp's from jpeg's, png's and such.
 
 ## CLI
 
-After installing the package you'll be able to use ssga CLI tool. It's basically a cool-kids launcher for sharp (image conversion library). In orders to tweak the tool you can use command line arguments or `ssgassets.config.json` files places in project's root and/or assets root directory.
+After installing the package you'll be able to use ssga CLI tool. It's basically a cool-kid's launcher for sharp (image conversion library).
 
-### Config options are listed in this TypeScript interface
+By default the cli looks for config files in project directory. Default config names are: `(ssgassets|ssga).config.(json|js|mjs|ts|mts)`, eg. `ssga.config.json`.
 
-(it's the actual interface the CLI uses, for real)
+Custom config files can be specified with `--config` argument.
+
+### Configuration
+
+Sample config file:
 
 ```typescript
-interface Config {
+import type { Config } from '@maddsua/ssg-assets';
 
-  // path to main config, user-immutable
-  config: string;
-
-  // path to asset directory config, user-immutable
-  assetConfig: string;
-
-  // path to cache directory, user-immutable
-  cacheDir: string;
-
-  // print more info
-  verbose: boolean;
-
-  // nukes the old cache
-  resetCache: boolean;
-
-  // ignores cache completely
-  noCache: boolean;
-
-  // specify image formats for Sharp to convert to
-  formats: OutputOption[];
-
-  // skip assets that match these glob patterns
-  exclude: string[];
-
-  // only include assets that match these glob patterns
-  include: string[];
-
-  // simply copy the assets that match these glob patterns
-  passthrough: string[];
-
-  // input directory, defaults to ./assets
-  inputDir: string;
-
-  // output directory, defaults ot ./dist/assets
-  outputDir: string;
-
-  //  set image quality
-  quality: Record<string, number>
+export const config: Config = {
+	verbose: true,
+	inputDir: './assets',
+	outputDir: './dist',
+	formats: ['avif', 'webp', 'jpg'],
+	exclude: [
+		'**/vector/*.svg'
+	]
 }
 ```
 
-Drop this option into a json config file or use directly in CLI:
+### Comman line flags
+
+- `config` (`string`): Config file location
+- `verbose` (`boolean`): Enables verbose logging
+- `clearCache` (`boolean`): Resets asset cacse
+- `clearDist` (`boolean`): Cleares all files from dist dir before copying new assets
+- `noCache` (`boolean`): Disables asset cache
+- `inputDir` (`string`): Input directory path
+- `outputDir` (`string`): Output directory path
+
+### Usage example
 
 ```bash
-ssga --inputDir=./content --outputDir=./www/content --formats=webp,avif,jpg
+ssga --config=./tests/convert/ssgassets.config.json --verbose
 ```
-Some options cannot be modified by user or by a specific config load method (like a json file can't modify it's own location, duh), the tool will tell you if your config can break it.
 
 ## Frontend components
 
