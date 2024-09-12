@@ -144,7 +144,7 @@ const main = async () => {
 main().catch(error => {
 
 	const errorMessage = error instanceof Error ? `-> ${error.message}` : `Unhandled exception: ${error}`;
-	console.error(chalk.red(`❌ Asset processing terminated:\n`), errorMessage);
+	console.error(chalk.red(`❌ Operation canceled:\n`), errorMessage);
 
 	process.exit(1);
 });

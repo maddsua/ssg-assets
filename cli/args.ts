@@ -34,6 +34,7 @@ const getStringArg = (val: ArgTransformInput): string | null =>
 export const parseArgs = (args: string[]): CliArgs => {
 
 	const result: Partial<CliArgs> = {};
+	const argSet = new Set(args.filter(item => item.startsWith('--')));
 
 	for (const key in argsProto) {
 
@@ -43,10 +44,16 @@ export const parseArgs = (args: string[]): CliArgs => {
 			continue;
 		}
 
+		argSet.delete(arg);
+
 		const valStartIdx = arg.indexOf('=');
 		const argValue = valStartIdx > 0 ? arg.slice(valStartIdx + 1): true;
 
 		result[key as keyof CliArgsProto] = argsProto[key as keyof CliArgsProto](argValue) as any;
+	}
+
+	if (argSet.size) {
+		throw new Error(`Unrecognized CLI arguments: ${Array.from(argSet.keys()).join('; ')}`);
 	}
 
 	return result as CliArgs;
