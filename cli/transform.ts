@@ -134,6 +134,7 @@ const transformImage = async (props: TransformImageProps): Promise<TransformResu
 	
 		if (cacheEntry) {
 			copyFileSync(cacheEntry.resolved, props.dest);
+			props.cache.index.delete(cacheKey);
 			return { status: TransformStatus.CacheHit };
 		}
 	}

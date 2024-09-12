@@ -67,7 +67,7 @@
 		"build": "run-s typecheck bundle",
 		"dev": "esbuild cli/main.ts --outfile=bin/main.js --bundle --platform=node --format=esm --external:sharp --external:chalk --external:minimatch --external:esbuild --watch",
 		"test:cli": "run-s bundle test:cli:run",
-		"test:cli:run": "node bin/main.js --verbose --configFile=./tests/convert/ssgassets.config.json --clearCache=true"
+		"test:cli:run": "node bin/main.js --verbose --configFile=./tests/convert/ssgassets.config.json"
 	},
 	"dependencies": {
 		"chalk": "^5.3.0",

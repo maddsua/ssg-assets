@@ -109,14 +109,23 @@ const main = async () => {
 	const cacheIndex = getCachedAssets(config.cacheDir);
 
 	if (assets.images.length) {
-		console.log('\nTransforming images...\n');
+		console.log('\nTransforming images...');
 		const batches = splitChunks(assets.images, os.cpus().length);
 		await transformImageAssets(batches, invocStats, cacheIndex, config);
 	}
 
 	if (assets.static.length) {
-		console.log('\nCopying static assets...\n');
+		console.log('\nCopying static assets...');
 		await copyStaticAssets(assets.static, invocStats, config);
+	}
+
+	if (cacheIndex.size) {
+
+		console.log('\nCleaning up', cacheIndex.size,  'unused cache entries');
+
+		for (const [_, value] of cacheIndex) {
+			rmSync(value.resolved);
+		}
 	}
 
 	const elapsed = new Date().getTime() - transformStarted;

@@ -102,13 +102,12 @@ export const getCachedAssets = (cacheDir: string): CacheIndex => {
 
 	for (const item of readdirSync(cacheDir)) {
 
-		if (!/^[0-9a-f]{64}\.[\w\d]+$/.test(item)) {
-			continue;
+		const resolved = join(cacheDir, item);
+		if (!statSync(resolved).isFile()) {
+			continue
 		}
 
-		result.set(basename(item), {
-			resolved: join(cacheDir, item),
-		});
+		result.set(basename(item), { resolved });
 	}
 
 	return result;
