@@ -32,7 +32,7 @@ export const copyStaticAssets = async (entries: AssetFile[], stats: InvocationSt
 	}
 
 	if (cfg.verbose) {
-		console.log('\nCopying static assets...');
+		console.log('Copying static assets...');
 	}
 
 	for (const item of entries) {
@@ -59,6 +59,10 @@ export const copyStaticAssets = async (entries: AssetFile[], stats: InvocationSt
 		printStatus(progress, 'Copied', slug);
 		stats.copied++;
 	}
+
+	if (cfg.verbose) {
+		console.log('\r');
+	}
 };
 
 export const transformImageAssets = async (entries: AssetEntry[], stats: InvocationStats, progress: ProgressMetrics, cacheIndex: CacheIndex, cfg: RuntimeConfig) => {
@@ -68,7 +72,7 @@ export const transformImageAssets = async (entries: AssetEntry[], stats: Invocat
 	}
 
 	if (cfg.verbose) {
-		console.log('\nTransforming images...');
+		console.log('Transforming images...');
 	}
 
 	const batches = splitChunks(entries, cfg.concurrency);
@@ -115,6 +119,10 @@ export const transformImageAssets = async (entries: AssetEntry[], stats: Invocat
 
 		}));
 	}
+
+	if (cfg.verbose) {
+		console.log('\r');
+	}
 };
 
 export const clearUnusedCache = async (cacheIndex: CacheIndex, cfg: RuntimeConfig) => {
@@ -125,6 +133,7 @@ export const clearUnusedCache = async (cacheIndex: CacheIndex, cfg: RuntimeConfi
 
 	if (cfg.verbose) {
 		console.log('\nCleaning up', cacheIndex.size, 'unused cache entries');
+		console.log('\r');
 	}
 
 	for (const [_, value] of cacheIndex) {

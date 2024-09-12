@@ -97,6 +97,8 @@ const main = async () => {
 		for (const item of assets.skipped) {
 			console.log(chalk.green(`>> Skipped`), item.slug);
 		}
+
+		console.log('\r');
 	}
 
 	if (config.clearDist && existsSync(config.outputDir)) {
@@ -126,7 +128,7 @@ const main = async () => {
 
 	const elapsed = formatTime(new Date().getTime() - transformStarted);
 
-	console.log('\n', chalk.green('✅ Completed in'), elapsed.value, chalk.green(elapsed.suffix), '\n');
+	console.log(chalk.green('✅ Completed in'), elapsed.value, chalk.green(elapsed.suffix), '\n');
 
 	for (const key in invocStats) {
 
