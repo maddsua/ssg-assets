@@ -4,20 +4,16 @@ import { version as appversion } from '../package.json';
 
 import { parseArgs } from "./args";
 import { loadConfig } from "./configLoader";
-import type { RuntimeConfig } from "./config";
 import { argv } from "process";
 import os from 'os';
 
 import chalk from 'chalk';
-import { createDestDir, findAssets, getCachedAssets, indexAsset, isModified, type AssetEntry, type AssetFile } from './assets';
+import { findAssets, getCachedAssets, indexAsset, isModified, type AssetEntry, type AssetFile } from './assets';
 import { matchGlobOrRegexp } from './filters';
 import { outputOptions, imageFormats } from './formats';
-import { TransformStatus, transformAsset } from './transform';
-import { copyFileSync, existsSync, rmSync } from 'fs';
-import { join } from 'path';
+import { existsSync, rmSync } from 'fs';
 import { splitChunks } from './utils';
 import { copyStaticAssets, printStats, transformImageAssets, type InvocationStats } from './operations';
-
 
 const main = async () => {
 
@@ -38,6 +34,11 @@ const main = async () => {
 	//	ensure that we don't write output to the source directory
 	if (config.inputDir.startsWith(config.outputDir) || config.outputDir.startsWith(config.inputDir)) {
 		throw new Error('Input and output directories must not contain each other');
+	}
+
+	//	clear cache directory if requested
+	if (args.clearCache && existsSync(config.cacheDir)) {
+		rmSync(config.cacheDir, { recursive: true });
 	}
 
 	console.log('Hashing assets...');
