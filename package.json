@@ -14,35 +14,35 @@
 	"types": "./index.ts",
 	"exports": {
 		".": {
-			"default": "./index.ts",
+			"import": "./index.ts",
 			"types": "./index.ts"
 		},
 		"./components": {
-			"default": "./components/index.ts",
+			"import": "./components/index.ts",
 			"types": "./components/index.ts"
 		},
 		"./react": {
-			"default": "./components/react/index.ts",
+			"import": "./components/react/index.ts",
 			"types": "./components/react/index.ts"
 		},
 		"./astro": {
-			"default": "./components/astro/index.ts",
+			"import": "./components/astro/index.ts",
 			"types": "./components/astro/index.ts"
 		},
 		"./vue": {
-			"default": "./components/vue/index.ts",
+			"import": "./components/vue/index.ts",
 			"types": "./components/vue/index.ts"
 		},
 		"./html": {
-			"default": "./components/html/index.ts",
+			"import": "./components/html/index.ts",
 			"types": "./components/html/index.ts"
 		},
 		"./dom": {
-			"default": "./components/dom/index.ts",
+			"import": "./components/dom/index.ts",
 			"types": "./components/dom/index.ts"
 		},
 		"./svelte": {
-			"default": "./components/svelte/index.ts",
+			"import": "./components/svelte/index.ts",
 			"types": "./components/svelte/index.ts"
 		}
 	},
@@ -73,7 +73,7 @@
 		"chalk": "^5.3.0",
 		"esbuild": "^0.23.1",
 		"minimatch": "^9.0.3",
-		"sharp": "^0.32.5"
+		"sharp": "^0.33.5"
 	},
 	"devDependencies": {
 		"@types/node": "^18.16.17",
