@@ -17,19 +17,25 @@ export const loadConfig = async (args: CliArgs): Promise<RuntimeConfig> => {
 	const configLocation = args.config || findDefaultConfig();
 	const userConfig = await loadConfigFile(configLocation);
 
-	const inputDir = resolveRelativePaths(userConfig.inputDir || defaultConfig.inputDir, args.config);
+	const inputDirResolved = args.inputDir ? args.inputDir :
+		resolveRelativePaths(userConfig.inputDir || defaultConfig.inputDir, args.config);
+
+	console.log(inputDirResolved);
+
 	const outputFormats = userConfig.outputFormats || defaultConfig.outputFormats;
 
 	return {
-		verbose: userConfig.verbose ?? args.verbose ?? false,
-		noCache: !!userConfig.noCache,
-		outputFormats: Array.isArray(outputFormats) ? mapImageFormats(outputFormats) : outputFormats,
-		inputDir,
-		outputDir: resolveRelativePaths(userConfig.outputDir || defaultConfig.outputDir, args.config),
-		cacheDir: userConfig.cacheDir || join(inputDir, './.cache'),
+		verbose: args.verbose ?? userConfig.verbose ?? false,
+		noCache: args.noCache ?? userConfig.noCache ?? false,
+		outputFormats: Array.isArray(outputFormats) ?
+			mapImageFormats(outputFormats) : outputFormats,
+		inputDir: inputDirResolved,
+		outputDir: args.outputDir ? args.outputDir :
+			resolveRelativePaths(userConfig.outputDir || defaultConfig.outputDir, args.config),
+		cacheDir: userConfig.cacheDir || join(inputDirResolved, './.cache'),
 		skip: userConfig.skip || null,
 		filter: userConfig.filter || null,
-		clearDist: userConfig.clearDist ?? false,
+		clearDist: args.clearDist ?? userConfig.clearDist ?? false,
 
 		configFile: configLocation,
 	};

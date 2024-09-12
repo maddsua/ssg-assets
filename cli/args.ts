@@ -6,18 +6,30 @@ interface CliArgsProto {
 	verbose: (value: ArgTransformInput) => boolean;
 	clearCache: (value: ArgTransformInput) => boolean;
 	clearDist: (value: ArgTransformInput) => boolean;
-}
+	noCache: (value: ArgTransformInput) => boolean;
+	inputDir: (value: ArgTransformInput) => string | null;
+	outputDir: (value: ArgTransformInput) => string | null;
+};
 
 export type CliArgs = {
 	[key in keyof CliArgsProto]: ReturnType<CliArgsProto[key]> | null;
 };
 
 const argsProto: CliArgsProto = {
-	config: (val) => typeof val === 'string' ? val : null,
-	verbose: (val) => val !== 'false',
-	clearCache: (val) => val !== 'false',
-	clearDist: (val) => val === true || (typeof val === 'string' && val.toLowerCase() === 'true'),
+	config: (val) => getStringArg(val),
+	verbose: (val) => val !== getBoolArg(val),
+	noCache: (val) => val !== getBoolArg(val),
+	clearCache: (val) => val !== getBoolArg(val),
+	clearDist: (val) => getBoolArg(val),
+	inputDir: (val) => getStringArg(val),
+	outputDir: (val) => getStringArg(val),
 };
+
+const getBoolArg = (val: ArgTransformInput): boolean =>
+	val === true || (typeof val === 'string' && val.toLowerCase() === 'true');
+
+const getStringArg = (val: ArgTransformInput): string | null =>
+	typeof val === 'string' ? val : null;
 
 export const parseArgs = (args: string[]): CliArgs => {
 
