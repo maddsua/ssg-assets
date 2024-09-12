@@ -126,7 +126,7 @@ const main = async () => {
 
 	const elapsed = formatTime(new Date().getTime() - transformStarted);
 
-	console.log('--------\n');
+	console.log('\n', chalk.green('✅ Completed in'), elapsed.value, chalk.green(elapsed.suffix), '\n');
 
 	for (const key in invocStats) {
 
@@ -143,8 +143,6 @@ const main = async () => {
 		printer(value);
 	}
 
-	console.log('\r');
-	console.log(chalk.green('✅ Completed in'), elapsed.value, chalk.green(elapsed.suffix));
 };
 
 main().catch(error => {
@@ -160,7 +158,7 @@ const statsPrinter: Record<keyof InvocationStats, (val: number) => void> = {
 	cacheHit: val => console.log('Cache hits:', val),
 	copied: val => console.log('Copied:', val, 'assets'),
 	notModified: val => console.log('Verified:', val, 'assets'),
-	skipped: val => console.log('Skipped:', val, 'images'),
+	skipped: val => console.log('Skipped:', val, 'assets'),
 };
 
 const printCliConfig = (config: RuntimeConfig, args: CliArgs) => {
