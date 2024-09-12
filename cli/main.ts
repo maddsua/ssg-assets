@@ -1,19 +1,19 @@
 #!/usr/bin/env node
 
+import { argv } from "process";
+
+import chalk from 'chalk';
+
 import { version as appversion } from '../package.json';
 
 import { parseArgs } from "./args";
 import { loadConfig } from "./configLoader";
-import { argv } from "process";
-import os from 'os';
 
-import chalk from 'chalk';
-import { findAssets, getCachedAssets, indexAsset, isModified, type AssetEntry, type AssetFile } from './assets';
+import { findAssets, getCachedAssets, indexAsset, type AssetEntry, type AssetFile } from './assets';
 import { matchGlobOrRegexp } from './filters';
 import { outputOptions, imageFormats } from './formats';
 import { existsSync, rmSync } from 'fs';
-import { splitChunks } from './utils';
-import { copyStaticAssets, printStats, transformImageAssets, type InvocationStats } from './operations';
+import { clearUnusedCache, copyStaticAssets, printStats, transformImageAssets, type InvocationStats } from './operations';
 
 const main = async () => {
 
@@ -41,9 +41,9 @@ const main = async () => {
 		rmSync(config.cacheDir, { recursive: true });
 	}
 
-	console.log('Hashing assets...');
-	const hashingStarted = new Date().getTime();
+	console.log('Indexing assets...');
 
+	const indexingStarted = new Date().getTime();
 	const allAssetFiles = await findAssets(config.inputDir, config.cacheDir);
 
 	if (!allAssetFiles.length) {
@@ -82,7 +82,7 @@ const main = async () => {
 		assets.static.push(item);
 	}
 
-	console.log(chalk.green('Index ready in'), new Date().getTime() - hashingStarted, chalk.green('ms'));
+	console.log(chalk.green('Index ready in'), new Date().getTime() - indexingStarted, chalk.green('ms'));
 	console.log('\r');
 
 	if (assets.skipped.length && config.verbose) {
@@ -108,29 +108,13 @@ const main = async () => {
 
 	const cacheIndex = getCachedAssets(config.cacheDir);
 
-	if (assets.images.length) {
-		console.log('\nTransforming images...');
-		const batches = splitChunks(assets.images, os.cpus().length);
-		await transformImageAssets(batches, invocStats, cacheIndex, config);
-	}
-
-	if (assets.static.length) {
-		console.log('\nCopying static assets...');
-		await copyStaticAssets(assets.static, invocStats, config);
-	}
-
-	if (cacheIndex.size) {
-
-		console.log('\nCleaning up', cacheIndex.size,  'unused cache entries');
-
-		for (const [_, value] of cacheIndex) {
-			rmSync(value.resolved);
-		}
-	}
+	await transformImageAssets(assets.images, invocStats, cacheIndex, config);
+	await copyStaticAssets(assets.static, invocStats, config);
+	await clearUnusedCache(cacheIndex, config);
 
 	const elapsed = new Date().getTime() - transformStarted;
 
-	console.log('\n--------\n');
+	console.log('--------\n');
 	printStats(invocStats);
 	console.log('\r');
 	console.log(chalk.green('✅ Completed in'), elapsed, chalk.green('ms'));

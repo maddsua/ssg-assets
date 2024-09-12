@@ -2,10 +2,12 @@ import { createDestDir, isModified, type AssetEntry, type AssetFile, type CacheI
 import type { RuntimeConfig } from "./config";
 import { TransformStatus, transformAsset } from "./transform";
 
-import { copyFileSync } from "fs";
+import { copyFileSync, rmSync } from "fs";
 import { join } from "path";
+import os from 'os';
 
 import chalk from "chalk";
+import { splitChunks } from "./utils";
 
 export interface InvocationStats {
 	notModified: number;
@@ -14,7 +16,6 @@ export interface InvocationStats {
 	transformed: number;
 	skipped: number;
 };
-
 
 export const printStats = (stats: InvocationStats) => {
 
@@ -39,8 +40,15 @@ export const printStats = (stats: InvocationStats) => {
 	}
 };
 
-
 export const copyStaticAssets = async (entries: AssetFile[], stats: InvocationStats, cfg: RuntimeConfig) => {
+
+	if (!entries.length) {
+		return;
+	}
+
+	if (cfg.verbose) {
+		console.log('\nCopying static assets...');
+	}
 
 	for (const item of entries) {
 
@@ -62,7 +70,17 @@ export const copyStaticAssets = async (entries: AssetFile[], stats: InvocationSt
 	}
 };
 
-export const transformImageAssets = async (batches: AssetEntry[][], stats: InvocationStats, cacheIndex: CacheIndex, cfg: RuntimeConfig) => {
+export const transformImageAssets = async (entries: AssetEntry[], stats: InvocationStats, cacheIndex: CacheIndex, cfg: RuntimeConfig) => {
+
+	if (!entries.length) {
+		return;
+	}
+
+	if (cfg.verbose) {
+		console.log('\nTransforming images...');
+	}
+
+	const batches = splitChunks(entries, os.cpus().length);
 
 	for (const batch of batches) {
 
@@ -99,5 +117,20 @@ export const transformImageAssets = async (batches: AssetEntry[][], stats: Invoc
 			}
 
 		}));
+	}
+};
+
+export const clearUnusedCache = async (cacheIndex: CacheIndex, cfg: RuntimeConfig) => {
+
+	if (!cacheIndex.size) {
+		return;
+	}
+
+	if (cfg.verbose) {
+		console.log('\nCleaning up', cacheIndex.size,  'unused cache entries');
+	}
+
+	for (const [_, value] of cacheIndex) {
+		rmSync(value.resolved);
 	}
 };
