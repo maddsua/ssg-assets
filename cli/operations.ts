@@ -34,7 +34,11 @@ export const copyStaticAssets = async (entries: AssetFile[], stats: InvocationSt
 		const destPath = join(cfg.outputDir, item.slug);
 
 		if (!cfg.clearDist && !await isModified(item.path, destPath)) {
-			console.log(chalk.green('Not changed:'), slug);
+
+			if (cfg.verbose) {
+				console.log(chalk.green('Not changed:'), slug);
+			}
+
 			stats.notModified++;
 			continue;
 		}
