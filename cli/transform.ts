@@ -52,11 +52,12 @@ export const transformAsset = async (props: TransformAssetProps): Promise<AssetT
 			src: asset.path,
 			dest: destPath,
 			format: format,
+			options: output,
+			preserveDist: !cfg.clearDist,
 			cache: !cfg.noCache ? {
 				dir: cfg.cacheDir,
 				index: cacheIndex,
 			} : null,
-			options: output,
 		};
 
 		const transformResult = !flags.notModified ? await transformImage(transformProps) : nullTransform();
@@ -95,6 +96,7 @@ interface TransformImageProps {
 	dest: string;
 	format: OutputFormat;
 	options: OutputConfig;
+	preserveDist: boolean;
 	cache: TransformCacheOption | null;
 };
 
@@ -116,7 +118,7 @@ export enum TransformStatus {
 
 const transformImage = async (props: TransformImageProps): Promise<TransformResult> => {
 
-	if (!await isModified(props.src, props.dest)) {
+	if (props.preserveDist && !await isModified(props.src, props.dest)) {
 		return { status: TransformStatus.NotModified };
 	}
 

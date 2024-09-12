@@ -14,7 +14,7 @@ export type SkipPattern = string | RegExp;
 export interface Config {
 	verbose?: boolean;
 	noCache?: boolean;
-	preserveDist?: boolean;
+	clearDist?: boolean;
 	outputFormats?: OutputFormat[] | OutputOptionsConfig;
 	inputDir?: string;
 	outputDir?: string;

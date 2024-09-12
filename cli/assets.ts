@@ -117,10 +117,10 @@ export const isModified = async (src: string, dest: string): Promise<boolean> =>
 
 	try {
 
-		const { mtimeMs: destModified } = statSync(src);
-		const { mtimeMs: sourceModified } = statSync(dest);
+		const { mtimeMs: srcMtime } = statSync(src);
+		const { mtimeMs: destMtime } = statSync(dest);
 
-		return destModified !== sourceModified;
+		return destMtime !== srcMtime;
 
 	} catch (_) {
 		return true;

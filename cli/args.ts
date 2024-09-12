@@ -5,6 +5,7 @@ interface CliArgsProto {
 	config: (value: ArgTransformInput) => string | null;
 	verbose: (value: ArgTransformInput) => boolean;
 	clearCache: (value: ArgTransformInput) => boolean;
+	clearDist: (value: ArgTransformInput) => boolean;
 }
 
 export type CliArgs = {
@@ -15,6 +16,7 @@ const argsProto: CliArgsProto = {
 	config: (val) => typeof val === 'string' ? val : null,
 	verbose: (val) => val !== 'false',
 	clearCache: (val) => val !== 'false',
+	clearDist: (val) => val === true || (typeof val === 'string' && val.toLowerCase() === 'true'),
 };
 
 export const parseArgs = (args: string[]): CliArgs => {

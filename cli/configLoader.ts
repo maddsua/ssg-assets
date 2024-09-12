@@ -29,7 +29,7 @@ export const loadConfig = async (args: CliArgs): Promise<RuntimeConfig> => {
 		cacheDir: userConfig.cacheDir || join(inputDir, './.cache'),
 		skip: userConfig.skip || null,
 		filter: userConfig.filter || null,
-		preserveDist: userConfig.preserveDist ?? false,
+		clearDist: userConfig.clearDist ?? false,
 
 		configFile: configLocation,
 	};

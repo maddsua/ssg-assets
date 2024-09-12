@@ -92,7 +92,7 @@ const main = async () => {
 		}
 	}
 
-	if (!config.preserveDist && existsSync(config.outputDir)) {
+	if (config.clearDist && existsSync(config.outputDir)) {
 		rmSync(config.outputDir, { recursive: true });
 	}
 
