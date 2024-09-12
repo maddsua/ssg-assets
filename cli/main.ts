@@ -6,14 +6,14 @@ import chalk from 'chalk';
 
 import { version as appversion } from '../package.json';
 
-import { parseArgs } from "./args";
+import { parseArgs, type CliArgs } from "./args";
 import { loadConfig } from "./configLoader";
 
 import { findAssets, getCachedAssets, indexAsset, type AssetEntry, type AssetFile } from './assets';
 import { matchGlobOrRegexp } from './filters';
 import { outputOptions, imageFormats } from './formats';
 import { existsSync, rmSync } from 'fs';
-import { clearUnusedCache, copyStaticAssets, transformImageAssets, type InvocationStats } from './operations';
+import { clearUnusedCache, copyStaticAssets, transformImageAssets, type InvocationStats, type ProgressMetrics } from './operations';
 import type { RuntimeConfig } from "./config";
 import { formatTime, normalizePath } from "./utils";
 
@@ -25,7 +25,8 @@ const main = async () => {
 	const config = await loadConfig(args);
 
 	if (config.verbose) {
-		printCliConfig(config);
+		console.log('Verbose mode enabled. Tool is extra talkative now.');
+		printCliConfig(config, args);
 	}
 
 	//	detect unknown formats in config
@@ -112,10 +113,15 @@ const main = async () => {
 		skipped: assets.skipped.length,
 	};
 
+	const progress: ProgressMetrics = {
+		current: 0,
+		total: (assets.images.length * Object.keys(config.outputFormats).length) + assets.static.length,
+	};
+
 	const cacheIndex = getCachedAssets(config.cacheDir);
 
-	await transformImageAssets(assets.images, invocStats, cacheIndex, config);
-	await copyStaticAssets(assets.static, invocStats, config);
+	await transformImageAssets(assets.images, invocStats, progress, cacheIndex, config);
+	await copyStaticAssets(assets.static, invocStats, progress, config);
 	await clearUnusedCache(cacheIndex, config);
 
 	const elapsed = formatTime(new Date().getTime() - transformStarted);
@@ -157,14 +163,14 @@ const statsPrinter: Record<keyof InvocationStats, (val: number) => void> = {
 	skipped: val => console.log('Skipped:', val, 'images'),
 };
 
-const printCliConfig = (config: RuntimeConfig) => {
+const printCliConfig = (config: RuntimeConfig, args: CliArgs) => {
 
 	console.log('\r');
 	console.log(chalk.bgWhite.black(' Current config: '));
 	console.log('----');
 	
 	const entries: [string, string][] = [
-		['Cache', config.noCache ? 'disabled' : 'enabled'],
+		['Cache', args.clearCache ? 'clear' : config.noCache ? 'disabled' : 'enabled'],
 		['Load from', `"${normalizePath(config.inputDir)}"`],
 		['Save to', `"${normalizePath(config.outputDir)}"`],
 		['Output formats', Object.keys(config.outputFormats).join(',')],

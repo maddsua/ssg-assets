@@ -17,7 +17,15 @@ export interface InvocationStats {
 	skipped: number;
 };
 
-export const copyStaticAssets = async (entries: AssetFile[], stats: InvocationStats, cfg: RuntimeConfig) => {
+export interface ProgressMetrics {
+	current: number;
+	total: number;
+};
+
+const printStatus = (progress: ProgressMetrics, status: string, asset: string) =>
+	console.log(chalk.blue(`(${progress.current}/${progress.total})`), chalk.green(`${status}:`), asset);
+
+export const copyStaticAssets = async (entries: AssetFile[], stats: InvocationStats, progress: ProgressMetrics, cfg: RuntimeConfig) => {
 
 	if (!entries.length) {
 		return;
@@ -29,6 +37,8 @@ export const copyStaticAssets = async (entries: AssetFile[], stats: InvocationSt
 
 	for (const item of entries) {
 
+		progress.current++;
+
 		const { slug } = item;
 
 		const destPath = join(cfg.outputDir, item.slug);
@@ -36,7 +46,7 @@ export const copyStaticAssets = async (entries: AssetFile[], stats: InvocationSt
 		if (!cfg.clearDist && !await isModified(item.path, destPath)) {
 
 			if (cfg.verbose) {
-				console.log(chalk.green('Not changed:'), slug);
+				printStatus(progress, 'Not changed', slug);
 			}
 
 			stats.notModified++;
@@ -46,12 +56,12 @@ export const copyStaticAssets = async (entries: AssetFile[], stats: InvocationSt
 		createDestDir(destPath);
 		copyFileSync(item.path, destPath);
 
-		console.log(chalk.green('Copied:'), slug);
+		printStatus(progress, 'Copied', slug);
 		stats.copied++;
 	}
 };
 
-export const transformImageAssets = async (entries: AssetEntry[], stats: InvocationStats, cacheIndex: CacheIndex, cfg: RuntimeConfig) => {
+export const transformImageAssets = async (entries: AssetEntry[], stats: InvocationStats, progress: ProgressMetrics, cacheIndex: CacheIndex, cfg: RuntimeConfig) => {
 
 	if (!entries.length) {
 		return;
@@ -71,6 +81,8 @@ export const transformImageAssets = async (entries: AssetEntry[], stats: Invocat
 
 			for (const item of result) {
 
+				progress.current++;
+
 				const { slug } = item.output;
 
 				switch (item.status) {
@@ -78,24 +90,24 @@ export const transformImageAssets = async (entries: AssetEntry[], stats: Invocat
 					case TransformStatus.NotModified: {
 
 						if (cfg.verbose) {
-							console.log(chalk.green('Not changed:'), slug);
+							printStatus(progress, 'Not changed', slug);
 						}
 
 						stats.notModified++;
 					} break;
 
 					case TransformStatus.Transferred: {
-						console.log(chalk.green('Copied:'), slug);
+						printStatus(progress, 'Copied', slug);
 						stats.copied++;
 					} break;
 
 					case TransformStatus.CacheHit: {
-						console.log(chalk.green('Cache hit:'), slug);
+						printStatus(progress, 'Cache hit', slug);
 						stats.cacheHit++;
 					} break;
 
 					case TransformStatus.Transformed: {
-						console.log(chalk.green('Transformed:'), slug);
+						printStatus(progress, 'Transformed', slug);
 						stats.transformed++;
 					} break;
 				}
@@ -112,7 +124,7 @@ export const clearUnusedCache = async (cacheIndex: CacheIndex, cfg: RuntimeConfi
 	}
 
 	if (cfg.verbose) {
-		console.log('\nCleaning up', cacheIndex.size,  'unused cache entries');
+		console.log('\nCleaning up', cacheIndex.size, 'unused cache entries');
 	}
 
 	for (const [_, value] of cacheIndex) {
