@@ -2,6 +2,7 @@ import { cwd } from "process";
 import { join, dirname } from "path";
 import { existsSync, readFileSync } from 'fs';
 import { transform } from 'esbuild';
+import { cpus } from 'os';
 
 import type { CliArgs } from "./args";
 import type { RuntimeConfig, Config, OutputOptionsConfig } from "./config";
@@ -21,6 +22,7 @@ export const loadConfig = async (args: CliArgs): Promise<RuntimeConfig> => {
 		resolveRelativePaths(userConfig.inputDir || defaultConfig.inputDir, args.config);
 
 	const outputFormats = userConfig.outputFormats || defaultConfig.outputFormats;
+	const concurrency = args.concurrency || userConfig.concurrency || cpus().length;
 
 	return {
 		verbose: args.verbose ?? userConfig.verbose ?? false,
@@ -34,6 +36,7 @@ export const loadConfig = async (args: CliArgs): Promise<RuntimeConfig> => {
 		skip: userConfig.skip || null,
 		filter: userConfig.filter || null,
 		clearDist: args.clearDist ?? userConfig.clearDist ?? false,
+		concurrency: concurrency > 0 ? concurrency : defaultConfig.concurrency,
 
 		configFile: configLocation,
 	};

@@ -4,6 +4,7 @@ export const defaultConfig = {
 	outputFormats: ['original', 'webp', 'avif'],
 	inputDir: './assets',
 	outputDir: './public/assets',
+	concurrency: 8,
 } satisfies Config;
 
 export const defaultQuality = {

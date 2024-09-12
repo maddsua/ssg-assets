@@ -71,7 +71,7 @@ export const transformImageAssets = async (entries: AssetEntry[], stats: Invocat
 		console.log('\nTransforming images...');
 	}
 
-	const batches = splitChunks(entries, os.cpus().length);
+	const batches = splitChunks(entries, cfg.concurrency);
 
 	for (const batch of batches) {
 

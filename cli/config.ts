@@ -21,6 +21,7 @@ export interface Config {
 	cacheDir?: string;
 	skip?: SkipPattern[] | null;
 	filter?: FilterFunction | null;
+	concurrency?: number;
 };
 
 export interface RuntimeConfig extends Required<Config> {

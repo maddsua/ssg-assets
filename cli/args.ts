@@ -9,6 +9,7 @@ interface CliArgsProto {
 	noCache: (value: ArgTransformInput) => boolean;
 	inputDir: (value: ArgTransformInput) => string | null;
 	outputDir: (value: ArgTransformInput) => string | null;
+	concurrency: (value: ArgTransformInput) => number | null;
 };
 
 export type CliArgs = {
@@ -23,6 +24,7 @@ const argsProto: CliArgsProto = {
 	clearDist: (val) => getBoolArg(val),
 	inputDir: (val) => getStringArg(val),
 	outputDir: (val) => getStringArg(val),
+	concurrency: (val) => getNumberArg(val),
 };
 
 const getBoolArg = (val: ArgTransformInput): boolean =>
@@ -30,6 +32,20 @@ const getBoolArg = (val: ArgTransformInput): boolean =>
 
 const getStringArg = (val: ArgTransformInput): string | null =>
 	typeof val === 'string' ? val : null;
+
+const getNumberArg = (val: ArgTransformInput): number | null => {
+
+	if (typeof val !== 'string') {
+		return null;
+	}
+
+	const numeric = parseFloat(val);
+	if (isNaN(numeric) || !isFinite(numeric)) {
+		return null;
+	}
+
+	return numeric;
+};
 
 export const parseArgs = (args: string[]): CliArgs => {
 

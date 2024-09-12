@@ -174,6 +174,7 @@ const printCliConfig = (config: RuntimeConfig, args: CliArgs) => {
 		['Load from', `"${normalizePath(config.inputDir)}"`],
 		['Save to', `"${normalizePath(config.outputDir)}"`],
 		['Output formats', Object.keys(config.outputFormats).join(',')],
+		['Concurrency', `${config.concurrency}`],
 	];
 
 	if (config.skip?.length) {
