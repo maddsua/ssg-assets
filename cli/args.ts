@@ -17,9 +17,9 @@ export type CliArgs = {
 
 const argsProto: CliArgsProto = {
 	config: (val) => getStringArg(val),
-	verbose: (val) => val !== getBoolArg(val),
-	noCache: (val) => val !== getBoolArg(val),
-	clearCache: (val) => val !== getBoolArg(val),
+	verbose: (val) => getBoolArg(val),
+	noCache: (val) => getBoolArg(val),
+	clearCache: (val) => getBoolArg(val),
 	clearDist: (val) => getBoolArg(val),
 	inputDir: (val) => getStringArg(val),
 	outputDir: (val) => getStringArg(val),
