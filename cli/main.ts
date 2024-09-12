@@ -15,7 +15,7 @@ import { outputOptions, imageFormats } from './formats';
 import { existsSync, rmSync } from 'fs';
 import { clearUnusedCache, copyStaticAssets, transformImageAssets, type InvocationStats } from './operations';
 import type { RuntimeConfig } from "./config";
-import { normalizePath } from "./utils";
+import { formatTime, normalizePath } from "./utils";
 
 const main = async () => {
 
@@ -118,7 +118,7 @@ const main = async () => {
 	await copyStaticAssets(assets.static, invocStats, config);
 	await clearUnusedCache(cacheIndex, config);
 
-	const elapsed = new Date().getTime() - transformStarted;
+	const elapsed = formatTime(new Date().getTime() - transformStarted);
 
 	console.log('--------\n');
 
@@ -138,7 +138,7 @@ const main = async () => {
 	}
 
 	console.log('\r');
-	console.log(chalk.green('✅ Completed in'), elapsed, chalk.green('ms'));
+	console.log(chalk.green('✅ Completed in'), elapsed.value, chalk.green(elapsed.suffix));
 };
 
 main().catch(error => {
