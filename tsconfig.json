@@ -12,7 +12,8 @@
 		"allowSyntheticDefaultImports": true,
 		"resolveJsonModule": true,
 		"strict": true,
-		"jsx": "preserve"
+		"jsx": "preserve",
+		"verbatimModuleSyntax": true
 	},
 	"exclude": [
 		"node_modules",
