@@ -14,6 +14,7 @@ import { matchGlobOrRegexp } from './filters';
 import { outputOptions, imageFormats } from './formats';
 import { existsSync, rmSync } from 'fs';
 import { clearUnusedCache, copyStaticAssets, transformImageAssets, type InvocationStats } from './operations';
+import type { RuntimeConfig } from "./config";
 
 const main = async () => {
 
@@ -21,6 +22,10 @@ const main = async () => {
 
 	const args = parseArgs(argv);
 	const config = await loadConfig(args);
+
+	if (config.verbose) {
+		printCliConfig(config);
+	}
 
 	//	detect unknown formats in config
 	const unknownFormas = Object.keys(config.outputFormats)
@@ -149,4 +154,28 @@ const statsPrinter: Record<keyof InvocationStats, (val: number) => void> = {
 	copied: val => console.log('Copied:', val, 'assets'),
 	notModified: val => console.log('Verified:', val, 'assets'),
 	skipped: val => console.log('Skipped:', val, 'images'),
+};
+
+const printCliConfig = (config: RuntimeConfig) => {
+
+	console.log('\r');
+	console.log(chalk.bgWhite.black(' Current config: '));
+	console.log('----');
+	
+	const entries: [string, string][] = [
+		['Cache', config.noCache ? 'disabled' : 'enabled'],
+		['Load from', `"${config.inputDir}"`],
+		['Save to', `"${config.outputDir}"`],
+		['Output formats', Object.keys(config.outputFormats).join(',')],
+	];
+
+	if (config.skip?.length) {
+		entries.push(['Skip patterns', config.skip.join(', ')]);
+	}
+
+	for (const [key, value] of entries) {
+		console.log(key, ':', chalk.green(value));
+	}
+
+	console.log('----\n');
 };
