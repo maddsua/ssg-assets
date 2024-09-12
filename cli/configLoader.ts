@@ -20,8 +20,6 @@ export const loadConfig = async (args: CliArgs): Promise<RuntimeConfig> => {
 	const inputDirResolved = args.inputDir ? args.inputDir :
 		resolveRelativePaths(userConfig.inputDir || defaultConfig.inputDir, args.config);
 
-	console.log(inputDirResolved);
-
 	const outputFormats = userConfig.outputFormats || defaultConfig.outputFormats;
 
 	return {
