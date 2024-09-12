@@ -22,7 +22,7 @@ Deno.test('npm package integrity', async () => {
 
 	//	package default export
 	const noDefaultExport = submoduleExportRecords
-		.filter(item => item.record.default !== `./components/${item.name}/index.ts`)
+		.filter(item => item.record.import !== `./components/${item.name}/index.ts`)
 		.map(item => item.name);
 
 	if (noDefaultExport.length) {

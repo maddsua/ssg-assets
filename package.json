@@ -1,7 +1,7 @@
 {
 	"private": false,
 	"name": "@maddsua/ssg-assets",
-	"version": "3.15.1",
+	"version": "4.0.0",
 	"type": "module",
 	"engines": {
 		"node": ">=16.4.0"
@@ -14,35 +14,35 @@
 	"types": "./index.ts",
 	"exports": {
 		".": {
-			"default": "./index.ts",
+			"import": "./index.ts",
 			"types": "./index.ts"
 		},
 		"./components": {
-			"default": "./components/index.ts",
+			"import": "./components/index.ts",
 			"types": "./components/index.ts"
 		},
 		"./react": {
-			"default": "./components/react/index.ts",
+			"import": "./components/react/index.ts",
 			"types": "./components/react/index.ts"
 		},
 		"./astro": {
-			"default": "./components/astro/index.ts",
+			"import": "./components/astro/index.ts",
 			"types": "./components/astro/index.ts"
 		},
 		"./vue": {
-			"default": "./components/vue/index.ts",
+			"import": "./components/vue/index.ts",
 			"types": "./components/vue/index.ts"
 		},
 		"./html": {
-			"default": "./components/html/index.ts",
+			"import": "./components/html/index.ts",
 			"types": "./components/html/index.ts"
 		},
 		"./dom": {
-			"default": "./components/dom/index.ts",
+			"import": "./components/dom/index.ts",
 			"types": "./components/dom/index.ts"
 		},
 		"./svelte": {
-			"default": "./components/svelte/index.ts",
+			"import": "./components/svelte/index.ts",
 			"types": "./components/svelte/index.ts"
 		}
 	},
@@ -57,26 +57,23 @@
 		"components/html",
 		"components/dom",
 		"components/svelte",
-		"src/config/schema.ts",
-		"src/config/formats.ts",
+		"cli/config/schema.ts",
+		"cli/config/formats.ts",
 		"package.json"
 	],
 	"scripts": {
-		"lint": "tsc",
-		"bundle": "esbuild src/main.ts --outfile=bin/main.js --bundle --platform=node --format=esm --external:sharp --external:chalk --external:minimatch --external:zod --external:esbuild",
-		"build": "run-s lint bundle",
-		"dev": "esbuild src/main.ts --outfile=bin/main.js --bundle --platform=node --format=esm --external:sharp --external:chalk --external:minimatch --external:zod --external:esbuild --watch",
-		"test": "node bin/main.js --verbose --configFile=./tests/convert/ssgassets.config.json",
-		"test:cli": "node ./temp/cli-test.mjs --configFile=./tests/convert/ssga.config.ts",
-		"test:cli:build": "esbuild ./tests/cli.test.ts --bundle --platform=node --format=esm --external:sharp --external:chalk --external:minimatch --external:zod --external:esbuild --outfile=./temp/cli-test.mjs",
-		"deploy": "npm publish --access=public"
+		"typecheck": "tsc",
+		"bundle": "esbuild cli/main.ts --outfile=bin/main.js --bundle --platform=node --format=esm --external:sharp --external:chalk --external:minimatch --external:esbuild",
+		"build": "run-s typecheck bundle",
+		"dev": "esbuild cli/main.ts --outfile=bin/main.js --bundle --platform=node --format=esm --external:sharp --external:chalk --external:minimatch --external:esbuild --watch",
+		"test:cli": "run-s bundle test:cli:run",
+		"test:cli:run": "node bin/main.js --verbose --configFile=./tests/convert/ssgassets.config.json"
 	},
 	"dependencies": {
 		"chalk": "^5.3.0",
-		"esbuild": "^0.19.3",
+		"esbuild": "^0.23.1",
 		"minimatch": "^9.0.3",
-		"sharp": "^0.32.5",
-		"zod": "^3.22.2"
+		"sharp": "^0.33.5"
 	},
 	"devDependencies": {
 		"@types/node": "^18.16.17",
@@ -84,6 +81,7 @@
 		"npm-run-all": "^4.1.5",
 		"preact": "^10.15.1",
 		"svelte": "^4.2.0",
+		"typescript": "^5.6.2",
 		"vue": "^3.3.4",
 		"vue-tsc": "^1.8.11"
 	},

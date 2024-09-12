@@ -1,4 +1,2 @@
-import type { ConfigSchema } from './src/config/schema';
+export type { Config } from './cli/config';
 export { revealLazyLoaded } from './components/index';
-
-export type Config = Partial<ConfigSchema>;

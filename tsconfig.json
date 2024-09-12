@@ -1,5 +1,6 @@
 {
 	"compilerOptions": {
+		"skipLibCheck": true,
 		"lib": ["DOM", "ES6", "ESNext"],
 		"target": "ESNext",
 		"module": "ESNext",
@@ -12,7 +13,8 @@
 		"allowSyntheticDefaultImports": true,
 		"resolveJsonModule": true,
 		"strict": true,
-		"jsx": "preserve"
+		"jsx": "preserve",
+		"verbatimModuleSyntax": true
 	},
 	"exclude": [
 		"node_modules",
