@@ -13,3 +13,5 @@ export const splitChunks = <T>(items: T[], size: number): T[][] => {
 
 	return result;
 };
+
+export const normalizePath = (path: string): string => path.replace(/[\\\/]+/g, '/');

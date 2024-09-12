@@ -15,6 +15,7 @@ import { outputOptions, imageFormats } from './formats';
 import { existsSync, rmSync } from 'fs';
 import { clearUnusedCache, copyStaticAssets, transformImageAssets, type InvocationStats } from './operations';
 import type { RuntimeConfig } from "./config";
+import { normalizePath } from "./utils";
 
 const main = async () => {
 
@@ -164,8 +165,8 @@ const printCliConfig = (config: RuntimeConfig) => {
 	
 	const entries: [string, string][] = [
 		['Cache', config.noCache ? 'disabled' : 'enabled'],
-		['Load from', `"${config.inputDir}"`],
-		['Save to', `"${config.outputDir}"`],
+		['Load from', `"${normalizePath(config.inputDir)}"`],
+		['Save to', `"${normalizePath(config.outputDir)}"`],
 		['Output formats', Object.keys(config.outputFormats).join(',')],
 	];
 

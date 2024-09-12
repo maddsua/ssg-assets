@@ -1,6 +1,7 @@
 import { readdirSync, existsSync, mkdirSync, createReadStream, statSync } from 'fs';
 import { createHash } from 'crypto';
 import { join, basename, resolve, extname, dirname } from 'path';
+import { normalizePath } from './utils';
 
 export interface AssetFile {
 	slug: string;
@@ -42,10 +43,7 @@ export const findAssets = async (assetDir: string, cacheDir: string): Promise<As
 
 	return entries.map(item => {
 
-		const slug = resolve(item)
-			.slice(assetDirResolved.length)
-			.replace(/[\\\/]+/g, '/');
-
+		const slug = normalizePath(resolve(item).slice(assetDirResolved.length));
 		const ext = extname(slug);
 
 		return {
