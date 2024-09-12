@@ -72,7 +72,11 @@ export const transformImageAssets = async (entries: AssetEntry[], stats: Invocat
 				switch (item.status) {
 
 					case TransformStatus.NotModified: {
-						console.log(chalk.green('Not changed:'), slug);
+
+						if (cfg.verbose) {
+							console.log(chalk.green('Not changed:'), slug);
+						}
+
 						stats.notModified++;
 					} break;
 
