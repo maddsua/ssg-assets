@@ -90,8 +90,10 @@
 		"build",
 		"assets",
 		"component",
+		"image",
 		"astro",
-		"vue"
+		"vue",
+		"react"
 	],
 	"repository": {
 		"type": "git",

@@ -64,25 +64,27 @@ export const indexAsset = async (item: AssetFile): Promise<AssetEntry> => {
 	}, item) satisfies AssetEntry;
 };
 
-export const hashFile = async (filepath: string): Promise<string> => new Promise(async (resolve, reject) => {
+export const hashFile = async (filepath: string): Promise<string> => {
+
+	if (!existsSync(filepath)) {
+		throw new Error(`Error hashing file: path does not exsist: ${filepath}`);
+	}
 
 	try {
-
-		if (!existsSync(filepath)) {
-			reject(`File does not exsist: ${filepath}`);
-		}
 
 		const stream = createReadStream(filepath);
 		const hash = createHash('sha256');
 
-		stream.on('error', () => reject(`Error hashing file: ${filepath}`));
-		stream.on('data', (chunk) => hash.update(chunk));
-		stream.on('end', () => resolve(hash.digest('hex').toLowerCase()));
+		for await (const chunk of stream) {
+			hash.update(new Uint8Array(chunk));
+		}
+
+		return hash.digest('hex').toLowerCase();
 
 	} catch (error) {
-		reject(`Error hashing file: ${filepath}`);
+		throw new Error(`Failed to hash file: ${filepath}`);
 	}
-});
+};
 
 export interface CacheEntry {
 	resolved: string;

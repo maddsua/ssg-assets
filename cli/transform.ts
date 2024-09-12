@@ -24,23 +24,30 @@ export interface TransformedAsset {
 	slug: string;
 };
 
+interface TransformFlags {
+	srcNotModified: boolean;
+};
+
 export const transformAsset = async (props: TransformAssetProps): Promise<AssetTransformResult[]> => {
 
 	const { asset, cacheIndex, cfg } = props;
 
 	const result: AssetTransformResult[] = [];
 
-	const flags = {
-		notModified: false,
+	const flags: TransformFlags = {
+		srcNotModified: false,
 	};
 
-	for (const key in cfg.outputFormats) {
+	const formatKeys = Object.keys(cfg.outputFormats) as OutputFormat[];
+	const keys = 'original' in cfg.outputFormats ?
+		(['original', ...formatKeys.filter(format => format !== 'original')]) : formatKeys;
+
+	for (const key of keys) {
 
 		const format = key as OutputFormat;
-
 		const output = cfg.outputFormats[format];
 		if (!output) {
-			throw new Error(`Output option for key "${key}" is not defined`);
+			throw new Error(`Output option for key "${format}" is not defined`);
 		}
 
 		const destSlug = format === 'original' ? asset.slug : replaceExt(asset.slug, format);
@@ -51,19 +58,21 @@ export const transformAsset = async (props: TransformAssetProps): Promise<AssetT
 		const transformProps: TransformImageProps = {
 			src: asset.path,
 			dest: destPath,
-			format: format,
+			format,
 			options: output,
 			preserveDist: !cfg.clearDist,
 			cache: !cfg.noCache ? {
 				dir: cfg.cacheDir,
 				index: cacheIndex,
+				srcHash: await hashFile(asset.path),
 			} : null,
+			flags,
 		};
 
-		const transformResult = !flags.notModified ? await transformImage(transformProps) : nullTransform();
+		const transformResult = await transformImage(transformProps);
 
 		if (format === 'original' && transformResult.status === TransformStatus.NotModified) {
-			flags.notModified = true
+			flags.srcNotModified = true;
 		}
 
 		result.push(Object.assign({
@@ -98,11 +107,13 @@ interface TransformImageProps {
 	options: OutputConfig;
 	preserveDist: boolean;
 	cache: TransformCacheOption | null;
+	flags: TransformFlags;
 };
 
 interface TransformCacheOption {
 	dir: string;
 	index: CacheIndex;
+	srcHash: string;
 };
 
 export interface TransformResult {
@@ -131,13 +142,18 @@ const transformImage = async (props: TransformImageProps): Promise<TransformResu
 
 	if (props.cache) {
 
-		cacheKey = `${await hashFile(props.src)}.${props.format}`;
+		cacheKey = `${props.cache.srcHash}.${props.format}`;
 		const cacheEntry = props.cache.index.get(cacheKey);
 	
 		if (cacheEntry) {
+
 			copyFileSync(cacheEntry.resolved, props.dest);
 			props.cache.index.delete(cacheKey);
-			return { status: TransformStatus.CacheHit };
+
+			const status = props.flags.srcNotModified ?
+				TransformStatus.NotModified : TransformStatus.CacheHit;
+
+			return { status };
 		}
 	}
 
@@ -151,5 +167,3 @@ const transformImage = async (props: TransformImageProps): Promise<TransformResu
 
 	return { status: TransformStatus.Transformed };
 };
-
-const nullTransform = (): TransformResult => ({ status: TransformStatus.NotModified });
