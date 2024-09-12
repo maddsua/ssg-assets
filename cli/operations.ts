@@ -17,29 +17,6 @@ export interface InvocationStats {
 	skipped: number;
 };
 
-export const printStats = (stats: InvocationStats) => {
-
-	if (stats.transformed) {
-		console.log('Transformed:', stats.transformed, 'images');
-	}
-
-	if (stats.cacheHit) {
-		console.log('Cache hits:', stats.cacheHit);
-	}
-
-	if (stats.copied) {
-		console.log('Copied:', stats.copied, 'assets');
-	}
-
-	if (stats.notModified) {
-		console.log('Verified:', stats.notModified, 'assets');
-	}
-
-	if (stats.skipped) {
-		console.log('Skipped:', stats.skipped, 'images');
-	}
-};
-
 export const copyStaticAssets = async (entries: AssetFile[], stats: InvocationStats, cfg: RuntimeConfig) => {
 
 	if (!entries.length) {

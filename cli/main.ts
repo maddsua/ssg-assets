@@ -13,7 +13,7 @@ import { findAssets, getCachedAssets, indexAsset, type AssetEntry, type AssetFil
 import { matchGlobOrRegexp } from './filters';
 import { outputOptions, imageFormats } from './formats';
 import { existsSync, rmSync } from 'fs';
-import { clearUnusedCache, copyStaticAssets, printStats, transformImageAssets, type InvocationStats } from './operations';
+import { clearUnusedCache, copyStaticAssets, transformImageAssets, type InvocationStats } from './operations';
 
 const main = async () => {
 
@@ -115,7 +115,22 @@ const main = async () => {
 	const elapsed = new Date().getTime() - transformStarted;
 
 	console.log('--------\n');
-	printStats(invocStats);
+
+	for (const key in invocStats) {
+
+		const value = invocStats[key as keyof InvocationStats];
+		if (!value) {
+			continue;
+		}
+		
+		const printer = statsPrinter[key as keyof InvocationStats];
+		if (!printer) {
+			throw new Error(`Stats printer error: key not found: "${key}"`);
+		}
+
+		printer(value);
+	}
+
 	console.log('\r');
 	console.log(chalk.green('✅ Completed in'), elapsed, chalk.green('ms'));
 };
@@ -127,3 +142,11 @@ main().catch(error => {
 
 	process.exit(1);
 });
+
+const statsPrinter: Record<keyof InvocationStats, (val: number) => void> = {
+	transformed: val => console.log('Transformed:', val, 'images'),
+	cacheHit: val => console.log('Cache hits:', val),
+	copied: val => console.log('Copied:', val, 'assets'),
+	notModified: val => console.log('Verified:', val, 'assets'),
+	skipped: val => console.log('Skipped:', val, 'images'),
+};
