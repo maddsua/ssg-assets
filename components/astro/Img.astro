@@ -1,12 +1,12 @@
 ---
-import { type ImageProps, getImageSize, classToString, styleToString, applyImageSrc } from '../index';
+import { type ImageProps, getImageSize, classToString, styleToString, hashSrcUrl } from '../index';
 
 export interface Props extends ImageProps {};
 const props = Astro.props;
 const size = getImageSize(props.sizes);
 ---
 
-<img src={applyImageSrc(props.src)}
+<img src={hashSrcUrl(props.src)}
 	alt={props.alt}
 	width={size?.width}
 	height={size?.height}

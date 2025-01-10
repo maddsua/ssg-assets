@@ -4,9 +4,9 @@
  * in case u want to force static hosting cache invalidated on new deploy
  */
 const deployHashLiteral = `__SSGA_DEPLOY_CACHE_HASH__`;
-const assetsVersionQuery = deployHashLiteral.startsWith('_') ? '' : `?w=${deployHashLiteral.replace(/[^\w\-\_]+/g, '')}`;
+const assetVersionHash = deployHashLiteral.startsWith('_') ? '' : `?w=${deployHashLiteral.replace(/[^\w\-\_]+/g, '')}`;
 
-export const applyImageSrc = (assetSrc: string) => (!assetSrc.includes('?') && assetsVersionQuery) ? assetSrc + assetsVersionQuery : assetSrc;
+export const hashSrcUrl = (assetSrc: string) => (!assetSrc.includes('?') && assetVersionHash) ? assetSrc + assetVersionHash : assetSrc;
 
 type ModeModifier = string | null | undefined;
 type ReplaceBaseModifier = string | RegExp | undefined;
@@ -80,7 +80,7 @@ export const mapSources = (baseImageSrc: string, formats?: ImageFormatsType, ada
 	const hasQueryParams = queryParamsStart !== -1;
 
 	const urlNoSearch = hasQueryParams ? baseImageSrc.slice(0, queryParamsStart) : baseImageSrc;
-	const queryParams = hasQueryParams ? baseImageSrc.slice(queryParamsStart) : assetsVersionQuery;
+	const queryParams = hasQueryParams ? baseImageSrc.slice(queryParamsStart) : assetVersionHash;
 
 	const altFormatSources = imageAltFormats.map(format => ({
 		source: `${filePathNoExtension(urlNoSearch)}.${format}${queryParams}`,

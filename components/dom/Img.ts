@@ -1,4 +1,4 @@
-import { type ImageProps, getImageSize, classToString, styleToString, getDOMRoot, applyImageSrc } from '../index';
+import { type ImageProps, getImageSize, classToString, styleToString, getDOMRoot, hashSrcUrl } from '../index';
 
 export default (props: ImageProps, useDOMRoot?: Document) => {
 
@@ -17,23 +17,42 @@ export default (props: ImageProps, useDOMRoot?: Document) => {
 	//	For instance: the "loading" attribute is not being reflected in picture's "innerHTML" when set as img's property (JSDOM)
 	if (isNativeDOM) {
 
-		imgElement.src = applyImageSrc(props.src);
-		imgElement.alt = props.alt;
+		imgElement.src = hashSrcUrl(props.src);
 		imgElement.draggable = props.draggable === true;
 		imgElement.loading = props.lazy !== false ? 'lazy' : 'eager';
-		size?.width && (imgElement.width = size.width);
-		size?.height && (imgElement.height = size.height);
-		elementClass && (imgElement.className = elementClass);
 
-	} else {
+		if (props.alt) {
+			imgElement.alt = props.alt;
+		}
 
-		imgElement.setAttribute('src', applyImageSrc(props.src));
+		if (size) {
+			imgElement.width = size.width;
+			imgElement.height = size.height;
+		}
+
+		if (elementClass) {
+			imgElement.className = elementClass;
+		}
+
+		return imgElement;
+
+	}
+
+	imgElement.setAttribute('src', hashSrcUrl(props.src));
+	imgElement.setAttribute('draggable', props.draggable === true ? 'true' : 'false');
+	imgElement.setAttribute('loading', props.lazy !== false ? 'lazy' : 'eager');
+
+	if (props.alt) {
 		imgElement.setAttribute('alt', props.alt);
-		imgElement.setAttribute('draggable', props.draggable === true ? 'true' : 'false');
-		imgElement.setAttribute('loading', props.lazy !== false ? 'lazy' : 'eager');
-		size?.width && (imgElement.setAttribute('width', size.width.toString()));
-		size?.height && (imgElement.setAttribute('height', size.height.toString()));
-		elementClass && (imgElement.setAttribute('class', elementClass));
+	}
+
+	if (size) {
+		imgElement.setAttribute('width', size.width.toString());
+		imgElement.setAttribute('height', size.height.toString());
+	}
+
+	if (elementClass) {
+		imgElement.setAttribute('class', elementClass)
 	}
 
 	return imgElement;

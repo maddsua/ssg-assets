@@ -1,11 +1,11 @@
-import { type ImageProps, getImageSize, classToString, styleToString, composeAttributesHTML, applyImageSrc } from '../index';
+import { type ImageProps, getImageSize, classToString, styleToString, composeAttributesHTML, hashSrcUrl } from '../index';
 
 export default (props: ImageProps) => {
 
 	const size = getImageSize(props.sizes);
 
 	const attrList = {
-		src: applyImageSrc(props.src),
+		src: hashSrcUrl(props.src),
 		alt: props.alt,
 		width: size?.width,
 		height: size?.height,

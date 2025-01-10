@@ -1,6 +1,6 @@
 <script lang="ts">
 
-	import { type ImageProps, getImageSize, classToString, styleToString, applyImageSrc } from '../index.js';
+	import { type ImageProps, getImageSize, classToString, styleToString, hashSrcUrl } from '../index.js';
 
 	export let src: ImageProps['src'];
 	export let alt: ImageProps['alt'];
@@ -14,7 +14,7 @@
 
 </script>
 
-<img src={applyImageSrc(src)}
+<img src={hashSrcUrl(src)}
 	alt={alt}
 	width={size?.width}
 	height={size?.height}

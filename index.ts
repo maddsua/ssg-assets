@@ -1,2 +1,6 @@
 export type { Config } from './cli/config';
-export { revealLazyLoaded } from './components/index';
+export {
+	revealLazyLoaded,
+	mapSources as imgSources,
+	hashSrcUrl
+} from './components/index';
