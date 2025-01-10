@@ -30,7 +30,7 @@ type ElementStyle = string | Record<string, string | number> | Record<`${string}
 
 export interface ImageProps {
 	src: string;
-	alt: string;
+	alt?: string;
 	class?: ElementClass;
 	style?: ElementStyle;
 	lazy?: boolean;
