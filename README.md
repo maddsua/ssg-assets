@@ -24,13 +24,13 @@ Sample config file:
 import type { Config } from '@maddsua/ssg-assets';
 
 export const config: Config = {
-	verbose: true,
-	inputDir: './assets',
-	outputDir: './dist',
-	formats: ['avif', 'webp', 'jpg'],
-	exclude: [
-		'**/vector/*.svg'
-	]
+  verbose: true,
+  inputDir: './assets',
+  outputDir: './dist',
+  formats: ['avif', 'webp', 'jpg'],
+  exclude: [
+    '**/vector/*.svg'
+  ]
 }
 ```
 
